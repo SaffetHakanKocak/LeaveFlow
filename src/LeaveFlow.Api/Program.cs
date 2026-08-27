@@ -1,14 +1,28 @@
+using LeaveFlow.Api.Authentication;
 using LeaveFlow.Api.ExceptionHandling;
 using LeaveFlow.Application;
+using LeaveFlow.Application.Authorization;
+using LeaveFlow.Application.Identity;
 using LeaveFlow.Infrastructure;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddLeaveFlowAuthorization();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = LeaveFlowAuthenticationSchemes.Api;
+    options.DefaultChallengeScheme = LeaveFlowAuthenticationSchemes.Api;
+})
+.AddScheme<AuthenticationSchemeOptions, DeferredApiAuthenticationHandler>(
+    LeaveFlowAuthenticationSchemes.Api,
+    _ => { });
 
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
@@ -34,6 +48,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -177,3 +177,63 @@ Add `LoginAttempts` for future brute force protection, but do not add `RefreshTo
 
 - The schema avoids a premature token model.
 - Authentication storage can be designed around the chosen auth mechanism.
+
+## ADR-0010 - Cookie Authentication For Web, Deferred API Tokens
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+Stage 3 requires secure authentication. LeaveFlow.Web is an MVC browser app. LeaveFlow.Api should remain ready for tokens later without installing JWT now.
+
+### Decision
+
+Use ASP.NET Core cookie authentication for LeaveFlow.Web. Register a deferred API authentication scheme that never authenticates and challenges with 401 ProblemDetails. Do not add RefreshTokens or JWT packages in this stage.
+
+### Consequences
+
+- Browser sessions use a server-issued cookie with HttpOnly, SameSite=Lax, and environment-aware Secure flags.
+- API callers cannot log in yet. Protected API endpoints return 401.
+- Sliding cookie expiration (8 hours by default) is used because this is an internal workforce web app, not a public SPA.
+
+## ADR-0011 - ASP.NET Identity PasswordHasher And Configurable Lockout
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+Passwords must not be stored in plaintext, and a custom hash algorithm is forbidden.
+
+### Decision
+
+Hash and verify passwords with `PasswordHasher<object>` from ASP.NET Core Identity. Apply lockout after a configured number of failed attempts for a configured duration. Record every attempt in `LoginAttempts` and security events in `AuditLogs`.
+
+### Consequences
+
+- Hash format follows Identity V3 PBKDF2.
+- Lockout thresholds are not magic numbers in code.
+- Failed logins never disclose whether the email exists, is inactive, or is locked.
+
+## ADR-0012 - Application-Layer Object Authorization
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+Consultants and managers must not access another team's resources through identifier guessing. UI hiding is insufficient.
+
+### Decision
+
+Evaluate consultant resource access in `IConsultantResourceAuthorizationService` using role names, consultant identity, and manager assignment stored procedures. Administrators are allowed. Controllers call this service before returning a resource.
+
+### Consequences
+
+- Object-level rules are unit-testable without SQL Server.
+- Stored procedures remain the data source for identities and assignments.
+- Leave request authorization in later stages should reuse the same evaluator.

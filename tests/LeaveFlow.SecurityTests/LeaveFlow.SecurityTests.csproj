@@ -20,7 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\LeaveFlow.Api\LeaveFlow.Api.csproj" />
+    <ProjectReference Include="..\..\src\LeaveFlow.Api\LeaveFlow.Api.csproj">
+      <Aliases>ApiHost</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\LeaveFlow.Web\LeaveFlow.Web.csproj" />
+    <ProjectReference Include="..\..\src\LeaveFlow.Application\LeaveFlow.Application.csproj" />
+    <ProjectReference Include="..\..\src\LeaveFlow.Infrastructure\LeaveFlow.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

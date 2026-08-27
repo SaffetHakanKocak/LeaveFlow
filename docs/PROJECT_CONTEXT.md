@@ -2,11 +2,11 @@
 
 ## Current Status
 
-LeaveFlow has completed Stage 2: SQL Server + Dapper + Stored Procedure Data Layer.
+LeaveFlow has completed Stage 3: Authentication & Authorization.
 
-The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, and a minimal Dapper-based data access foundation.
+The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, and a deferred API authentication placeholder.
 
-Business workflows, authentication implementation, login UI, consultant CRUD, leave approval, timeline, calendar, reporting, Azure AI, and Docker have not been implemented yet.
+Business workflows, consultant CRUD, leave approval, timeline, calendar, reporting, Azure AI, Docker, and API JWT/token authentication have not been implemented yet.
 
 This repository is intended to become a production-grade, open-source portfolio project for workforce leave and calendar management.
 
@@ -48,35 +48,25 @@ The project is generic and white-label friendly. It must not contain real compan
 - Stage 0: Initial technical planning documentation.
 - Stage 1: .NET solution foundation.
 - Stage 2: SQL Server + Dapper + Stored Procedure Data Layer.
-- Initial technical planning documentation created.
-- Proposed solution architecture documented.
-- Folder structure and project boundaries defined.
-- Initial domain modules identified.
-- Initial database entity/table list drafted.
-- Initial security model summarized.
-- Development roadmap drafted.
-- `LeaveFlow.sln` created with `src` and `tests` projects.
-- API foundation created with ProblemDetails, global exception handling, health checks, development OpenAPI endpoint, HTTPS redirection, and environment-aware middleware.
-- MVC Web foundation created with a basic LeaveFlow shell.
-- Unit, integration, and security smoke tests added.
-- `/db` structure created with tables, indexes, stored procedures, seed, security guidance, and test data guidance.
-- Infrastructure data access foundation created with Dapper and Microsoft.Data.SqlClient.
-- Minimal read repositories added for roles and users using stored procedure calls only.
-- Transaction abstraction and SQL Server transaction factory added for future workflows.
+- Stage 3: Authentication & Authorization.
+- Cookie authentication for LeaveFlow.Web.
+- Password hashing with ASP.NET Core Identity `PasswordHasher`.
+- Configurable lockout and login-attempt auditing.
+- Role-based policies and object-level consultant access checks.
+- CSRF protection for MVC form POSTs, including login and logout.
+- Development-only identity bootstrap from configuration, without committed passwords.
 
 ## Current Stage Scope
 
-Stage 2 intentionally does not include:
+Stage 3 intentionally does not include:
 
-- Business endpoints
-- Consultant, manager, leave, calendar, or reporting screens
-- Business logic
-- Authentication implementation
-- CI/CD implementation
-- Login UI
-- Password hashing implementation
+- Consultant CRUD
+- Leave request or approval workflows
+- Timeline, calendar, or reporting
+- Azure AI
 - Docker
+- API JWT or other token authentication
 
 ## Next Stage
 
-Stage 3 - Authentication & Authorization.
+Stage 4 - Consultant & Manager Management.

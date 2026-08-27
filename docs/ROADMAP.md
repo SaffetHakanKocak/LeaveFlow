@@ -49,7 +49,7 @@ Deliverables:
 
 ## Phase 3 - Identity and Access Foundation
 
-Status: next.
+Status: completed.
 
 Deliverables:
 
@@ -61,6 +61,8 @@ Deliverables:
 - Add security tests for protected resources.
 
 ## Phase 4 - People and Organization
+
+Status: next.
 
 Deliverables:
 

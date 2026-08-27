@@ -1,6 +1,9 @@
+extern alias ApiHost;
+
 using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using ApiProgram = ApiHost::Program;
 
 namespace LeaveFlow.SecurityTests;
 
@@ -9,7 +12,7 @@ public sealed class ProductionErrorResponseTests
     [Fact]
     public async Task UnhandledExceptionResponse_Should_NotLeak_InternalDetails()
     {
-        await using var factory = new WebApplicationFactory<Program>()
+        await using var factory = new WebApplicationFactory<ApiProgram>()
             .WithWebHostBuilder(builder => builder.UseEnvironment("Testing"));
 
         using var client = factory.CreateClient();

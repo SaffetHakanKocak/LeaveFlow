@@ -37,12 +37,12 @@ For a fresh development database:
 6. Review and adapt scripts in `db/005_Security` for the target environment.
 7. Use `db/006_TestData` only for fictional local test data.
 
-No migration framework is used in Stage 2.
+No migration framework is used. New authentication columns for existing databases are added by `db/001_Tables/015_AlterUsersAddAuthenticationColumns.sql`.
 
 ## Tables
 
 - `Roles`: system roles such as Consultant, Manager, and Administrator.
-- `Users`: identity account profile fields that are safe before authentication implementation.
+- `Users`: identity account including email, password hash, active flag, failed-login count, lockout end, and last login timestamp.
 - `UserRoles`: many-to-many assignment between users and roles.
 - `Consultants`: consultant profile root linked to a user.
 - `Managers`: manager profile root linked to a user.
@@ -54,9 +54,9 @@ No migration framework is used in Stage 2.
 - `OfficialHolidayDefinitions`: official holiday grouping by country and optional region.
 - `OfficialHolidayDays`: official holiday dates.
 - `AuditLogs`: security and business audit trail.
-- `LoginAttempts`: future authentication throttling and audit support.
+- `LoginAttempts`: authentication attempt audit used for brute-force review.
 
-`RefreshTokens` was intentionally not added in Stage 2 because the authentication strategy is not decided yet.
+`RefreshTokens` is still not added. Stage 3 uses cookie sessions for the web host and does not issue API tokens.
 
 ## Relationship Summary
 
@@ -102,6 +102,17 @@ Current stored procedures:
 
 - `dbo.usp_Roles_GetAll`
 - `dbo.usp_Users_GetById`
+- `dbo.usp_Users_GetByNormalizedEmail`
+- `dbo.usp_Users_UpdateLoginSuccess`
+- `dbo.usp_Users_RecordFailedLogin`
+- `dbo.usp_Users_UpdatePasswordHash`
+- `dbo.usp_UserRoles_GetByUserId`
+- `dbo.usp_LoginAttempts_Insert`
+- `dbo.usp_AuditLogs_Insert`
+- `dbo.usp_Consultants_GetIdByUserId`
+- `dbo.usp_Managers_GetIdByUserId`
+- `dbo.usp_ManagerConsultants_Exists`
+- Development-only bootstrap procedures: `dbo.usp_Users_Upsert`, `dbo.usp_UserRoles_Ensure`, `dbo.usp_Consultants_EnsureForUser`, `dbo.usp_Managers_EnsureForUser`, `dbo.usp_ManagerConsultants_Ensure`
 
 Application code must refer to stored procedure names through centralized Infrastructure constants and must not accept procedure names from user input.
 
@@ -114,6 +125,14 @@ Application code must refer to stored procedure names through centralized Infras
 - Administrator
 
 No real users, real emails, real company data, or production data are seeded.
+
+Development demo users are not stored as plaintext passwords in `/db`. When `LeaveFlow:Development:BootstrapIdentity` is true in Development, the host upserts fictional local users (`consultant@leaveflow.local`, `manager@leaveflow.local`, `administrator@leaveflow.local`) using hashes created at runtime from user secrets or environment variables:
+
+```powershell
+$env:LeaveFlow__Development__Passwords__Consultant="..."
+$env:LeaveFlow__Development__Passwords__Manager="..."
+$env:LeaveFlow__Development__Passwords__Administrator="..."
+```
 
 ## Configuration
 
@@ -148,4 +167,5 @@ Production database access should use least privilege:
 - application user receives execute permission on approved stored procedures
 - application user should not receive broad table-level read/write permissions
 - production usernames and passwords are managed outside source control
-- dynamic SQL is not used in Stage 2
+- dynamic SQL is not used
+- development bootstrap procedures are not granted to the production application user

@@ -184,3 +184,32 @@ Stage 2 - SQL Server + Dapper + Stored Procedure Data Layer.
 ### Next Step
 
 Stage 3 - Authentication & Authorization.
+
+## 2026-08-27 - Stage 3 Authentication & Authorization
+
+### Changes Made
+
+- Added authentication columns to `Users` and authentication stored procedures.
+- Implemented cookie authentication, login/logout, lockout, and CSRF-protected MVC forms.
+- Hashed passwords with ASP.NET Core Identity `PasswordHasher`.
+- Added role policies and object-level consultant authorization.
+- Added a deferred API authentication handler without JWT.
+- Added development-only identity bootstrap from configuration.
+- Added unit and security tests for login, lockout, cookies, CSRF, IDOR, and secret leakage.
+
+### Test Results
+
+- `dotnet restore`: succeeded.
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors after test/compile fixes.
+- `dotnet test --no-build`: succeeded. Total tests: 38 passed, 0 failed, 0 skipped (Unit 16, Security 20, Integration 2).
+
+### Security Review
+
+- No Entity Framework, DbContext, or raw SQL in application C# code.
+- No plaintext production password, JWT secret, or connection string committed.
+- Login errors stay generic. Cookies are HttpOnly and SameSite=Lax.
+- Object-level authorization is enforced in application services.
+
+### Next Step
+
+Stage 4 - Consultant & Manager Management.

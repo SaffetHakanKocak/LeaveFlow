@@ -40,7 +40,7 @@ The Stage 1 solution file is `LeaveFlow.sln`.
 
 Contains core business concepts and rules that do not depend on infrastructure, ASP.NET Core, Dapper, SQL Server, or UI frameworks.
 
-Current status: project exists and has no project references.
+Current status: contains identity role name constants. The project has no project references.
 
 Planned contents:
 
@@ -65,7 +65,7 @@ Planned contents:
 
 Application code may depend on Domain abstractions but must not know SQL details.
 
-Current status: references Domain and contains dependency injection registration plus minimal data access contracts for connection creation, transactions, and role/user read repositories.
+Current status: references Domain and contains dependency injection registration, data access contracts for connections, transactions, role/user reads, authentication/authorization services, login settings, and object-level consultant access evaluation.
 
 ### LeaveFlow.Infrastructure
 
@@ -83,7 +83,7 @@ Planned contents:
 
 Infrastructure may reference Application and Domain contracts.
 
-Current status: references Application and Domain. Contains SQL Server connection factory, transaction factory, and minimal Dapper repository implementations. No Entity Framework, DbContext, generic repository, or business workflow implementation exists.
+Current status: references Application and Domain. Contains SQL Server connection factory, transaction factory, Dapper stored-procedure repositories, ASP.NET Identity password hashing, audit/login-attempt persistence, and development-only identity bootstrap. No Entity Framework, DbContext, generic repository, JWT, or business workflow implementation exists.
 
 ### LeaveFlow.Api
 
@@ -100,7 +100,7 @@ Planned contents:
 
 API must enforce authorization server-side for every sensitive resource.
 
-Current status: Web API host exists with controllers enabled, ProblemDetails, centralized exception handling, health checks, development OpenAPI, HTTPS redirection, and no business endpoints.
+Current status: Web API host exists with controllers enabled, ProblemDetails, centralized exception handling, health checks, development OpenAPI, HTTPS redirection, authorization policies, and a deferred authentication handler that challenges unauthenticated callers with 401. JWT is not implemented. A protected `/api/secure/ping` endpoint exists for authorization tests.
 
 ### LeaveFlow.Web
 
@@ -116,7 +116,7 @@ Planned contents:
 
 The web layer must not be treated as the source of authorization truth.
 
-Current status: MVC host exists with Home and Error shell only.
+Current status: MVC host exists with Home, login/logout, access denied, cookie authentication, antiforgery, and a protected consultant-resource probe endpoint used for object-level authorization tests. Consultant CRUD and leave screens are not implemented.
 
 ## Dependency Direction
 
@@ -167,8 +167,21 @@ Current data access contracts:
 - `IDataTransactionFactory`
 - `IRoleReadRepository`
 - `IUserReadRepository`
+- `IUserAuthRepository`
+- `IUserRoleRepository`
+- `IConsultantIdentityRepository`
+- `IManagerIdentityRepository`
+- `ILoginAttemptRepository`
+- `IAuditLogRepository`
 
 Current repository implementations call stored procedures through Dapper `CommandDefinition` with `CommandType.StoredProcedure`. Stored procedure names are centralized in Infrastructure and user input is not accepted as a procedure name.
+
+Authentication and authorization:
+
+- LeaveFlow.Web uses cookie authentication (`LeaveFlow.Cookies`).
+- LeaveFlow.Api registers a deferred authentication scheme so `[Authorize]` returns 401 without introducing JWT in this stage.
+- `ILoginService` authenticates against stored password hashes, records lockout, and writes login/audit events.
+- `IConsultantResourceAuthorizationService` enforces object-level consultant access in application code.
 
 ## Planned Domain Modules
 

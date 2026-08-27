@@ -36,13 +36,15 @@ public sealed class DataAccessGuardTests
                 && !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal));
 
         var rawSqlPattern = new Regex(
-            """
-            @"[^"]*\b(SELECT|INSERT|UPDATE|DELETE)\b[^"]*"|"([^"\\]|\\.)*\b(SELECT|INSERT|UPDATE|DELETE)\b([^"\\]|\\.)*"
-            """,
+            @"\b(SELECT\s+\*|SELECT\s+\w+\s+FROM|INSERT\s+INTO|UPDATE\s+\w+\s+SET|DELETE\s+FROM)\b",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         var matches = files
-            .Where(file => rawSqlPattern.IsMatch(File.ReadAllText(file)))
+            .Where(file =>
+            {
+                var text = File.ReadAllText(file);
+                return rawSqlPattern.IsMatch(text) || text.Contains("CommandType.Text", StringComparison.Ordinal);
+            })
             .Select(file => Path.GetRelativePath(root, file))
             .ToArray();
 

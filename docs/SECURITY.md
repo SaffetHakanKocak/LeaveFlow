@@ -46,17 +46,21 @@ Security is a core design requirement for LeaveFlow, not a later enhancement. Th
 
 ### Authentication
 
-- Secure password hashing with a modern password hasher.
-- Lockout or throttling for repeated failed login attempts.
-- Secure session handling.
-- No plaintext passwords in logs, database scripts, seed data, or configuration.
+- LeaveFlow.Web uses ASP.NET Core cookie authentication.
+- LeaveFlow.Api uses a deferred authentication scheme so protected endpoints return 401. JWT is not implemented in Stage 3.
+- Passwords are hashed with ASP.NET Core Identity `PasswordHasher<object>` (PBKDF2 Identity V3). Custom hash algorithms are not used.
+- Failed logins increment a stored counter. After `LeaveFlow:Authentication:MaxFailedAccessAttempts` failures (default 5), the account is locked for `LeaveFlow:Authentication:LockoutDurationMinutes` (default 15).
+- Login failures return a generic message: `Invalid email or password.`
+- No plaintext passwords in logs, database scripts, seed data, or committed configuration.
 
 ### Authorization
 
-- Policy-based authorization in API and Web layers.
-- Object-level authorization in application services and stored procedures where appropriate.
-- Backend authorization for every sensitive resource.
-- UI visibility is treated only as usability, not security.
+- Role policies: Consultant, Manager, Administrator.
+- Object-level consultant access is evaluated in `IConsultantResourceAuthorizationService`:
+  - Administrator: any consultant resource
+  - Consultant: only own consultant id
+  - Manager: only assigned consultants
+- Backend authorization is required. Hiding UI controls is not a security control.
 
 ### Data Access
 
@@ -71,7 +75,9 @@ Security is a core design requirement for LeaveFlow, not a later enhancement. Th
 - CSRF protection for MVC form submissions.
 - Output encoding in Razor views.
 - Security headers.
-- Secure, HttpOnly, SameSite cookies.
+- Secure, HttpOnly, SameSite=Lax cookies named `.LeaveFlow.Auth`.
+- Production cookie `SecurePolicy` is Always. Development/Testing uses SameAsRequest so local HTTP test hosts can authenticate.
+- Sliding expiration is enabled. Ticket lifetime is `LeaveFlow:Authentication:Cookie:ExpireTimeSpanMinutes` (default 480). This keeps an active workday session alive without a persistent remember-me flag.
 - Model validation at request boundaries.
 
 ### API Security
@@ -128,12 +134,20 @@ Security tests should cover:
 - No real connection string, username, password, API key, real email, real user, or real company data was committed.
 - `/db/005_Security` documents least-privilege execute-only database access without hard-coded production credentials.
 - Role seed data is generic and safe for an open-source repository.
-- Real authentication, password hashing, authorization policies, token/session design, and login protection remain intentionally deferred to Stage 3.
+- Real authentication, password hashing, authorization policies, cookie sessions, lockout, CSRF on auth forms, and login protection were implemented in Stage 3.
+
+## Stage 3 Security Review
+
+- LeaveFlow.Web authenticates with an HttpOnly cookie. LeaveFlow.Api does not issue JWT.
+- Passwords are stored only as Identity V3 hashes. Login and logout POSTs require antiforgery tokens.
+- LoginAttempts and AuditLogs record success, failure, lockout, and logout without password, cookie, or connection-string values.
+- Object-level authorization is enforced in application services, not by hiding buttons.
+- Production cookie flags and generic login errors are covered by security tests.
+- Development identity bootstrap hashes passwords at runtime and does not commit credentials.
 
 ## Open Security Decisions
 
-- Exact authentication mechanism for the first implementation phase.
-- Session-based web auth versus token-based API auth strategy.
-- Password policy details.
-- Rate limit thresholds.
+- API token/JWT design remains deferred until an API client stage.
+- Password complexity policy beyond length/required fields.
+- Rate limit thresholds beyond account lockout.
 - Audit log retention policy.
