@@ -17,6 +17,8 @@ Deliverables:
 
 ## Phase 1 - Solution Skeleton
 
+Status: completed.
+
 Deliverables:
 
 - Create .NET solution.
@@ -33,6 +35,8 @@ No business workflows should be implemented in this phase unless explicitly requ
 
 ## Phase 2 - Database Foundation
 
+Status: completed.
+
 Deliverables:
 
 - Create `/db` structure.
@@ -44,6 +48,8 @@ Deliverables:
 - Add database security script for least-privilege execution model.
 
 ## Phase 3 - Identity and Access Foundation
+
+Status: next.
 
 Deliverables:
 

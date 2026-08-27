@@ -6,7 +6,7 @@ LeaveFlow will use a maintainable, testable, loosely coupled architecture with c
 
 The architecture should stay practical. Abstractions are added only when they protect a meaningful boundary or reduce real duplication.
 
-## Proposed Solution Structure
+## Current Solution Structure
 
 ```text
 src/
@@ -32,11 +32,15 @@ db/
 docs/
 ```
 
+The Stage 1 solution file is `LeaveFlow.sln`.
+
 ## Project Responsibilities
 
 ### LeaveFlow.Domain
 
 Contains core business concepts and rules that do not depend on infrastructure, ASP.NET Core, Dapper, SQL Server, or UI frameworks.
+
+Current status: project exists and has no project references.
 
 Planned contents:
 
@@ -61,6 +65,8 @@ Planned contents:
 
 Application code may depend on Domain abstractions but must not know SQL details.
 
+Current status: references Domain and contains dependency injection registration plus minimal data access contracts for connection creation, transactions, and role/user read repositories.
+
 ### LeaveFlow.Infrastructure
 
 Contains integrations with external systems and persistence implementation.
@@ -77,6 +83,8 @@ Planned contents:
 
 Infrastructure may reference Application and Domain contracts.
 
+Current status: references Application and Domain. Contains SQL Server connection factory, transaction factory, and minimal Dapper repository implementations. No Entity Framework, DbContext, generic repository, or business workflow implementation exists.
+
 ### LeaveFlow.Api
 
 Exposes HTTP APIs for programmatic access.
@@ -92,6 +100,8 @@ Planned contents:
 
 API must enforce authorization server-side for every sensitive resource.
 
+Current status: Web API host exists with controllers enabled, ProblemDetails, centralized exception handling, health checks, development OpenAPI, HTTPS redirection, and no business endpoints.
+
 ### LeaveFlow.Web
 
 Provides ASP.NET Core MVC web UI.
@@ -105,6 +115,8 @@ Planned contents:
 - UI composition for consultants, managers, and administrators
 
 The web layer must not be treated as the source of authorization truth.
+
+Current status: MVC host exists with Home and Error shell only.
 
 ## Dependency Direction
 
@@ -122,6 +134,16 @@ LeaveFlow.Infrastructure ───► LeaveFlow.Domain
 
 Composition root projects wire dependencies through dependency injection.
 
+Stage 1 verified project references:
+
+- Domain: no project references
+- Application: Domain
+- Infrastructure: Application, Domain
+- Api: Application, Infrastructure
+- Web: Application, Infrastructure
+
+Stage 2 kept the same production project dependency direction. Test projects may reference additional projects only to validate boundaries and infrastructure behavior.
+
 ## Cross-Cutting Concerns
 
 - Configuration through typed options
@@ -133,6 +155,20 @@ Composition root projects wire dependencies through dependency injection.
 - Security headers
 - Secure cookie and authentication settings
 - Database access through stored procedures only
+
+## Data Access
+
+Application code depends on interfaces in `LeaveFlow.Application`. Infrastructure implements those interfaces with Dapper and `Microsoft.Data.SqlClient`.
+
+Current data access contracts:
+
+- `IDbConnectionFactory`
+- `IDataTransaction`
+- `IDataTransactionFactory`
+- `IRoleReadRepository`
+- `IUserReadRepository`
+
+Current repository implementations call stored procedures through Dapper `CommandDefinition` with `CommandType.StoredProcedure`. Stored procedure names are centralized in Infrastructure and user input is not accepted as a procedure name.
 
 ## Planned Domain Modules
 

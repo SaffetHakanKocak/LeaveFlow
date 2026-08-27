@@ -98,3 +98,82 @@ Create planning documentation and stop before generating application code.
 
 - The repository now has a durable context system for future phases.
 - No build or test commands are meaningful until solution files exist.
+
+## ADR-0006 - Use Repository-Level Build Defaults
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+All projects should share consistent .NET compiler defaults without repeating decisions manually in every future project.
+
+### Decision
+
+Add `Directory.Build.props` with `net10.0`, nullable reference types, implicit usings, deterministic builds, and CI reproducibility support. `TreatWarningsAsErrors` remains disabled for local Debug builds at this stage, while warnings are still reviewed and fixed.
+
+### Consequences
+
+- Future projects inherit the same baseline.
+- CI can opt into reproducible build metadata.
+- Warning policy can be tightened later once the foundation stabilizes.
+
+## ADR-0007 - Defer Dapper Until Database Foundation
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+Stage 1 creates the solution foundation only. Database schema, stored procedures, and repositories are out of scope.
+
+### Decision
+
+Do not add Dapper in Stage 1. Add it in Stage 2 when SQL Server stored procedure data access is implemented.
+
+### Consequences
+
+- Infrastructure remains minimal.
+- No unused data access package is introduced.
+- The stored procedure-only rule remains documented and ready for Stage 2.
+
+## ADR-0008 - Use Stored Procedure Specific Repositories
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+The data layer needs to prove SQL Server + Dapper access without creating broad CRUD abstractions or leaking SQL into Application.
+
+### Decision
+
+Add minimal role and user read repository contracts and implementations. Repositories call centralized stored procedure names with `CommandType.StoredProcedure`.
+
+### Consequences
+
+- Data access remains use-case oriented.
+- No generic repository abstraction is introduced.
+- Future repositories should follow the same stored procedure-only pattern.
+
+## ADR-0009 - Defer Refresh Tokens Until Authentication Design
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+Stage 2 includes database foundation, but the exact authentication model is not yet selected.
+
+### Decision
+
+Add `LoginAttempts` for future brute force protection, but do not add `RefreshTokens` until Stage 3 defines token/session strategy.
+
+### Consequences
+
+- The schema avoids a premature token model.
+- Authentication storage can be designed around the chosen auth mechanism.

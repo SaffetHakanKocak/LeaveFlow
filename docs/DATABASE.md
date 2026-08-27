@@ -2,13 +2,18 @@
 
 ## Database Principles
 
-LeaveFlow uses Microsoft SQL Server as the primary relational database.
+LeaveFlow uses Microsoft SQL Server. Application code must access the database only through stored procedures using Dapper.
 
-Application code must access the database only through stored procedures using Dapper. Raw SQL statements in application code are not allowed.
+Rules:
 
-SQL objects are kept in the repository under `/db`.
+- No Entity Framework, EF Core, DbContext, or ORM-style database access.
+- No raw SQL statements in Application or Infrastructure C# code.
+- Dapper is used only to execute stored procedures and map results.
+- Stored procedure calls must use `CommandType.StoredProcedure`.
+- SQL scripts live under `/db`.
+- Real connection strings and secrets must not be committed.
 
-## Proposed SQL Folder Structure
+## Folder Structure
 
 ```text
 db/
@@ -20,130 +25,127 @@ db/
   006_TestData/
 ```
 
-Scripts should be ordered and either repeatable or accompanied by clear installation instructions.
+## Script Execution Order
 
-## Initial Entity/Table List
+For a fresh development database:
 
-### Identity and Access
+1. Create the SQL Server database outside this repository.
+2. Run scripts in `db/001_Tables` in numeric order.
+3. Run scripts in `db/002_Indexes` in numeric order.
+4. Run scripts in `db/003_StoredProcedures` in numeric order.
+5. Run scripts in `db/004_Seed` in numeric order.
+6. Review and adapt scripts in `db/005_Security` for the target environment.
+7. Use `db/006_TestData` only for fictional local test data.
 
-- Users
-- Roles
-- UserRoles
-- UserLoginAttempts
-- UserSessions
-- PasswordResetTokens
+No migration framework is used in Stage 2.
 
-### People and Organization
+## Tables
 
-- Employees
-- Consultants
-- Managers
-- Departments
-- Teams
-- TeamMembers
-- ManagerAssignments
+- `Roles`: system roles such as Consultant, Manager, and Administrator.
+- `Users`: identity account profile fields that are safe before authentication implementation.
+- `UserRoles`: many-to-many assignment between users and roles.
+- `Consultants`: consultant profile root linked to a user.
+- `Managers`: manager profile root linked to a user.
+- `ManagerConsultants`: manager-to-consultant assignment scope.
+- `LeaveRequests`: leave request header data for later workflow implementation.
+- `ConsultantLeaveDays`: per-day leave expansion for availability and conflict checks.
+- `HolidayDefinitions`: organization holiday grouping.
+- `HolidayDays`: organization holiday dates.
+- `OfficialHolidayDefinitions`: official holiday grouping by country and optional region.
+- `OfficialHolidayDays`: official holiday dates.
+- `AuditLogs`: security and business audit trail.
+- `LoginAttempts`: future authentication throttling and audit support.
 
-### Leave Management
+`RefreshTokens` was intentionally not added in Stage 2 because the authentication strategy is not decided yet.
 
-- LeaveTypes
-- LeaveBalances
-- LeaveRequests
-- LeaveRequestDays
-- LeaveRequestStatusHistory
-- LeavePolicies
-- LeavePolicyRules
+## Relationship Summary
 
-### Approval Workflow
+- `UserRoles.UserId` references `Users.Id`.
+- `UserRoles.RoleId` references `Roles.Id`.
+- `Consultants.UserId` references `Users.Id` and is unique.
+- `Managers.UserId` references `Users.Id` and is unique.
+- `ManagerConsultants.ManagerId` references `Managers.Id`.
+- `ManagerConsultants.ConsultantId` references `Consultants.Id`.
+- `LeaveRequests.ConsultantId` references `Consultants.Id`.
+- `ConsultantLeaveDays.LeaveRequestId` references `LeaveRequests.Id`.
+- `ConsultantLeaveDays.ConsultantId` references `Consultants.Id`.
+- `HolidayDays.HolidayDefinitionId` references `HolidayDefinitions.Id`.
+- `OfficialHolidayDays.OfficialHolidayDefinitionId` references `OfficialHolidayDefinitions.Id`.
+- `AuditLogs.ActorUserId` references `Users.Id`.
+- `LoginAttempts.UserId` references `Users.Id`.
 
-- ApprovalSteps
-- ApprovalAssignments
-- ApprovalDecisions
+## Indexing Approach
 
-### Calendar and Holidays
+Unique constraints protect natural uniqueness for role names, normalized email, consultant user id, manager user id, and holiday definition scopes.
 
-- OrganizationCalendars
-- CalendarEvents
-- PublicHolidays
-- CompanyHolidays
-- WorkingDayRules
-- RegionalCalendars
+Indexes were added for likely lookup paths:
 
-### Availability and Timeline
+- role-to-user joins
+- consultant manager assignment lookup
+- leave requests by consultant, status, and date range
+- leave days by consultant and date
+- holiday days by date
+- audit logs by actor, target, and timestamp
+- login attempts by normalized email and timestamp
 
-- AvailabilitySnapshots
-- TeamAvailabilitySummaries
-- LeaveConflictChecks
+Indexes should be revisited when real stored procedure query patterns are implemented.
 
-### Reporting
+## Stored Procedures
 
-- ReportDefinitions
-- ReportRuns
-- ReportExports
-
-### Audit and Security
-
-- AuditLogs
-- SecurityEvents
-- DataAccessLogs
-
-### System Configuration
-
-- SystemSettings
-- FeatureFlags
-- WhiteLabelSettings
-
-## Core Relationships
-
-- A user can have one or more roles.
-- An employee profile belongs to a user account.
-- Consultants and managers are employee role specializations from the business perspective.
-- A manager can be assigned to many consultants through manager assignments or team membership.
-- A leave request belongs to one consultant.
-- A leave request has one leave type and status history.
-- Approval decisions are linked to leave requests and approvers.
-- Holidays and calendar events belong to organization or regional calendars.
-- Audit logs reference the actor, action, target resource, and request metadata.
-
-## Stored Procedure Naming
-
-Stored procedures should use a consistent naming pattern:
+Naming convention:
 
 ```text
 dbo.usp_<Module>_<Action>
 ```
 
-Examples:
+Current stored procedures:
 
-```text
-dbo.usp_LeaveRequests_Create
-dbo.usp_LeaveRequests_GetByIdForActor
-dbo.usp_LeaveRequests_GetForConsultant
-dbo.usp_LeaveRequests_GetForManagerTeam
-dbo.usp_LeaveRequests_Approve
-dbo.usp_LeaveRequests_Reject
-dbo.usp_PublicHolidays_GetByCalendar
-dbo.usp_AuditLogs_Create
+- `dbo.usp_Roles_GetAll`
+- `dbo.usp_Users_GetById`
+
+Application code must refer to stored procedure names through centralized Infrastructure constants and must not accept procedure names from user input.
+
+## Seed Data
+
+`db/004_Seed/001_SeedRoles.sql` seeds only generic roles:
+
+- Consultant
+- Manager
+- Administrator
+
+No real users, real emails, real company data, or production data are seeded.
+
+## Configuration
+
+Local development should provide the connection string through user secrets or environment variables:
+
+```powershell
+$env:ConnectionStrings__DefaultConnection="Server=localhost;Database=LeaveFlow;Integrated Security=true;TrustServerCertificate=true"
 ```
 
-## Security Rules For Data Access
+The committed `appsettings.json` files contain only the safe connection string name:
 
-- Stored procedures must support object-level authorization where practical.
-- Sensitive read procedures should accept the actor user id and role context where needed.
-- Procedures must not expose data outside the caller's authorization scope.
-- Application code must use parameterized stored procedure calls.
-- Database permissions should allow the application account to execute approved procedures, not directly read/write all tables.
+```json
+{
+  "LeaveFlow": {
+    "Database": {
+      "ConnectionStringName": "DefaultConnection"
+    }
+  }
+}
+```
 
-## Initial Indexing Considerations
+## Transaction Approach
 
-Likely indexes:
+`IDataTransactionFactory` prepares a SQL Server transaction boundary for future multi-step workflows such as leave approval. Stage 2 does not implement business transactions.
 
-- Users by email or normalized username
-- UserRoles by user id and role id
-- Employees by user id
-- ManagerAssignments by manager id and consultant id
-- LeaveRequests by consultant id, status, start date, and end date
-- LeaveRequestStatusHistory by leave request id and changed date
-- PublicHolidays by calendar id and date
-- AuditLogs by actor id, target resource, and created date
+Future transactional repository methods should receive or compose transaction-aware execution explicitly and continue using stored procedures only.
 
-Final indexes should be based on actual query patterns from stored procedure design.
+## Security Model
+
+Production database access should use least privilege:
+
+- application user receives execute permission on approved stored procedures
+- application user should not receive broad table-level read/write permissions
+- production usernames and passwords are managed outside source control
+- dynamic SQL is not used in Stage 2

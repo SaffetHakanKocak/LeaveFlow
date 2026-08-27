@@ -2,7 +2,11 @@
 
 ## Current Status
 
-LeaveFlow is at the initial planning stage. No application modules, business logic, database objects, or UI screens have been implemented yet.
+LeaveFlow has completed Stage 2: SQL Server + Dapper + Stored Procedure Data Layer.
+
+The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, and a minimal Dapper-based data access foundation.
+
+Business workflows, authentication implementation, login UI, consultant CRUD, leave approval, timeline, calendar, reporting, Azure AI, and Docker have not been implemented yet.
 
 This repository is intended to become a production-grade, open-source portfolio project for workforce leave and calendar management.
 
@@ -41,6 +45,9 @@ The project is generic and white-label friendly. It must not contain real compan
 
 ## Completed Stages
 
+- Stage 0: Initial technical planning documentation.
+- Stage 1: .NET solution foundation.
+- Stage 2: SQL Server + Dapper + Stored Procedure Data Layer.
 - Initial technical planning documentation created.
 - Proposed solution architecture documented.
 - Folder structure and project boundaries defined.
@@ -48,19 +55,28 @@ The project is generic and white-label friendly. It must not contain real compan
 - Initial database entity/table list drafted.
 - Initial security model summarized.
 - Development roadmap drafted.
+- `LeaveFlow.sln` created with `src` and `tests` projects.
+- API foundation created with ProblemDetails, global exception handling, health checks, development OpenAPI endpoint, HTTPS redirection, and environment-aware middleware.
+- MVC Web foundation created with a basic LeaveFlow shell.
+- Unit, integration, and security smoke tests added.
+- `/db` structure created with tables, indexes, stored procedures, seed, security guidance, and test data guidance.
+- Infrastructure data access foundation created with Dapper and Microsoft.Data.SqlClient.
+- Minimal read repositories added for roles and users using stored procedure calls only.
+- Transaction abstraction and SQL Server transaction factory added for future workflows.
 
 ## Current Stage Scope
 
-This stage intentionally does not include:
+Stage 2 intentionally does not include:
 
-- .NET solution creation
-- API endpoints
-- MVC screens
+- Business endpoints
+- Consultant, manager, leave, calendar, or reporting screens
 - Business logic
-- Database scripts
 - Authentication implementation
 - CI/CD implementation
+- Login UI
+- Password hashing implementation
+- Docker
 
 ## Next Stage
 
-Recommended next stage: create the solution skeleton, project files, test projects, shared build configuration, and placeholder folder structure without implementing business workflows.
+Stage 3 - Authentication & Authorization.

@@ -108,6 +108,28 @@ Security tests should cover:
 - Stored procedure callers use parameters.
 - Error responses do not expose internals.
 
+## Stage 1 Security Review
+
+- No secrets, connection strings, API keys, real users, or real company data were added.
+- CORS was not enabled because there is no current cross-origin requirement.
+- OpenAPI is mapped only in Development.
+- API uses centralized exception handling and ProblemDetails.
+- Production-style exception responses are tested to avoid leaking exception type, stack details, or sensitive exception messages.
+- API and Web apply basic security headers: `X-Content-Type-Options`, `X-Frame-Options`, and `Referrer-Policy`.
+- HTTPS redirection is enabled in API and Web hosts.
+- Real authentication and authorization are intentionally not implemented until a later explicit stage.
+
+## Stage 2 Security Review
+
+- Dapper and `Microsoft.Data.SqlClient` were added without Entity Framework or DbContext.
+- Application and Infrastructure C# code contain no raw SQL command strings.
+- Dapper calls use `CommandType.StoredProcedure`.
+- Stored procedure names are centralized and not built from user input.
+- No real connection string, username, password, API key, real email, real user, or real company data was committed.
+- `/db/005_Security` documents least-privilege execute-only database access without hard-coded production credentials.
+- Role seed data is generic and safe for an open-source repository.
+- Real authentication, password hashing, authorization policies, token/session design, and login protection remain intentionally deferred to Stage 3.
+
 ## Open Security Decisions
 
 - Exact authentication mechanism for the first implementation phase.
