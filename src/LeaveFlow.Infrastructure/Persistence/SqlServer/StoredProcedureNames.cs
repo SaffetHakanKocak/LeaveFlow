@@ -43,4 +43,8 @@ internal static class StoredProcedureNames
     internal const string OfficialHolidayDefinitionsCreate = "dbo.usp_OfficialHolidayDefinitions_Create";
     internal const string OfficialHolidayDefinitionsUpdate = "dbo.usp_OfficialHolidayDefinitions_Update";
     internal const string OfficialHolidayDefinitionsDelete = "dbo.usp_OfficialHolidayDefinitions_Delete";
+    internal const string LeaveRequestsExistsOverlap = "dbo.usp_LeaveRequests_ExistsOverlap";
+    internal const string LeaveRequestsCreate = "dbo.usp_LeaveRequests_Create";
+    internal const string LeaveRequestsGetMine = "dbo.usp_LeaveRequests_GetMine";
+    internal const string LeaveRequestsGetById = "dbo.usp_LeaveRequests_GetById";
 }

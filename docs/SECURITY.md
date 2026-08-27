@@ -64,6 +64,7 @@ Security is a core design requirement for LeaveFlow, not a later enhancement. Th
 - Administrator-only policies protect consultant and manager management screens and state-changing actions.
 - Consultant detail pages reuse object-level authorization so consultants can view only their own profile and managers can view only assigned consultants.
 - Administrator-only policies protect organization and official holiday management screens and state-changing actions.
+- Consultant leave request screens are consultant-only and resolve the consultant profile from the authenticated user id.
 
 ### Data Access
 
@@ -164,6 +165,16 @@ Security tests should cover:
 - Holiday input uses explicit view models and application input models to reduce overposting risk.
 - Holiday data access continues to use Dapper stored procedure calls only, with explicit transactions around write operations.
 - Least-privilege database guidance now includes the approved Stage 5 holiday procedures.
+
+## Stage 6 Security Review
+
+- Consultant leave request create/list/detail screens require the Consultant role.
+- `ConsultantId`, `Status`, `CreatedAt`, `ReviewedAt`, and `ReviewedBy` are not accepted from form models.
+- The application service resolves the consultant profile from the authenticated user id and rejects inactive profiles.
+- Detail and list stored procedures are scoped by consultant id to reduce IDOR risk.
+- Leave request create POST actions require antiforgery tokens.
+- Leave request create writes only to `LeaveRequests`; `ConsultantLeaveDays` remains untouched until approval/conflict stages.
+- Least-privilege database guidance now includes the approved Stage 6 leave request procedures.
 
 ## Open Security Decisions
 

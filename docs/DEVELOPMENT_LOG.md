@@ -273,3 +273,33 @@ Stage 5 - Holiday Management.
 ### Next Step
 
 Stage 6 - Consultant Leave Request.
+
+## 2026-08-27 - Stage 6 Consultant Leave Request
+
+### Changes Made
+
+- Added leave request status constants in Domain.
+- Added consultant-scoped leave request application models, validation, service, and repository contract.
+- Added Dapper stored-procedure repository implementation for create, mine list, detail, and overlap checks.
+- Added SQL scripts for leave request review columns, leave request indexes, and stored procedures.
+- Added Consultant-only MVC screens for My Leave Requests, New Leave Request, and Leave Request Detail.
+- Ensured `ConsultantId` is resolved from the authenticated user id, not trusted from form data.
+- Preserved Stage 5 holiday management and Stage 4 people management behavior.
+- Did not implement manager approval, approve/reject, `ConsultantLeaveDays` generation, conflict detection, timeline, calendar, reporting, Azure AI, or Docker.
+
+### Test Results
+
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors during implementation.
+- `dotnet test --no-build`: succeeded. Total tests: 96 passed, 0 failed, 0 skipped (Unit 30, Integration 21, Security 45).
+
+### Security Review
+
+- No Entity Framework, DbContext, `CommandType.Text`, or raw SQL in application C# code.
+- Leave request screens are Consultant-only.
+- MVC state-changing leave request actions require antiforgery tokens.
+- Create actions use explicit view models and application input models instead of binding persistence models.
+- Database access remains stored-procedure-only through Dapper repositories.
+
+### Next Step
+
+Stage 7 - Leave Approval & Conflict Detection.

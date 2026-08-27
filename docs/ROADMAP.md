@@ -86,7 +86,7 @@ Deliverables:
 
 ## Phase 6 - Consultant Leave Request
 
-Status: next.
+Status: completed.
 
 Deliverables:
 
@@ -96,7 +96,9 @@ Deliverables:
 - Request validation.
 - Consultant scoped access.
 
-## Phase 7 - Leave Approval Workflow
+## Phase 7 - Leave Approval & Conflict Detection
+
+Status: next.
 
 Deliverables:
 

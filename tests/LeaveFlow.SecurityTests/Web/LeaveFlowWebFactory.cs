@@ -1,6 +1,7 @@
 using LeaveFlow.Application.Abstractions.Identity;
 using LeaveFlow.Application.Abstractions.Holidays;
 using LeaveFlow.Application.Abstractions.People;
+using LeaveFlow.Application.Abstractions.LeaveRequests;
 using LeaveFlow.Application.Identity;
 using LeaveFlow.Domain.Identity;
 using LeaveFlow.Infrastructure.Identity;
@@ -16,12 +17,14 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
 {
     public InMemoryIdentityStore Store { get; }
     public InMemoryHolidayStore HolidayStore { get; } = new();
+    public InMemoryLeaveRequestStore LeaveRequestStore { get; } = new();
     public AspNetPasswordHashingService Hasher { get; } = new();
 
     public const string Password = "Test.Passw0rd!";
 
     public Guid ConsultantOneId { get; } = Guid.NewGuid();
     public Guid ConsultantTwoId { get; } = Guid.NewGuid();
+    public Guid InactiveProfileConsultantId { get; } = Guid.NewGuid();
     public Guid ManagerOneId { get; } = Guid.NewGuid();
     public Guid ManagerTwoId { get; } = Guid.NewGuid();
 
@@ -37,6 +40,7 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
     public string ManagerTwoEmail { get; } = "manager.two@leaveflow.test";
     public string AdministratorEmail { get; } = "administrator@leaveflow.test";
     public string InactiveEmail { get; } = "inactive@leaveflow.test";
+    public string InactiveProfileEmail { get; } = "inactive.profile@leaveflow.test";
     public string LockedEmail { get; } = "locked@leaveflow.test";
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -56,6 +60,7 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
             services.AddSingleton<IManagerConsultantAssignmentRepository>(Store);
             services.AddSingleton<IOrganizationHolidayRepository>(HolidayStore);
             services.AddSingleton<IOfficialHolidayRepository>(HolidayStore);
+            services.AddSingleton<ILeaveRequestRepository>(LeaveRequestStore);
         });
     }
 
@@ -67,10 +72,13 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
         var managerTwo = AddUser(ManagerTwoEmail, "Manager Two", true, [RoleNames.Manager]);
         _ = AddUser(AdministratorEmail, "Administrator", true, [RoleNames.Administrator]);
         _ = AddUser(InactiveEmail, "Inactive User", false, [RoleNames.Consultant]);
+        var inactiveProfile = AddUser(InactiveProfileEmail, "Inactive Profile", true, [RoleNames.Consultant]);
         var locked = AddUser(LockedEmail, "Locked User", true, [RoleNames.Consultant]);
 
         Store.SetConsultant(consultantOne.Id, ConsultantOneId);
         Store.SetConsultant(consultantTwo.Id, ConsultantTwoId);
+        Store.SetConsultant(inactiveProfile.Id, InactiveProfileConsultantId);
+        _ = ((IConsultantManagementRepository)Store).SetActiveAsync(InactiveProfileConsultantId, false).GetAwaiter().GetResult();
         Store.SetConsultant(locked.Id, Guid.NewGuid());
 
         Store.SetManager(managerOne.Id, ManagerOneId);

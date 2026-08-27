@@ -2,11 +2,11 @@
 
 ## Current Status
 
-LeaveFlow has completed Stage 5: Organization Holiday & Official Holiday Management.
+LeaveFlow has completed Stage 6: Consultant Leave Request.
 
-The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, and administrator-facing organization/official holiday management.
+The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, and consultant self-service leave request submission/list/detail screens.
 
-Consultant leave request workflows, leave approval, timeline, calendar, reporting, Azure AI, Docker, and API JWT/token authentication have not been implemented yet.
+Leave approval, conflict detection, timeline, calendar, reporting, Azure AI, Docker, and API JWT/token authentication have not been implemented yet.
 
 This repository is intended to become a production-grade, open-source portfolio project for workforce leave and calendar management.
 
@@ -51,6 +51,7 @@ The project is generic and white-label friendly. It must not contain real compan
 - Stage 3: Authentication & Authorization.
 - Stage 4: Consultant & Manager Management.
 - Stage 5: Organization Holiday & Official Holiday Management.
+- Stage 6: Consultant Leave Request.
 - Cookie authentication for LeaveFlow.Web.
 - Password hashing with ASP.NET Core Identity `PasswordHasher`.
 - Configurable lockout and login-attempt auditing.
@@ -63,12 +64,16 @@ The project is generic and white-label friendly. It must not contain real compan
 - Organization holiday and official holiday admin screens.
 - Inclusive day-row generation for holiday date ranges.
 - Transaction-wrapped holiday create/update/delete repository operations.
+- Consultant leave request create/list/detail workflow with backend consultant scoping.
+- Pending-only request creation with duplicate/overlap protection.
 
 ## Current Stage Scope
 
-Stage 5 intentionally does not include:
+Stage 6 intentionally does not include:
 
-- Leave request or approval workflows
+- Manager approval or approve/reject workflows
+- ConsultantLeaveDays generation
+- Conflict detection
 - Timeline, calendar, or reporting
 - Azure AI
 - Docker
@@ -76,6 +81,5 @@ Stage 5 intentionally does not include:
 
 ## Next Stage
 
-Stage 6 - Consultant Leave Request.
-
+Stage 7 - Leave Approval & Conflict Detection.
 

@@ -297,3 +297,43 @@ Reject exact duplicates by name plus inclusive date range. Allow partial and nes
 - Administrators can model real-world overlapping holidays.
 - Duplicate records for the same holiday range are blocked.
 - Reporting or availability logic in later stages must decide how to combine overlapping holiday days.
+
+## ADR-0016 - Reject Past-Dated New Leave Requests
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+Consultants can create their own leave requests in Stage 6. Past-dated requests can create approval ambiguity and retrospective payroll or availability issues.
+
+### Decision
+
+Reject new leave requests whose start date is before the current application date.
+
+### Consequences
+
+- Consultants must submit requests before the leave period begins.
+- Retrospective corrections require a future administrative workflow rather than self-service creation.
+- Tests pin the validation behavior through an injectable `TimeProvider`.
+
+## ADR-0017 - Leave Request Overlaps Block Pending And Approved Requests
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+A consultant should not create overlapping leave requests that could later be approved into an inconsistent schedule. Rejected requests should not prevent resubmission.
+
+### Decision
+
+For the same consultant, reject exact duplicates and partial or nested overlaps against existing `Pending` or `Approved` requests. Ignore `Rejected` requests in overlap checks.
+
+### Consequences
+
+- Duplicate and overlapping pending work is blocked at the backend/database boundary.
+- Consultants can resubmit after rejection.
+- `ConsultantLeaveDays` remains reserved for approval/conflict detection in Stage 7.

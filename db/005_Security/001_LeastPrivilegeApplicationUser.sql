@@ -47,6 +47,10 @@
 -- GRANT EXECUTE ON OBJECT::dbo.usp_OfficialHolidayDefinitions_Create TO [$(LeaveFlowAppUser)];
 -- GRANT EXECUTE ON OBJECT::dbo.usp_OfficialHolidayDefinitions_Update TO [$(LeaveFlowAppUser)];
 -- GRANT EXECUTE ON OBJECT::dbo.usp_OfficialHolidayDefinitions_Delete TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_ExistsOverlap TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_Create TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_GetMine TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_GetById TO [$(LeaveFlowAppUser)];
 --
 -- Development-only bootstrap procedures must not be granted to the production application user:
 -- dbo.usp_Users_Upsert

@@ -1,10 +1,12 @@
 using LeaveFlow.Application.Abstractions.Authorization;
 using LeaveFlow.Application.Abstractions.Holidays;
 using LeaveFlow.Application.Abstractions.Identity;
+using LeaveFlow.Application.Abstractions.LeaveRequests;
 using LeaveFlow.Application.Abstractions.People;
 using LeaveFlow.Application.Authorization;
 using LeaveFlow.Application.Holidays;
 using LeaveFlow.Application.Identity;
+using LeaveFlow.Application.LeaveRequests;
 using LeaveFlow.Application.People;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +25,7 @@ public static class DependencyInjection
         services.AddScoped<IManagerManagementService, ManagerManagementService>();
         services.AddScoped<IOrganizationHolidayService, OrganizationHolidayService>();
         services.AddScoped<IOfficialHolidayService, OfficialHolidayService>();
+        services.AddScoped<ILeaveRequestService, LeaveRequestService>();
 
         var options = services.AddOptions<AuthenticationSettings>();
         if (configuration is not null)
