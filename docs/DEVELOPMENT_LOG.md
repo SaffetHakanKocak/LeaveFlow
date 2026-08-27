@@ -213,3 +213,33 @@ Stage 3 - Authentication & Authorization.
 ### Next Step
 
 Stage 4 - Consultant & Manager Management.
+
+## 2026-08-27 - Stage 4 Consultant & Manager Management
+
+### Changes Made
+
+- Added consultant and manager management application services, validation, and repository contracts.
+- Added Dapper stored-procedure repository implementations for consultant CRUD, manager CRUD, and manager-consultant assignments.
+- Added SQL scripts for consultant/manager management columns, indexes, and stored procedures.
+- Added administrator MVC screens for consultant and manager list/detail/create/edit/set-active workflows.
+- Added manager assignment UI with duplicate assignment prevention.
+- Preserved object-level authorization so consultants can view only their own profile and managers can view only assigned consultants.
+- Added unit and security tests for validation, access control, CSRF, and administrator-only management.
+
+### Test Results
+
+- `dotnet restore`: succeeded.
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors.
+- `dotnet test --no-build`: succeeded. Total tests: 47 passed, 0 failed, 0 skipped (Unit 18, Integration 2, Security 27).
+
+### Security Review
+
+- No Entity Framework, DbContext, or raw SQL in application C# code.
+- Management screens are protected by administrator policy except consultant detail access, which uses object-level authorization.
+- MVC state-changing management actions require antiforgery tokens.
+- Create/edit actions use explicit view models and application input models instead of binding persistence models.
+- Database access remains stored-procedure-only through Dapper repositories.
+
+### Next Step
+
+Stage 5 - Holiday Management.

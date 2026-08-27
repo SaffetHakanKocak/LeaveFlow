@@ -1,0 +1,56 @@
+@model ManagerAssignmentsViewModel
+@{
+    ViewData["Title"] = "Manager Assignments";
+}
+
+<h1 class="h3 mb-3">@Model.ManagerName Assignments</h1>
+
+<section class="lf-panel mb-3">
+    <form asp-action="Assign" method="post" class="row g-2 align-items-end">
+        <input type="hidden" name="managerId" value="@Model.ManagerId" />
+        <div class="col-md-9">
+            <label class="form-label" asp-for="ConsultantId">Consultant</label>
+            <select class="form-select" asp-for="ConsultantId">
+                <option value="">Select consultant</option>
+                @foreach (var consultant in Model.AvailableConsultants)
+                {
+                    <option value="@consultant.Id">@consultant.FirstName @consultant.LastName (@consultant.Email)</option>
+                }
+            </select>
+            <span asp-validation-for="ConsultantId" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-primary w-100" type="submit">Assign</button>
+        </div>
+    </form>
+</section>
+
+<section class="lf-panel">
+    <table class="table align-middle mb-0">
+        <thead>
+            <tr>
+                <th>Consultant</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var assignment in Model.Assignments)
+        {
+            <tr>
+                <td>@assignment.ConsultantName</td>
+                <td>@assignment.ConsultantEmail</td>
+                <td>@(assignment.IsActive ? "Active" : "Inactive")</td>
+                <td class="text-end">
+                    <form asp-action="RemoveAssignment" method="post">
+                        <input type="hidden" name="managerId" value="@assignment.ManagerId" />
+                        <input type="hidden" name="consultantId" value="@assignment.ConsultantId" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>

@@ -37,15 +37,15 @@ For a fresh development database:
 6. Review and adapt scripts in `db/005_Security` for the target environment.
 7. Use `db/006_TestData` only for fictional local test data.
 
-No migration framework is used. New authentication columns for existing databases are added by `db/001_Tables/015_AlterUsersAddAuthenticationColumns.sql`.
+No migration framework is used. New authentication columns for existing databases are added by `db/001_Tables/015_AlterUsersAddAuthenticationColumns.sql`. Stage 4 people-management columns for existing consultant and manager tables are added by `db/001_Tables/016_AlterConsultantsAddManagementColumns.sql` and `db/001_Tables/017_AlterManagersAddManagementColumns.sql`.
 
 ## Tables
 
 - `Roles`: system roles such as Consultant, Manager, and Administrator.
 - `Users`: identity account including email, password hash, active flag, failed-login count, lockout end, and last login timestamp.
 - `UserRoles`: many-to-many assignment between users and roles.
-- `Consultants`: consultant profile root linked to a user.
-- `Managers`: manager profile root linked to a user.
+- `Consultants`: consultant profile root linked to a user, including profile names, department, start date, and active state.
+- `Managers`: manager profile root linked to a user, including profile names, department, start date, and active state.
 - `ManagerConsultants`: manager-to-consultant assignment scope.
 - `LeaveRequests`: leave request header data for later workflow implementation.
 - `ConsultantLeaveDays`: per-day leave expansion for availability and conflict checks.
@@ -87,6 +87,7 @@ Indexes were added for likely lookup paths:
 - holiday days by date
 - audit logs by actor, target, and timestamp
 - login attempts by normalized email and timestamp
+- consultant and manager management lists by active state and name
 
 Indexes should be revisited when real stored procedure query patterns are implemented.
 
@@ -110,8 +111,21 @@ Current stored procedures:
 - `dbo.usp_LoginAttempts_Insert`
 - `dbo.usp_AuditLogs_Insert`
 - `dbo.usp_Consultants_GetIdByUserId`
+- `dbo.usp_Consultants_GetAll`
+- `dbo.usp_Consultants_GetById`
+- `dbo.usp_Consultants_Create`
+- `dbo.usp_Consultants_Update`
+- `dbo.usp_Consultants_SetActive`
 - `dbo.usp_Managers_GetIdByUserId`
+- `dbo.usp_Managers_GetAll`
+- `dbo.usp_Managers_GetById`
+- `dbo.usp_Managers_Create`
+- `dbo.usp_Managers_Update`
+- `dbo.usp_Managers_SetActive`
 - `dbo.usp_ManagerConsultants_Exists`
+- `dbo.usp_ManagerConsultants_Assign`
+- `dbo.usp_ManagerConsultants_Remove`
+- `dbo.usp_ManagerConsultants_GetByManagerId`
 - Development-only bootstrap procedures: `dbo.usp_Users_Upsert`, `dbo.usp_UserRoles_Ensure`, `dbo.usp_Consultants_EnsureForUser`, `dbo.usp_Managers_EnsureForUser`, `dbo.usp_ManagerConsultants_Ensure`
 
 Application code must refer to stored procedure names through centralized Infrastructure constants and must not accept procedure names from user input.

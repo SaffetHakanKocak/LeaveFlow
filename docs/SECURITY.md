@@ -47,7 +47,7 @@ Security is a core design requirement for LeaveFlow, not a later enhancement. Th
 ### Authentication
 
 - LeaveFlow.Web uses ASP.NET Core cookie authentication.
-- LeaveFlow.Api uses a deferred authentication scheme so protected endpoints return 401. JWT is not implemented in Stage 3.
+- LeaveFlow.Api uses a deferred authentication scheme so protected endpoints return 401. JWT is not implemented yet.
 - Passwords are hashed with ASP.NET Core Identity `PasswordHasher<object>` (PBKDF2 Identity V3). Custom hash algorithms are not used.
 - Failed logins increment a stored counter. After `LeaveFlow:Authentication:MaxFailedAccessAttempts` failures (default 5), the account is locked for `LeaveFlow:Authentication:LockoutDurationMinutes` (default 15).
 - Login failures return a generic message: `Invalid email or password.`
@@ -61,6 +61,8 @@ Security is a core design requirement for LeaveFlow, not a later enhancement. Th
   - Consultant: only own consultant id
   - Manager: only assigned consultants
 - Backend authorization is required. Hiding UI controls is not a security control.
+- Administrator-only policies protect consultant and manager management screens and state-changing actions.
+- Consultant detail pages reuse object-level authorization so consultants can view only their own profile and managers can view only assigned consultants.
 
 ### Data Access
 
@@ -144,6 +146,14 @@ Security tests should cover:
 - Object-level authorization is enforced in application services, not by hiding buttons.
 - Production cookie flags and generic login errors are covered by security tests.
 - Development identity bootstrap hashes passwords at runtime and does not commit credentials.
+
+## Stage 4 Security Review
+
+- Consultant and manager management is administrator-only for list, create, edit, and active-state changes.
+- Consultant details enforce object-level access: administrators see all, consultants see only self, and managers see only assigned consultants.
+- MVC management POST actions use antiforgery validation and bind explicit input models to reduce overposting risk.
+- People-management data access continues to use Dapper stored procedure calls only.
+- Least-privilege database guidance now includes the approved Stage 4 management procedures.
 
 ## Open Security Decisions
 

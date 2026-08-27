@@ -1,5 +1,6 @@
 using LeaveFlow.Application.Abstractions.Data;
 using LeaveFlow.Application.Abstractions.Identity;
+using LeaveFlow.Application.Abstractions.People;
 using LeaveFlow.Infrastructure.Identity;
 using LeaveFlow.Infrastructure.Persistence.Repositories;
 using LeaveFlow.Infrastructure.Persistence.SqlServer;
@@ -40,6 +41,9 @@ public static class DependencyInjection
         services.AddScoped<IManagerIdentityRepository, ManagerIdentityRepository>();
         services.AddScoped<ILoginAttemptRepository, LoginAttemptRepository>();
         services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+        services.AddScoped<IConsultantManagementRepository, ConsultantManagementRepository>();
+        services.AddScoped<IManagerManagementRepository, ManagerManagementRepository>();
+        services.AddScoped<IManagerConsultantAssignmentRepository, ManagerConsultantAssignmentRepository>();
         services.AddScoped<DevelopmentIdentityRepository>();
         services.AddHostedService<DevelopmentIdentityBootstrapHostedService>();
 

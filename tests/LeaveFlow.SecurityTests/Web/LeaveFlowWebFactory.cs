@@ -1,4 +1,5 @@
 using LeaveFlow.Application.Abstractions.Identity;
+using LeaveFlow.Application.Abstractions.People;
 using LeaveFlow.Application.Identity;
 using LeaveFlow.Domain.Identity;
 using LeaveFlow.Infrastructure.Identity;
@@ -19,6 +20,8 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
 
     public Guid ConsultantOneId { get; } = Guid.NewGuid();
     public Guid ConsultantTwoId { get; } = Guid.NewGuid();
+    public Guid ManagerOneId { get; } = Guid.NewGuid();
+    public Guid ManagerTwoId { get; } = Guid.NewGuid();
 
     public LeaveFlowWebFactory()
     {
@@ -46,6 +49,9 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
             services.AddSingleton<IManagerIdentityRepository>(Store);
             services.AddSingleton<ILoginAttemptRepository>(Store);
             services.AddSingleton<IAuditLogRepository>(Store);
+            services.AddSingleton<IConsultantManagementRepository>(Store);
+            services.AddSingleton<IManagerManagementRepository>(Store);
+            services.AddSingleton<IManagerConsultantAssignmentRepository>(Store);
         });
     }
 
@@ -63,12 +69,10 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
         Store.SetConsultant(consultantTwo.Id, ConsultantTwoId);
         Store.SetConsultant(locked.Id, Guid.NewGuid());
 
-        var managerOneId = Guid.NewGuid();
-        var managerTwoId = Guid.NewGuid();
-        Store.SetManager(managerOne.Id, managerOneId);
-        Store.SetManager(managerTwo.Id, managerTwoId);
-        Store.Assign(managerOneId, ConsultantOneId);
-        Store.Assign(managerTwoId, ConsultantTwoId);
+        Store.SetManager(managerOne.Id, ManagerOneId);
+        Store.SetManager(managerTwo.Id, ManagerTwoId);
+        Store.Assign(ManagerOneId, ConsultantOneId);
+        Store.Assign(ManagerTwoId, ConsultantTwoId);
 
         var lockedUser = Store.GetUser(LockedEmail);
         Store.AddUser(

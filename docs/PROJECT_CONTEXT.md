@@ -2,11 +2,11 @@
 
 ## Current Status
 
-LeaveFlow has completed Stage 3: Authentication & Authorization.
+LeaveFlow has completed Stage 4: Consultant & Manager Management.
 
-The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, and a deferred API authentication placeholder.
+The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, and administrator-facing consultant/manager management.
 
-Business workflows, consultant CRUD, leave approval, timeline, calendar, reporting, Azure AI, Docker, and API JWT/token authentication have not been implemented yet.
+Leave request workflows, leave approval, holiday management, timeline, calendar, reporting, Azure AI, Docker, and API JWT/token authentication have not been implemented yet.
 
 This repository is intended to become a production-grade, open-source portfolio project for workforce leave and calendar management.
 
@@ -49,19 +49,23 @@ The project is generic and white-label friendly. It must not contain real compan
 - Stage 1: .NET solution foundation.
 - Stage 2: SQL Server + Dapper + Stored Procedure Data Layer.
 - Stage 3: Authentication & Authorization.
+- Stage 4: Consultant & Manager Management.
 - Cookie authentication for LeaveFlow.Web.
 - Password hashing with ASP.NET Core Identity `PasswordHasher`.
 - Configurable lockout and login-attempt auditing.
 - Role-based policies and object-level consultant access checks.
 - CSRF protection for MVC form POSTs, including login and logout.
 - Development-only identity bootstrap from configuration, without committed passwords.
+- Consultant and manager list/detail/create/edit/set-active screens for administrators.
+- Manager-to-consultant assignment management with duplicate prevention.
+- Consultant self-profile access and manager assigned-consultant detail access.
 
 ## Current Stage Scope
 
-Stage 3 intentionally does not include:
+Stage 4 intentionally does not include:
 
-- Consultant CRUD
 - Leave request or approval workflows
+- Holiday management
 - Timeline, calendar, or reporting
 - Azure AI
 - Docker
@@ -69,4 +73,4 @@ Stage 3 intentionally does not include:
 
 ## Next Stage
 
-Stage 4 - Consultant & Manager Management.
+Stage 5 - Holiday Management.

@@ -1,7 +1,9 @@
 using LeaveFlow.Application.Abstractions.Authorization;
 using LeaveFlow.Application.Abstractions.Identity;
+using LeaveFlow.Application.Abstractions.People;
 using LeaveFlow.Application.Authorization;
 using LeaveFlow.Application.Identity;
+using LeaveFlow.Application.People;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -15,6 +17,8 @@ public static class DependencyInjection
         services.TryAddSingleton(TimeProvider.System);
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IConsultantResourceAuthorizationService, ConsultantResourceAuthorizationService>();
+        services.AddScoped<IConsultantManagementService, ConsultantManagementService>();
+        services.AddScoped<IManagerManagementService, ManagerManagementService>();
 
         var options = services.AddOptions<AuthenticationSettings>();
         if (configuration is not null)
