@@ -53,4 +53,6 @@ internal static class StoredProcedureNames
     internal const string LeaveRequestsGetConflicts = "dbo.usp_LeaveRequests_GetConflicts";
     internal const string LeaveRequestsApprove = "dbo.usp_LeaveRequests_Approve";
     internal const string LeaveRequestsReject = "dbo.usp_LeaveRequests_Reject";
+    internal const string WorkforceTimelineGetForAdmin = "dbo.usp_WorkforceTimeline_GetForAdmin";
+    internal const string WorkforceTimelineGetForManager = "dbo.usp_WorkforceTimeline_GetForManager";
 }

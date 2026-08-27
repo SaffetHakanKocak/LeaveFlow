@@ -2,11 +2,11 @@
 
 ## Current Status
 
-LeaveFlow has completed Stage 7: Leave Approval & Conflict Detection.
+LeaveFlow has completed Stage 8: Workforce Leave Timeline.
 
-The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, and manager/admin leave review with conflict detection.
+The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, and manager/admin workforce leave timeline views based on approved leave day rows.
 
-Full workforce timeline, organization calendar, reporting, Azure AI, Docker, and API JWT/token authentication have not been implemented yet.
+Organization calendar, reporting, Azure AI, Docker, and API JWT/token authentication have not been implemented yet.
 
 This repository is intended to become a production-grade, open-source portfolio project for workforce leave and calendar management.
 
@@ -53,6 +53,7 @@ The project is generic and white-label friendly. It must not contain real compan
 - Stage 5: Organization Holiday & Official Holiday Management.
 - Stage 6: Consultant Leave Request.
 - Stage 7: Leave Approval & Conflict Detection.
+- Stage 8: Workforce Leave Timeline.
 - Cookie authentication for LeaveFlow.Web.
 - Password hashing with ASP.NET Core Identity `PasswordHasher`.
 - Configurable lockout and login-attempt auditing.
@@ -70,12 +71,15 @@ The project is generic and white-label friendly. It must not contain real compan
 - Manager/Admin pending leave review workflow.
 - Conflict preview based on approved `ConsultantLeaveDays`.
 - Concurrency-safe approve/reject operations with approved day-row generation.
+- Manager/Admin workforce timeline with one row per consultant and one column per day.
+- Timeline source of truth is approved `ConsultantLeaveDays`.
+- Admin timeline can optionally filter by manager; manager timeline is scoped to assigned consultants server-side.
+- Timeline date range defaults to the current month and is capped at 62 inclusive days.
 
 ## Current Stage Scope
 
-Stage 7 intentionally does not include:
+Stage 8 intentionally does not include:
 
-- Full workforce timeline
 - Organization calendar
 - Reporting/dashboard
 - Azure AI
@@ -84,4 +88,4 @@ Stage 7 intentionally does not include:
 
 ## Next Stage
 
-Stage 8 - Workforce Leave Timeline.
+Stage 9 - Organization Calendar.

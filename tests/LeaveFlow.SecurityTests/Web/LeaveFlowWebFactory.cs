@@ -2,11 +2,13 @@ using LeaveFlow.Application.Abstractions.Identity;
 using LeaveFlow.Application.Abstractions.Holidays;
 using LeaveFlow.Application.Abstractions.People;
 using LeaveFlow.Application.Abstractions.LeaveRequests;
+using LeaveFlow.Application.Abstractions.Timeline;
 using LeaveFlow.Application.Identity;
 using LeaveFlow.Domain.Identity;
 using LeaveFlow.Infrastructure.Identity;
 using LeaveFlow.SecurityTests.Fakes;
 using LeaveFlow.Web;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +20,7 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
     public InMemoryIdentityStore Store { get; }
     public InMemoryHolidayStore HolidayStore { get; } = new();
     public InMemoryLeaveRequestStore LeaveRequestStore { get; } = new();
+    public InMemoryWorkforceTimelineStore TimelineStore { get; } = new();
     public AspNetPasswordHashingService Hasher { get; } = new();
 
     public const string Password = "Test.Passw0rd!";
@@ -48,6 +51,11 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
         builder.UseEnvironment("Testing");
         builder.ConfigureServices(services =>
         {
+            var keyDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "LeaveFlowSecurityTestsKeys"));
+            services.AddDataProtection()
+                .PersistKeysToFileSystem(keyDirectory)
+                .SetApplicationName("LeaveFlow.SecurityTests");
+
             services.AddSingleton(Store);
             services.AddSingleton<IUserAuthRepository>(Store);
             services.AddSingleton<IUserRoleRepository>(Store);
@@ -61,6 +69,7 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
             services.AddSingleton<IOrganizationHolidayRepository>(HolidayStore);
             services.AddSingleton<IOfficialHolidayRepository>(HolidayStore);
             services.AddSingleton<ILeaveRequestRepository>(LeaveRequestStore);
+            services.AddSingleton<IWorkforceTimelineRepository>(TimelineStore);
         });
     }
 
@@ -78,6 +87,9 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
         Store.SetConsultant(consultantOne.Id, ConsultantOneId);
         Store.SetConsultant(consultantTwo.Id, ConsultantTwoId);
         Store.SetConsultant(inactiveProfile.Id, InactiveProfileConsultantId);
+        TimelineStore.AddConsultant(ConsultantOneId, "Consultant One", ConsultantOneEmail);
+        TimelineStore.AddConsultant(ConsultantTwoId, "Consultant Two", ConsultantTwoEmail);
+        TimelineStore.AddConsultant(InactiveProfileConsultantId, "Inactive Profile", InactiveProfileEmail, isActive: false);
         _ = ((IConsultantManagementRepository)Store).SetActiveAsync(InactiveProfileConsultantId, false).GetAwaiter().GetResult();
         Store.SetConsultant(locked.Id, Guid.NewGuid());
 
@@ -87,6 +99,10 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
         Store.Assign(ManagerTwoId, ConsultantTwoId);
         LeaveRequestStore.AssignReviewer(ManagerOneId, ConsultantOneId);
         LeaveRequestStore.AssignReviewer(ManagerTwoId, ConsultantTwoId);
+        TimelineStore.AssignManager(ManagerOneId, ConsultantOneId);
+        TimelineStore.AssignManager(ManagerTwoId, ConsultantTwoId);
+        TimelineStore.AddApprovedLeave(ConsultantOneId, "Manager one visible leave", new DateOnly(2026, 9, 10), new DateOnly(2026, 9, 11));
+        TimelineStore.AddApprovedLeave(ConsultantTwoId, "Manager two hidden leave", new DateOnly(2026, 9, 10), new DateOnly(2026, 9, 12));
 
         var lockedUser = Store.GetUser(LockedEmail);
         Store.AddUser(

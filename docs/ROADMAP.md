@@ -110,17 +110,29 @@ Deliverables:
 
 ## Phase 8 - Workforce Leave Timeline
 
+Status: completed.
+
+Deliverables:
+
+- Team timeline view.
+- Approved leave day visualization.
+- Admin organization-wide access with optional manager filter.
+- Manager assigned-consultant scope.
+- Date range, consultant search, inactive consultant filter, and server-side pagination.
+- Timeline performance index and stored procedure contracts.
+
+## Phase 9 - Organization Calendar
+
 Status: next.
 
 Deliverables:
 
-- Organization calendar.
-- Public holiday management.
-- Company holiday management.
-- Team timeline view.
-- Availability summaries.
+- Organization calendar view.
+- Combined official and organization holiday visibility.
+- Approved leave visibility in calendar context.
+- Role-appropriate calendar scoping.
 
-## Phase 9 - Reporting
+## Phase 10 - Reporting
 
 Deliverables:
 
@@ -130,7 +142,7 @@ Deliverables:
 - Export foundation.
 - Report run auditing.
 
-## Phase 10 - Hardening and Release Preparation
+## Phase 11 - Hardening and Release Preparation
 
 Deliverables:
 

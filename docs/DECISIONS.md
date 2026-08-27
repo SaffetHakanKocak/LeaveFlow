@@ -377,3 +377,63 @@ Conflict detection returns approved leave day overlaps for the requested date ra
 - Reviewers retain business discretion.
 - Conflict data is visible before approval.
 - Future policy automation can add stricter blocking rules without changing the basic review model.
+
+## ADR-0020 - Workforce Timeline Uses Approved Leave Day Rows
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+The workforce timeline needs a reliable day-level availability source without duplicating leave status rules in the UI.
+
+### Decision
+
+Build the workforce timeline from `ConsultantLeaveDays` and guard joins with approved `LeaveRequests`. Pending and rejected leave requests are not timeline inputs.
+
+### Consequences
+
+- Approval remains the only path that creates visible leave day cells.
+- Rejected and pending requests stay out of team availability views.
+- Timeline and conflict detection share the same approved day-row source of truth.
+
+## ADR-0021 - Cap Workforce Timeline Date Range At 62 Days
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+A row-per-consultant and column-per-day timeline can become wide and expensive when arbitrary ranges are allowed.
+
+### Decision
+
+Default the timeline to the current month and cap requested ranges at 62 inclusive days through application validation.
+
+### Consequences
+
+- Normal month and two-month planning views are supported.
+- Very large date ranges are rejected before querying or rendering.
+- Wider planning/reporting needs should be handled by a future reporting/export feature.
+
+## ADR-0022 - Resolve Workforce Timeline Scope Server-Side
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+Manager timeline access is sensitive because querystring parameters can be tampered with.
+
+### Decision
+
+Managers never control their effective manager scope through request parameters. The application service resolves the manager id from the authenticated user and calls the manager-scoped stored procedure with that id. Administrators may use an optional manager filter.
+
+### Consequences
+
+- Manager `managerId` tampering is ignored.
+- Database queries remain scoped through `ManagerConsultants`.
+- The UI is not the source of authorization truth.

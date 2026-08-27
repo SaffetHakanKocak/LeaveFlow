@@ -84,6 +84,7 @@ Indexes were added for likely lookup paths:
 - consultant manager assignment lookup
 - leave requests by consultant, status, and date range
 - leave days by consultant and date
+- workforce timeline reads by leave date and consultant
 - holiday days by date
 - audit logs by actor, target, and timestamp
 - login attempts by normalized email and timestamp
@@ -149,6 +150,8 @@ Current stored procedures:
 - `dbo.usp_LeaveRequests_GetConflicts`
 - `dbo.usp_LeaveRequests_Approve`
 - `dbo.usp_LeaveRequests_Reject`
+- `dbo.usp_WorkforceTimeline_GetForAdmin`
+- `dbo.usp_WorkforceTimeline_GetForManager`
 - Development-only bootstrap procedures: `dbo.usp_Users_Upsert`, `dbo.usp_UserRoles_Ensure`, `dbo.usp_Consultants_EnsureForUser`, `dbo.usp_Managers_EnsureForUser`, `dbo.usp_ManagerConsultants_Ensure`
 
 Application code must refer to stored procedure names through centralized Infrastructure constants and must not accept procedure names from user input.
@@ -212,6 +215,16 @@ Managers can review only leave requests for assigned consultants. Administrators
 Conflict detection reads approved leave day rows from `ConsultantLeaveDays`, excludes the current request, and returns overlapping dates for the review range. The preview is decision support; conflicts do not automatically block approval.
 
 `ConsultantLeaveDays` has a unique approval-stage index on `ConsultantId`, `LeaveRequestId`, and `LeaveDate` to prevent duplicate day rows for the same approved request.
+
+## Workforce Timeline Policy
+
+The workforce timeline reads from `ConsultantLeaveDays` as the availability source of truth and joins back to `LeaveRequests` with `Status = N'Approved'`. Pending and rejected requests are not visible in the timeline.
+
+Administrators use `dbo.usp_WorkforceTimeline_GetForAdmin` and can optionally filter by manager assignment. Managers use `dbo.usp_WorkforceTimeline_GetForManager`, which scopes rows through `ManagerConsultants` using `@ManagerId`. Consultants do not receive a global/team timeline.
+
+Timeline procedures page consultants server-side, return one or more rows per consultant for the selected date range, and avoid per-consultant loops. Application code builds the day matrix from these rows instead of passing database rows directly to the view.
+
+`db/002_Indexes/006_CreateWorkforceTimelineIndexes.sql` adds `IX_ConsultantLeaveDays_Date_Consultant` on `(LeaveDate, ConsultantId)` including `LeaveRequestId` for date-range timeline reads.
 
 ## Security Model
 

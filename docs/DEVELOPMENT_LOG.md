@@ -334,3 +334,32 @@ Stage 7 - Leave Approval & Conflict Detection.
 ### Next Step
 
 Stage 8 - Workforce Leave Timeline.
+
+## 2026-08-27 - Stage 8 Workforce Leave Timeline
+
+### Changes Made
+
+- Added workforce timeline application models, validation, date header generation, matrix builder, service, and repository contract.
+- Added Dapper stored-procedure repository implementation for admin and manager timeline queries.
+- Added SQL scripts for admin/manager workforce timeline stored procedures.
+- Added a date-first `ConsultantLeaveDays` index for timeline range reads.
+- Added Manager/Admin MVC Workforce Timeline screen with date filters, consultant search, optional admin manager filter, inactive toggle, sticky consultant column, weekend/today states, leave cells, legend, empty state, and horizontal scroll.
+- Preserved Stage 7 approval/conflict behavior and did not implement organization calendar, reporting/dashboard, Azure AI, Docker, or API JWT.
+
+### Test Results
+
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors during implementation.
+- `dotnet test --no-build`: succeeded. Total tests: 132 passed, 0 failed, 0 skipped (Unit 42, Integration 33, Security 57).
+
+### Security Review
+
+- No Entity Framework, DbContext, `CommandType.Text`, or raw SQL in application C# code.
+- Consultants are denied from workforce timeline access.
+- Manager timeline access is scoped by assigned consultants and ignores querystring manager tampering.
+- Administrator timeline access can view organization-wide approved leave and optionally filter by manager.
+- Timeline data source is approved `ConsultantLeaveDays`; pending and rejected leave requests remain invisible.
+- MVC timeline is read-only and uses explicit query/view models.
+
+### Next Step
+
+Stage 9 - Organization Calendar.

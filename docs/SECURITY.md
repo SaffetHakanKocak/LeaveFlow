@@ -66,6 +66,7 @@ Security is a core design requirement for LeaveFlow, not a later enhancement. Th
 - Administrator-only policies protect organization and official holiday management screens and state-changing actions.
 - Consultant leave request screens are consultant-only and resolve the consultant profile from the authenticated user id.
 - Leave review screens resolve manager/admin scope server-side and never rely on hidden UI controls for approval authorization.
+- Workforce timeline screens deny consultants, scope managers to assigned consultants server-side, and ignore manager filter tampering for manager users.
 
 ### Data Access
 
@@ -186,6 +187,16 @@ Security tests should cover:
 - Approve/reject POST actions require antiforgery tokens and use explicit review input models.
 - Approve/reject procedures require `Pending` status and fail safely for repeated or stale decisions.
 - Approval generates `ConsultantLeaveDays` in the same database transaction and a unique index prevents duplicate day rows.
+
+## Stage 8 Security Review
+
+- Consultants are denied from the workforce timeline.
+- Managers can view only assigned consultants in the timeline, resolved from their authenticated user id.
+- Administrator timeline access can view the organization and optionally filter by manager.
+- Manager-supplied `managerId` querystring values are ignored by the application service; manager scope is resolved server-side.
+- Timeline stored procedures read only approved `ConsultantLeaveDays` and do not expose pending or rejected requests.
+- Timeline view models expose only consultant name/email, active state, leave date, leave request id, and safe reason text.
+- Security tests cover anonymous denial, consultant denial, manager scoping, admin access, and manager filter tampering.
 
 ## Open Security Decisions
 
