@@ -85,6 +85,8 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
         Store.SetManager(managerTwo.Id, ManagerTwoId);
         Store.Assign(ManagerOneId, ConsultantOneId);
         Store.Assign(ManagerTwoId, ConsultantTwoId);
+        LeaveRequestStore.AssignReviewer(ManagerOneId, ConsultantOneId);
+        LeaveRequestStore.AssignReviewer(ManagerTwoId, ConsultantTwoId);
 
         var lockedUser = Store.GetUser(LockedEmail);
         Store.AddUser(

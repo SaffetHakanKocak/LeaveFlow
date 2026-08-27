@@ -29,6 +29,12 @@
                                 <a class="nav-link text-dark" asp-controller="LeaveRequests" asp-action="Index">My Leave Requests</a>
                             </li>
                         }
+                        @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="LeaveReviews" asp-action="Index">Pending Requests</a>
+                            </li>
+                        }
                         @if (User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">

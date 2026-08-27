@@ -65,6 +65,7 @@ Security is a core design requirement for LeaveFlow, not a later enhancement. Th
 - Consultant detail pages reuse object-level authorization so consultants can view only their own profile and managers can view only assigned consultants.
 - Administrator-only policies protect organization and official holiday management screens and state-changing actions.
 - Consultant leave request screens are consultant-only and resolve the consultant profile from the authenticated user id.
+- Leave review screens resolve manager/admin scope server-side and never rely on hidden UI controls for approval authorization.
 
 ### Data Access
 
@@ -175,6 +176,16 @@ Security tests should cover:
 - Leave request create POST actions require antiforgery tokens.
 - Leave request create writes only to `LeaveRequests`; `ConsultantLeaveDays` remains untouched until approval/conflict stages.
 - Least-privilege database guidance now includes the approved Stage 6 leave request procedures.
+
+## Stage 7 Security Review
+
+- Consultants are denied from approval and rejection endpoints.
+- Managers can review only leave requests for consultants assigned through `ManagerConsultants`.
+- Administrators can review all leave requests.
+- Review detail, conflict, approve, and reject procedures enforce reviewer scope using manager assignment or administrator flag.
+- Approve/reject POST actions require antiforgery tokens and use explicit review input models.
+- Approve/reject procedures require `Pending` status and fail safely for repeated or stale decisions.
+- Approval generates `ConsultantLeaveDays` in the same database transaction and a unique index prevents duplicate day rows.
 
 ## Open Security Decisions
 

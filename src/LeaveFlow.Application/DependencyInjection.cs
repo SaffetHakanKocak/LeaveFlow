@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.AddScoped<IOrganizationHolidayService, OrganizationHolidayService>();
         services.AddScoped<IOfficialHolidayService, OfficialHolidayService>();
         services.AddScoped<ILeaveRequestService, LeaveRequestService>();
+        services.AddScoped<ILeaveReviewService, LeaveReviewService>();
 
         var options = services.AddOptions<AuthenticationSettings>();
         if (configuration is not null)

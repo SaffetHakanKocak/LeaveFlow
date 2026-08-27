@@ -65,7 +65,7 @@ Planned contents:
 
 Application code may depend on Domain abstractions but must not know SQL details.
 
-Current status: references Domain and contains dependency injection registration, data access contracts for connections, transactions, role/user reads, authentication/authorization services, login settings, object-level consultant access evaluation, people management services, holiday management services, and consultant-scoped leave request services.
+Current status: references Domain and contains dependency injection registration, data access contracts for connections, transactions, role/user reads, authentication/authorization services, login settings, object-level consultant access evaluation, people management services, holiday management services, consultant-scoped leave request services, and manager/admin leave review services.
 
 ### LeaveFlow.Infrastructure
 
@@ -83,7 +83,7 @@ Planned contents:
 
 Infrastructure may reference Application and Domain contracts.
 
-Current status: references Application and Domain. Contains SQL Server connection factory, transaction factory, Dapper stored-procedure repositories, ASP.NET Identity password hashing, audit/login-attempt persistence, development-only identity bootstrap, people management repositories, holiday repositories with transaction-wrapped write operations, and leave request repositories. No Entity Framework, DbContext, generic repository, JWT, approval workflow, or conflict detection implementation exists.
+Current status: references Application and Domain. Contains SQL Server connection factory, transaction factory, Dapper stored-procedure repositories, ASP.NET Identity password hashing, audit/login-attempt persistence, development-only identity bootstrap, people management repositories, holiday repositories with transaction-wrapped write operations, leave request repositories, and approval/conflict stored procedure callers. No Entity Framework, DbContext, generic repository, JWT, full timeline, calendar, or reporting implementation exists.
 
 ### LeaveFlow.Api
 
@@ -116,7 +116,7 @@ Planned contents:
 
 The web layer must not be treated as the source of authorization truth.
 
-Current status: MVC host exists with Home, login/logout, access denied, cookie authentication, antiforgery, a protected consultant-resource probe endpoint used for object-level authorization tests, administrator screens for consultant/manager management, administrator screens for organization/official holiday management, and consultant self-service leave request screens. Approval, timeline, calendar, and reporting screens are not implemented.
+Current status: MVC host exists with Home, login/logout, access denied, cookie authentication, antiforgery, a protected consultant-resource probe endpoint used for object-level authorization tests, administrator screens for consultant/manager management, administrator screens for organization/official holiday management, consultant self-service leave request screens, and manager/admin leave review screens. Full timeline, calendar, and reporting screens are not implemented.
 
 ## Dependency Direction
 
@@ -191,6 +191,7 @@ Authentication and authorization:
 - `IConsultantManagementService` and `IManagerManagementService` validate people-management input and keep controller models away from persistence details.
 - `IOrganizationHolidayService` and `IOfficialHolidayService` validate holiday ranges and normalize list filters.
 - `ILeaveRequestService` resolves the current user's consultant profile server-side and scopes create/list/detail operations to that consultant.
+- `ILeaveReviewService` resolves reviewer role/manager scope server-side and delegates pending lists, conflict reads, and decisions to scoped stored procedures.
 
 ## Planned Domain Modules
 

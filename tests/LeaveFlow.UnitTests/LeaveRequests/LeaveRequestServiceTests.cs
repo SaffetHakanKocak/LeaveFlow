@@ -139,4 +139,34 @@ internal sealed class StubLeaveRequestRepository : ILeaveRequestRepository
         Created = true;
         return Task.FromResult(Guid.NewGuid());
     }
+
+    public Task<LeaveFlow.Application.Common.PagedResult<PendingLeaveRequestListItem>> GetPendingForManagerAsync(Guid managerId, LeaveReviewSearchRequest request, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(new LeaveFlow.Application.Common.PagedResult<PendingLeaveRequestListItem>([], request.PageNumber, request.PageSize, 0));
+    }
+
+    public Task<LeaveFlow.Application.Common.PagedResult<PendingLeaveRequestListItem>> GetPendingForAdminAsync(LeaveReviewSearchRequest request, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(new LeaveFlow.Application.Common.PagedResult<PendingLeaveRequestListItem>([], request.PageNumber, request.PageSize, 0));
+    }
+
+    public Task<LeaveRequestReviewDetail?> GetForReviewAsync(Guid leaveRequestId, Guid reviewerUserId, Guid? reviewerManagerId, bool isAdministrator, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult<LeaveRequestReviewDetail?>(null);
+    }
+
+    public Task<IReadOnlyList<LeaveConflict>> GetConflictsAsync(Guid leaveRequestId, Guid reviewerUserId, Guid? reviewerManagerId, bool isAdministrator, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult((IReadOnlyList<LeaveConflict>)[]);
+    }
+
+    public Task<bool> ApproveAsync(Guid leaveRequestId, Guid reviewerUserId, Guid? reviewerManagerId, bool isAdministrator, ReviewDecisionInput input, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(false);
+    }
+
+    public Task<bool> RejectAsync(Guid leaveRequestId, Guid reviewerUserId, Guid? reviewerManagerId, bool isAdministrator, ReviewDecisionInput input, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(false);
+    }
 }

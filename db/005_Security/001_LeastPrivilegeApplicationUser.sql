@@ -51,6 +51,12 @@
 -- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_Create TO [$(LeaveFlowAppUser)];
 -- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_GetMine TO [$(LeaveFlowAppUser)];
 -- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_GetById TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_GetPendingForManager TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_GetPendingForAdmin TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_GetForReview TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_GetConflicts TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_Approve TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_Reject TO [$(LeaveFlowAppUser)];
 --
 -- Development-only bootstrap procedures must not be granted to the production application user:
 -- dbo.usp_Users_Upsert

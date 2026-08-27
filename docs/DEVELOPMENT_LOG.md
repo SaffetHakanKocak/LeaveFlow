@@ -303,3 +303,34 @@ Stage 6 - Consultant Leave Request.
 ### Next Step
 
 Stage 7 - Leave Approval & Conflict Detection.
+
+## 2026-08-27 - Stage 7 Leave Approval & Conflict Detection
+
+### Changes Made
+
+- Added manager/admin leave review application models, conflict helper, validation, service, and repository methods.
+- Added stored procedures for manager/admin pending queues, review detail, conflicts, approve, and reject.
+- Added a unique approval-stage index for `ConsultantLeaveDays`.
+- Added Manager/Admin MVC screens for Pending Leave Requests and Leave Review Detail.
+- Added approve/reject POST actions with antiforgery and confirmation behavior.
+- Approval now writes inclusive `ConsultantLeaveDays` rows only after a request is approved.
+- Conflict preview reads approved leave day rows and excludes the current request.
+- Preserved Stage 6 consultant leave request creation/list/detail behavior.
+- Did not implement full workforce timeline, organization calendar, reporting/dashboard, Azure AI, or Docker.
+
+### Test Results
+
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors during implementation.
+- `dotnet test --no-build`: succeeded. Total tests: 116 passed, 0 failed, 0 skipped (Unit 36, Integration 28, Security 52).
+
+### Security Review
+
+- No Entity Framework, DbContext, `CommandType.Text`, or raw SQL in application C# code.
+- Consultants are denied from approval endpoints.
+- Manager review access is scoped by assigned consultants; administrators can review all.
+- Review POST actions require antiforgery tokens and explicit input models.
+- Approval is concurrency-safe through pending-only locked update behavior and duplicate day-row prevention.
+
+### Next Step
+
+Stage 8 - Workforce Leave Timeline.

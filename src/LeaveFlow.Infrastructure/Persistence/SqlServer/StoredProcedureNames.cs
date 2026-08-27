@@ -47,4 +47,10 @@ internal static class StoredProcedureNames
     internal const string LeaveRequestsCreate = "dbo.usp_LeaveRequests_Create";
     internal const string LeaveRequestsGetMine = "dbo.usp_LeaveRequests_GetMine";
     internal const string LeaveRequestsGetById = "dbo.usp_LeaveRequests_GetById";
+    internal const string LeaveRequestsGetPendingForManager = "dbo.usp_LeaveRequests_GetPendingForManager";
+    internal const string LeaveRequestsGetPendingForAdmin = "dbo.usp_LeaveRequests_GetPendingForAdmin";
+    internal const string LeaveRequestsGetForReview = "dbo.usp_LeaveRequests_GetForReview";
+    internal const string LeaveRequestsGetConflicts = "dbo.usp_LeaveRequests_GetConflicts";
+    internal const string LeaveRequestsApprove = "dbo.usp_LeaveRequests_Approve";
+    internal const string LeaveRequestsReject = "dbo.usp_LeaveRequests_Reject";
 }

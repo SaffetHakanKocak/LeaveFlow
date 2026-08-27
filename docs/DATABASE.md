@@ -143,6 +143,12 @@ Current stored procedures:
 - `dbo.usp_LeaveRequests_Create`
 - `dbo.usp_LeaveRequests_GetMine`
 - `dbo.usp_LeaveRequests_GetById`
+- `dbo.usp_LeaveRequests_GetPendingForManager`
+- `dbo.usp_LeaveRequests_GetPendingForAdmin`
+- `dbo.usp_LeaveRequests_GetForReview`
+- `dbo.usp_LeaveRequests_GetConflicts`
+- `dbo.usp_LeaveRequests_Approve`
+- `dbo.usp_LeaveRequests_Reject`
 - Development-only bootstrap procedures: `dbo.usp_Users_Upsert`, `dbo.usp_UserRoles_Ensure`, `dbo.usp_Consultants_EnsureForUser`, `dbo.usp_Managers_EnsureForUser`, `dbo.usp_ManagerConsultants_Ensure`
 
 Application code must refer to stored procedure names through centralized Infrastructure constants and must not accept procedure names from user input.
@@ -198,6 +204,14 @@ Exact duplicate holiday definitions are rejected by name plus inclusive date ran
 ## Leave Request Duplicate And Overlap Policy
 
 New leave requests are always created with `Pending` status. For the same consultant, exact duplicates and partial or nested overlaps are rejected when the existing request is `Pending` or `Approved`. `Rejected` requests are ignored by overlap checks so consultants can resubmit corrected ranges.
+
+## Leave Approval And Conflict Policy
+
+Managers can review only leave requests for assigned consultants. Administrators can review all leave requests. Approval and rejection procedures require the request to still be `Pending`. Approval updates the request, writes `ReviewedAt`, `ReviewedBy`, and optional `ReviewNote`, then creates one `ConsultantLeaveDays` row for each inclusive date in the approved range. Rejection updates only the request review fields and does not create leave day rows.
+
+Conflict detection reads approved leave day rows from `ConsultantLeaveDays`, excludes the current request, and returns overlapping dates for the review range. The preview is decision support; conflicts do not automatically block approval.
+
+`ConsultantLeaveDays` has a unique approval-stage index on `ConsultantId`, `LeaveRequestId`, and `LeaveDate` to prevent duplicate day rows for the same approved request.
 
 ## Security Model
 

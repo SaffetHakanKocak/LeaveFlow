@@ -1,0 +1,102 @@
+@using LeaveFlow.Domain.LeaveRequests
+@model LeaveReviewDetailViewModel
+@{
+    ViewData["Title"] = "Leave Review";
+    var isPending = Model.Request.Status == LeaveRequestStatuses.Pending;
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Leave Review</h1>
+        <p class="text-secondary mb-0">@Model.Request.ConsultantName · @Model.Request.StartDate.ToString("yyyy-MM-dd") - @Model.Request.EndDate.ToString("yyyy-MM-dd")</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back</a>
+</div>
+
+@if (Model.Conflicts.Count > 0)
+{
+    <div class="alert alert-warning">
+        @Model.Conflicts.Select(conflict => conflict.ConsultantId).Distinct().Count() consultant(s) already have approved leave inside this range.
+    </div>
+}
+
+<div class="lf-panel">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Consultant</dt>
+        <dd class="col-sm-9">@Model.Request.ConsultantName <span class="text-secondary">(@Model.Request.ConsultantEmail)</span></dd>
+        <dt class="col-sm-3">Reason</dt>
+        <dd class="col-sm-9">@Model.Request.Reason</dd>
+        <dt class="col-sm-3">Date range</dt>
+        <dd class="col-sm-9">@Model.Request.StartDate.ToString("yyyy-MM-dd") - @Model.Request.EndDate.ToString("yyyy-MM-dd")</dd>
+        <dt class="col-sm-3">Calendar days</dt>
+        <dd class="col-sm-9">@Model.Request.CalendarDayCount</dd>
+        <dt class="col-sm-3">Status</dt>
+        <dd class="col-sm-9"><span class="badge @LeaveFlow.Web.Controllers.LeaveRequestsController.StatusBadgeClass(Model.Request.Status)">@Model.Request.Status</span></dd>
+        <dt class="col-sm-3">Created</dt>
+        <dd class="col-sm-9">@Model.Request.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+        <dt class="col-sm-3">Reviewed</dt>
+        <dd class="col-sm-9">@(Model.Request.ReviewedAt?.ToString("yyyy-MM-dd HH:mm") ?? "Not reviewed")</dd>
+        <dt class="col-sm-3">Review note</dt>
+        <dd class="col-sm-9">@(Model.Request.ReviewNote ?? "-")</dd>
+    </dl>
+</div>
+
+<div class="lf-panel mt-3">
+    <h2 class="h5">Conflict Preview</h2>
+    @if (Model.TimelineRows.Count == 0)
+    {
+        <p class="text-secondary mb-0">No approved leave conflicts inside this range.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Consultant</th>
+                        @foreach (var day in Model.PreviewDates)
+                        {
+                            <th class="text-center">@day.ToString("MM-dd")</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var row in Model.TimelineRows)
+                {
+                    <tr>
+                        <td>
+                            <div>@row.ConsultantName</div>
+                            <div class="text-secondary small">@row.ConsultantEmail</div>
+                        </td>
+                        @foreach (var day in Model.PreviewDates)
+                        {
+                            <td class="text-center">@(row.ConflictDates.Contains(day) ? "On leave" : "-")</td>
+                        }
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@if (isPending)
+{
+    <div class="lf-panel mt-3">
+        <form asp-action="Approve" asp-route-id="@Model.Request.Id" method="post" class="mb-3">
+            <label asp-for="Decision.ReviewNote" class="form-label">Review note</label>
+            <textarea name="ReviewNote" class="form-control mb-2" rows="3"></textarea>
+            <span asp-validation-for="Decision.ReviewNote" class="text-danger"></span>
+            <button type="submit" class="btn btn-success" onclick="return confirm('Approve this leave request?');">Approve</button>
+        </form>
+        <form asp-action="Reject" asp-route-id="@Model.Request.Id" method="post">
+            <label class="form-label" for="rejectNote">Rejection note</label>
+            <textarea id="rejectNote" name="ReviewNote" class="form-control mb-2" rows="3"></textarea>
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Reject this leave request?');">Reject</button>
+        </form>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

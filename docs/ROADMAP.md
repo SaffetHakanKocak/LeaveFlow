@@ -98,7 +98,7 @@ Deliverables:
 
 ## Phase 7 - Leave Approval & Conflict Detection
 
-Status: next.
+Status: completed.
 
 Deliverables:
 
@@ -108,7 +108,9 @@ Deliverables:
 - Status history and audit logging.
 - Conflict checks.
 
-## Phase 8 - Calendar and Timeline
+## Phase 8 - Workforce Leave Timeline
+
+Status: next.
 
 Deliverables:
 

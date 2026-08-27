@@ -337,3 +337,43 @@ For the same consultant, reject exact duplicates and partial or nested overlaps 
 - Duplicate and overlapping pending work is blocked at the backend/database boundary.
 - Consultants can resubmit after rejection.
 - `ConsultantLeaveDays` remains reserved for approval/conflict detection in Stage 7.
+
+## ADR-0018 - Approval Uses Pending-Only Locked Update And Unique Day Rows
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+The same pending leave request can be opened in multiple tabs or processed by repeated requests. Approval must not create duplicate approved state or duplicate leave day rows.
+
+### Decision
+
+Approve and reject stored procedures load the request with update locks, require `Status = Pending`, validate reviewer scope, then perform a pending-only update inside a database transaction. Approval inserts one `ConsultantLeaveDays` row per inclusive date after the status update succeeds. A unique index on `ConsultantId`, `LeaveRequestId`, and `LeaveDate` prevents duplicate day rows.
+
+### Consequences
+
+- Only the first concurrent approval/rejection can succeed.
+- Repeated approve/reject and approve-after-reject/reject-after-approve fail safely.
+- Approved leave day rows are reliable input for conflict detection and future timeline work.
+
+## ADR-0019 - Conflicts Are Decision Support, Not Automatic Approval Blocks
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+Managers and administrators need visibility into overlapping approved leave, but some teams may intentionally approve overlapping absences.
+
+### Decision
+
+Conflict detection returns approved leave day overlaps for the requested date range and excludes the current request. The UI shows a clear warning and preview, but approval is not automatically blocked by conflicts.
+
+### Consequences
+
+- Reviewers retain business discretion.
+- Conflict data is visible before approval.
+- Future policy automation can add stricter blocking rules without changing the basic review model.
