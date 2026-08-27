@@ -62,7 +62,7 @@ Deliverables:
 
 ## Phase 4 - People and Organization
 
-Status: next.
+Status: completed.
 
 Deliverables:
 
@@ -72,19 +72,41 @@ Deliverables:
 - Administrator management endpoints and screens.
 - Object-level authorization tests.
 
-## Phase 5 - Leave Request Workflow
+## Phase 5 - Holiday Management
+
+Status: completed.
+
+Deliverables:
+
+- Organization holiday management.
+- Official holiday management.
+- Inclusive day-row generation.
+- Transactional create, update, and delete behavior.
+- Duplicate holiday protection.
+
+## Phase 6 - Consultant Leave Request
+
+Status: next.
+
+Deliverables:
+
+- Consultant leave request creation.
+- Leave request history.
+- Draft and submit behavior.
+- Request validation.
+- Consultant scoped access.
+
+## Phase 7 - Leave Approval Workflow
 
 Deliverables:
 
 - Leave type management.
 - Leave balance model.
-- Consultant leave request creation.
-- Leave request history.
 - Manager approval and rejection.
 - Status history and audit logging.
 - Conflict checks.
 
-## Phase 6 - Calendar and Timeline
+## Phase 8 - Calendar and Timeline
 
 Deliverables:
 
@@ -94,7 +116,7 @@ Deliverables:
 - Team timeline view.
 - Availability summaries.
 
-## Phase 7 - Reporting
+## Phase 9 - Reporting
 
 Deliverables:
 
@@ -104,7 +126,7 @@ Deliverables:
 - Export foundation.
 - Report run auditing.
 
-## Phase 8 - Hardening and Release Preparation
+## Phase 10 - Hardening and Release Preparation
 
 Deliverables:
 

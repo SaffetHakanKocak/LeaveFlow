@@ -2,11 +2,11 @@
 
 ## Current Status
 
-LeaveFlow has completed Stage 4: Consultant & Manager Management.
+LeaveFlow has completed Stage 5: Organization Holiday & Official Holiday Management.
 
-The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, and administrator-facing consultant/manager management.
+The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, and administrator-facing organization/official holiday management.
 
-Leave request workflows, leave approval, holiday management, timeline, calendar, reporting, Azure AI, Docker, and API JWT/token authentication have not been implemented yet.
+Consultant leave request workflows, leave approval, timeline, calendar, reporting, Azure AI, Docker, and API JWT/token authentication have not been implemented yet.
 
 This repository is intended to become a production-grade, open-source portfolio project for workforce leave and calendar management.
 
@@ -50,6 +50,7 @@ The project is generic and white-label friendly. It must not contain real compan
 - Stage 2: SQL Server + Dapper + Stored Procedure Data Layer.
 - Stage 3: Authentication & Authorization.
 - Stage 4: Consultant & Manager Management.
+- Stage 5: Organization Holiday & Official Holiday Management.
 - Cookie authentication for LeaveFlow.Web.
 - Password hashing with ASP.NET Core Identity `PasswordHasher`.
 - Configurable lockout and login-attempt auditing.
@@ -59,13 +60,15 @@ The project is generic and white-label friendly. It must not contain real compan
 - Consultant and manager list/detail/create/edit/set-active screens for administrators.
 - Manager-to-consultant assignment management with duplicate prevention.
 - Consultant self-profile access and manager assigned-consultant detail access.
+- Organization holiday and official holiday admin screens.
+- Inclusive day-row generation for holiday date ranges.
+- Transaction-wrapped holiday create/update/delete repository operations.
 
 ## Current Stage Scope
 
-Stage 4 intentionally does not include:
+Stage 5 intentionally does not include:
 
 - Leave request or approval workflows
-- Holiday management
 - Timeline, calendar, or reporting
 - Azure AI
 - Docker
@@ -73,4 +76,6 @@ Stage 4 intentionally does not include:
 
 ## Next Stage
 
-Stage 5 - Holiday Management.
+Stage 6 - Consultant Leave Request.
+
+

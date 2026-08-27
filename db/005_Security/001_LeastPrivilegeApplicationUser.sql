@@ -36,6 +36,17 @@
 -- GRANT EXECUTE ON OBJECT::dbo.usp_ManagerConsultants_Assign TO [$(LeaveFlowAppUser)];
 -- GRANT EXECUTE ON OBJECT::dbo.usp_ManagerConsultants_Remove TO [$(LeaveFlowAppUser)];
 -- GRANT EXECUTE ON OBJECT::dbo.usp_ManagerConsultants_GetByManagerId TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_HolidayDefinitions_GetAll TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_HolidayDefinitions_GetById TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_HolidayDefinitions_Create TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_HolidayDefinitions_Update TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_HolidayDefinitions_SetActive TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_HolidayDefinitions_Delete TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_OfficialHolidayDefinitions_GetAll TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_OfficialHolidayDefinitions_GetById TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_OfficialHolidayDefinitions_Create TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_OfficialHolidayDefinitions_Update TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_OfficialHolidayDefinitions_Delete TO [$(LeaveFlowAppUser)];
 --
 -- Development-only bootstrap procedures must not be granted to the production application user:
 -- dbo.usp_Users_Upsert

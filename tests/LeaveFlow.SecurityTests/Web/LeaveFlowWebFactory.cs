@@ -1,4 +1,5 @@
 using LeaveFlow.Application.Abstractions.Identity;
+using LeaveFlow.Application.Abstractions.Holidays;
 using LeaveFlow.Application.Abstractions.People;
 using LeaveFlow.Application.Identity;
 using LeaveFlow.Domain.Identity;
@@ -14,6 +15,7 @@ namespace LeaveFlow.SecurityTests.Web;
 public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
 {
     public InMemoryIdentityStore Store { get; }
+    public InMemoryHolidayStore HolidayStore { get; } = new();
     public AspNetPasswordHashingService Hasher { get; } = new();
 
     public const string Password = "Test.Passw0rd!";
@@ -52,6 +54,8 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
             services.AddSingleton<IConsultantManagementRepository>(Store);
             services.AddSingleton<IManagerManagementRepository>(Store);
             services.AddSingleton<IManagerConsultantAssignmentRepository>(Store);
+            services.AddSingleton<IOrganizationHolidayRepository>(HolidayStore);
+            services.AddSingleton<IOfficialHolidayRepository>(HolidayStore);
         });
     }
 

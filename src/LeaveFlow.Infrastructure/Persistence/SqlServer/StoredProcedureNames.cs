@@ -32,4 +32,15 @@ internal static class StoredProcedureNames
     internal const string ManagerConsultantsAssign = "dbo.usp_ManagerConsultants_Assign";
     internal const string ManagerConsultantsRemove = "dbo.usp_ManagerConsultants_Remove";
     internal const string ManagerConsultantsGetByManagerId = "dbo.usp_ManagerConsultants_GetByManagerId";
+    internal const string HolidayDefinitionsGetAll = "dbo.usp_HolidayDefinitions_GetAll";
+    internal const string HolidayDefinitionsGetById = "dbo.usp_HolidayDefinitions_GetById";
+    internal const string HolidayDefinitionsCreate = "dbo.usp_HolidayDefinitions_Create";
+    internal const string HolidayDefinitionsUpdate = "dbo.usp_HolidayDefinitions_Update";
+    internal const string HolidayDefinitionsSetActive = "dbo.usp_HolidayDefinitions_SetActive";
+    internal const string HolidayDefinitionsDelete = "dbo.usp_HolidayDefinitions_Delete";
+    internal const string OfficialHolidayDefinitionsGetAll = "dbo.usp_OfficialHolidayDefinitions_GetAll";
+    internal const string OfficialHolidayDefinitionsGetById = "dbo.usp_OfficialHolidayDefinitions_GetById";
+    internal const string OfficialHolidayDefinitionsCreate = "dbo.usp_OfficialHolidayDefinitions_Create";
+    internal const string OfficialHolidayDefinitionsUpdate = "dbo.usp_OfficialHolidayDefinitions_Update";
+    internal const string OfficialHolidayDefinitionsDelete = "dbo.usp_OfficialHolidayDefinitions_Delete";
 }

@@ -243,3 +243,33 @@ Stage 4 - Consultant & Manager Management.
 ### Next Step
 
 Stage 5 - Holiday Management.
+
+## 2026-08-27 - Stage 5 Organization Holiday & Official Holiday Management
+
+### Changes Made
+
+- Added organization holiday and official holiday application models, validation, date-range helper, services, and repository contracts.
+- Added Dapper stored-procedure repositories for holiday list/detail/create/update/delete operations.
+- Wrapped holiday write operations in explicit SQL transactions from the repository layer.
+- Added SQL scripts for holiday date-range columns, holiday management indexes, and stored procedures.
+- Added administrator MVC screens for organization holiday and official holiday list/create/edit/detail/delete workflows.
+- Added organization holiday active/inactive workflow.
+- Preserved Stage 4 authentication, authorization, and people management behavior.
+- Did not implement consultant leave requests, approvals, calendar, timeline, reporting, Azure AI, or Docker.
+
+### Test Results
+
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors during implementation.
+- `dotnet test --no-build`: succeeded. Total tests: 79 passed, 0 failed, 0 skipped (Unit 25, Integration 16, Security 38).
+
+### Security Review
+
+- No Entity Framework, DbContext, `CommandType.Text`, or raw SQL in application C# code.
+- Holiday management endpoints are administrator-only.
+- MVC state-changing holiday actions require antiforgery tokens.
+- Create/edit actions use explicit view models and application input models instead of binding persistence models.
+- Database access remains stored-procedure-only through Dapper repositories.
+
+### Next Step
+
+Stage 6 - Consultant Leave Request.

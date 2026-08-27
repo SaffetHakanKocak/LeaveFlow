@@ -63,6 +63,7 @@ Security is a core design requirement for LeaveFlow, not a later enhancement. Th
 - Backend authorization is required. Hiding UI controls is not a security control.
 - Administrator-only policies protect consultant and manager management screens and state-changing actions.
 - Consultant detail pages reuse object-level authorization so consultants can view only their own profile and managers can view only assigned consultants.
+- Administrator-only policies protect organization and official holiday management screens and state-changing actions.
 
 ### Data Access
 
@@ -154,6 +155,15 @@ Security tests should cover:
 - MVC management POST actions use antiforgery validation and bind explicit input models to reduce overposting risk.
 - People-management data access continues to use Dapper stored procedure calls only.
 - Least-privilege database guidance now includes the approved Stage 4 management procedures.
+
+## Stage 5 Security Review
+
+- Holiday management screens are administrator-only.
+- Consultant and manager users are denied from holiday management endpoints.
+- Holiday create, update, set-active, and delete POST actions require antiforgery tokens.
+- Holiday input uses explicit view models and application input models to reduce overposting risk.
+- Holiday data access continues to use Dapper stored procedure calls only, with explicit transactions around write operations.
+- Least-privilege database guidance now includes the approved Stage 5 holiday procedures.
 
 ## Open Security Decisions
 

@@ -65,7 +65,7 @@ Planned contents:
 
 Application code may depend on Domain abstractions but must not know SQL details.
 
-Current status: references Domain and contains dependency injection registration, data access contracts for connections, transactions, role/user reads, authentication/authorization services, login settings, object-level consultant access evaluation, and people management services for consultants, managers, and assignments.
+Current status: references Domain and contains dependency injection registration, data access contracts for connections, transactions, role/user reads, authentication/authorization services, login settings, object-level consultant access evaluation, people management services, and holiday management services.
 
 ### LeaveFlow.Infrastructure
 
@@ -83,7 +83,7 @@ Planned contents:
 
 Infrastructure may reference Application and Domain contracts.
 
-Current status: references Application and Domain. Contains SQL Server connection factory, transaction factory, Dapper stored-procedure repositories, ASP.NET Identity password hashing, audit/login-attempt persistence, development-only identity bootstrap, and people management repositories. No Entity Framework, DbContext, generic repository, JWT, or leave workflow implementation exists.
+Current status: references Application and Domain. Contains SQL Server connection factory, transaction factory, Dapper stored-procedure repositories, ASP.NET Identity password hashing, audit/login-attempt persistence, development-only identity bootstrap, people management repositories, and holiday repositories with transaction-wrapped write operations. No Entity Framework, DbContext, generic repository, JWT, or leave workflow implementation exists.
 
 ### LeaveFlow.Api
 
@@ -116,7 +116,7 @@ Planned contents:
 
 The web layer must not be treated as the source of authorization truth.
 
-Current status: MVC host exists with Home, login/logout, access denied, cookie authentication, antiforgery, a protected consultant-resource probe endpoint used for object-level authorization tests, and administrator screens for consultant/manager management. Leave, holiday, timeline, calendar, and reporting screens are not implemented.
+Current status: MVC host exists with Home, login/logout, access denied, cookie authentication, antiforgery, a protected consultant-resource probe endpoint used for object-level authorization tests, administrator screens for consultant/manager management, and administrator screens for organization/official holiday management. Leave request, approval, timeline, calendar, and reporting screens are not implemented.
 
 ## Dependency Direction
 
@@ -176,6 +176,8 @@ Current data access contracts:
 - `IConsultantManagementRepository`
 - `IManagerManagementRepository`
 - `IManagerConsultantAssignmentRepository`
+- `IOrganizationHolidayRepository`
+- `IOfficialHolidayRepository`
 
 Current repository implementations call stored procedures through Dapper `CommandDefinition` with `CommandType.StoredProcedure`. Stored procedure names are centralized in Infrastructure and user input is not accepted as a procedure name.
 
@@ -186,6 +188,7 @@ Authentication and authorization:
 - `ILoginService` authenticates against stored password hashes, records lockout, and writes login/audit events.
 - `IConsultantResourceAuthorizationService` enforces object-level consultant access in application code.
 - `IConsultantManagementService` and `IManagerManagementService` validate people-management input and keep controller models away from persistence details.
+- `IOrganizationHolidayService` and `IOfficialHolidayService` validate holiday ranges and normalize list filters.
 
 ## Planned Domain Modules
 

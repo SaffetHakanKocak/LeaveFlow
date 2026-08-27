@@ -237,3 +237,63 @@ Evaluate consultant resource access in `IConsultantResourceAuthorizationService`
 - Object-level rules are unit-testable without SQL Server.
 - Stored procedures remain the data source for identities and assignments.
 - Leave request authorization in later stages should reuse the same evaluator.
+
+## ADR-0013 - Holiday Day Rows Are Regenerated On Update
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+Holiday definitions own generated day rows for inclusive date ranges. Updating a date range can leave stale child rows if changes are applied incrementally.
+
+### Decision
+
+For holiday updates, update the definition, delete the existing day rows, and regenerate the full inclusive day range in one transaction.
+
+### Consequences
+
+- Parent and child rows remain consistent.
+- The stored procedures stay straightforward and auditable.
+- Update operations rewrite child day rows even when only the name changes.
+
+## ADR-0014 - Holiday Deletes Remove Child Rows First
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+Holiday day rows reference holiday definitions. Delete behavior must preserve referential integrity without relying on hidden cascade behavior.
+
+### Decision
+
+Delete child day rows first, then delete the definition row, inside the same transaction-wrapped repository operation.
+
+### Consequences
+
+- Referential integrity is explicit in reviewed stored procedure scripts.
+- No broad cascade delete setting is required.
+- Future tables referencing holiday definitions must be reviewed before delete behavior changes.
+
+## ADR-0015 - Holiday Overlaps Are Allowed, Exact Duplicates Are Rejected
+
+Date: 2026-08-27
+
+Status: accepted
+
+### Context
+
+Organization holidays and official holidays may legitimately overlap. For example, an internal company closure can overlap an official public holiday.
+
+### Decision
+
+Reject exact duplicates by name plus inclusive date range. Allow partial and nested overlaps between different holiday definitions.
+
+### Consequences
+
+- Administrators can model real-world overlapping holidays.
+- Duplicate records for the same holiday range are blocked.
+- Reporting or availability logic in later stages must decide how to combine overlapping holiday days.

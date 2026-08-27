@@ -1,4 +1,5 @@
 using LeaveFlow.Application.Abstractions.Data;
+using LeaveFlow.Application.Abstractions.Holidays;
 using LeaveFlow.Application.Abstractions.Identity;
 using LeaveFlow.Application.Abstractions.People;
 using LeaveFlow.Infrastructure.Identity;
@@ -44,6 +45,8 @@ public static class DependencyInjection
         services.AddScoped<IConsultantManagementRepository, ConsultantManagementRepository>();
         services.AddScoped<IManagerManagementRepository, ManagerManagementRepository>();
         services.AddScoped<IManagerConsultantAssignmentRepository, ManagerConsultantAssignmentRepository>();
+        services.AddScoped<IOrganizationHolidayRepository, OrganizationHolidayRepository>();
+        services.AddScoped<IOfficialHolidayRepository, OfficialHolidayRepository>();
         services.AddScoped<DevelopmentIdentityRepository>();
         services.AddHostedService<DevelopmentIdentityBootstrapHostedService>();
 
