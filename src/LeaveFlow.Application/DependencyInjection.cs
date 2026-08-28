@@ -1,10 +1,12 @@
 using LeaveFlow.Application.Abstractions.Authorization;
+using LeaveFlow.Application.Abstractions.Calendar;
 using LeaveFlow.Application.Abstractions.Holidays;
 using LeaveFlow.Application.Abstractions.Identity;
 using LeaveFlow.Application.Abstractions.LeaveRequests;
 using LeaveFlow.Application.Abstractions.People;
 using LeaveFlow.Application.Abstractions.Timeline;
 using LeaveFlow.Application.Authorization;
+using LeaveFlow.Application.Calendar;
 using LeaveFlow.Application.Holidays;
 using LeaveFlow.Application.Identity;
 using LeaveFlow.Application.LeaveRequests;
@@ -30,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<ILeaveRequestService, LeaveRequestService>();
         services.AddScoped<ILeaveReviewService, LeaveReviewService>();
         services.AddScoped<IWorkforceTimelineService, WorkforceTimelineService>();
+        services.AddScoped<IOrganizationCalendarService, OrganizationCalendarService>();
 
         var options = services.AddOptions<AuthenticationSettings>();
         if (configuration is not null)

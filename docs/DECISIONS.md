@@ -437,3 +437,64 @@ Managers never control their effective manager scope through request parameters.
 - Manager `managerId` tampering is ignored.
 - Database queries remain scoped through `ManagerConsultants`.
 - The UI is not the source of authorization truth.
+
+## ADR-0023 - Organization Calendar Uses Unified Events Without A Client Calendar Dependency
+
+Date: 2026-08-28
+
+Status: accepted
+
+### Context
+
+The organization calendar needs month/week views, role-aware server data, and open-source friendly implementation without adding unnecessary frontend weight.
+
+### Decision
+
+Use a server-rendered Razor/Bootstrap calendar grid instead of adding FullCalendar or another client calendar package in this stage. Normalize day-level database rows into a unified `CalendarEvent` model in the application layer.
+
+### Consequences
+
+- No new frontend package, CDN dependency, or offline production concern is introduced.
+- Calendar rendering stays simple and testable for the current scope.
+- A richer client calendar library can still be evaluated later if drag/drop, external sync, or complex recurrence is required.
+
+## ADR-0024 - Organization Calendar Scope Is Role-Aware At The Backend
+
+Date: 2026-08-28
+
+Status: accepted
+
+### Context
+
+Calendar responses can leak sensitive leave visibility if filtering is done only in the browser or trusted from querystring parameters.
+
+### Decision
+
+Use separate role-aware calendar stored procedures for administrator, manager, and consultant scopes. The application service resolves the current actor's manager or consultant id server-side and ignores tampered scope parameters for non-admin users.
+
+### Consequences
+
+- Consultants receive only their own leave plus holidays.
+- Managers receive only assigned consultant leave plus holidays.
+- Administrators can use optional manager/consultant filters.
+- Calendar list and detail endpoints share the same backend authorization principle.
+
+## ADR-0025 - Cap Organization Calendar Date Range At 62 Days
+
+Date: 2026-08-28
+
+Status: accepted
+
+### Context
+
+The calendar combines leave and holiday day rows and can become expensive or visually noisy for arbitrary date ranges.
+
+### Decision
+
+Default organization calendar to month view and cap requested ranges at 62 inclusive days, matching the workforce timeline approach.
+
+### Consequences
+
+- Month and two-month planning windows are supported.
+- Large reporting-style queries are deferred to the future reporting/dashboard stage.
+- Calendar UI stays responsive and predictable.

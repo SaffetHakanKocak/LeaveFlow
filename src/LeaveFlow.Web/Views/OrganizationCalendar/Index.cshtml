@@ -1,0 +1,257 @@
+@using LeaveFlow.Application.Calendar
+@model OrganizationCalendarViewModel
+@{
+    ViewData["Title"] = "Organization Calendar";
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Organization Calendar</h1>
+        <p class="text-secondary mb-0">Approved leave and holidays for your authorized scope.</p>
+    </div>
+    @if (Model.Calendar is not null)
+    {
+        <div class="btn-group" role="group" aria-label="Calendar navigation">
+            <a class="btn btn-outline-secondary" asp-action="Index" asp-route-startDate="@Model.PreviousStartDate.ToString("yyyy-MM-dd")" asp-route-endDate="@Model.PreviousEndDate.ToString("yyyy-MM-dd")" asp-route-viewMode="@Model.ViewMode" asp-route-managerId="@Model.ManagerId" asp-route-consultantId="@Model.ConsultantId">Previous</a>
+            <a class="btn btn-outline-primary" asp-action="Index" asp-route-viewMode="@Model.ViewMode">Today</a>
+            <a class="btn btn-outline-secondary" asp-action="Index" asp-route-startDate="@Model.NextStartDate.ToString("yyyy-MM-dd")" asp-route-endDate="@Model.NextEndDate.ToString("yyyy-MM-dd")" asp-route-viewMode="@Model.ViewMode" asp-route-managerId="@Model.ManagerId" asp-route-consultantId="@Model.ConsultantId">Next</a>
+        </div>
+    }
+</div>
+
+<form method="get" class="lf-panel mb-3">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row g-2 align-items-end">
+        <div class="col-md-2">
+            <label class="form-label" for="viewMode">View</label>
+            <select class="form-select" id="viewMode" name="viewMode">
+                <option value="@OrganizationCalendarDateRange.MonthView" selected="@(Model.ViewMode == OrganizationCalendarDateRange.MonthView)">Month</option>
+                <option value="@OrganizationCalendarDateRange.WeekView" selected="@(Model.ViewMode == OrganizationCalendarDateRange.WeekView)">Week</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label" for="startDate">Start</label>
+            <input class="form-control" id="startDate" name="startDate" type="date" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+            <span class="text-danger field-validation-valid" data-valmsg-for="StartDate"></span>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label" for="endDate">End</label>
+            <input class="form-control" id="endDate" name="endDate" type="date" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+            <span class="text-danger field-validation-valid" data-valmsg-for="EndDate"></span>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="consultantId">Consultant filter</label>
+            <input class="form-control" id="consultantId" name="consultantId" value="@Model.ConsultantId" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="managerId">Manager filter</label>
+            <input class="form-control" id="managerId" name="managerId" value="@Model.ManagerId" />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
+        </div>
+    </div>
+</form>
+
+@if (Model.Calendar is null)
+{
+    <div class="lf-panel">
+        <p class="text-secondary mb-0">Choose a date range up to @OrganizationCalendarSettings.MaxRangeDays days.</p>
+    </div>
+}
+else
+{
+    <div class="lf-panel mb-3">
+        <div class="d-flex flex-wrap gap-3 small">
+            <span><span class="lf-cal-legend lf-event-leave"></span> Leave</span>
+            <span><span class="lf-cal-legend lf-event-organizationholiday"></span> Organization Holiday</span>
+            <span><span class="lf-cal-legend lf-event-officialholiday"></span> Official Holiday</span>
+            <span><span class="lf-cal-legend lf-day-today"></span> Today</span>
+        </div>
+    </div>
+
+    @if (Model.Calendar.Events.Count == 0)
+    {
+        <div class="lf-panel">
+            <p class="text-secondary mb-0">No calendar events found for this range.</p>
+        </div>
+    }
+
+    <section class="lf-calendar" aria-label="Organization calendar">
+        <div class="lf-weekdays" aria-hidden="true">
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+            <span>Sun</span>
+        </div>
+        <div class="lf-calendar-grid">
+            @foreach (var day in Model.Calendar.Days)
+            {
+                var events = Model.Calendar.Events
+                    .Where(calendarEvent => calendarEvent.StartDate <= day.Date && calendarEvent.EndDate >= day.Date)
+                    .ToArray();
+                <article class="lf-calendar-day @(day.IsCurrentMonth ? string.Empty : "lf-muted-day") @(day.IsWeekend ? "lf-weekend-day" : string.Empty) @(day.IsToday ? "lf-today-day" : string.Empty)">
+                    <div class="lf-day-number">
+                        <span>@day.Date.Day</span>
+                        @if (day.IsToday)
+                        {
+                            <span class="visually-hidden">Today</span>
+                        }
+                    </div>
+                    <div class="lf-event-list">
+                        @foreach (var calendarEvent in events)
+                        {
+                            <a class="lf-calendar-event @EventCssClass(calendarEvent.EventType)" asp-action="Details" asp-route-eventType="@calendarEvent.EventType" asp-route-eventId="@calendarEvent.EventId" asp-route-returnUrl="@returnUrl" title="@EventTitle(calendarEvent)">
+                                <span class="lf-event-type">@EventTypeLabel(calendarEvent.EventType)</span>
+                                <span>@calendarEvent.Title</span>
+                            </a>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
+}
+
+<style>
+    .lf-calendar {
+        overflow-x: auto;
+    }
+
+    .lf-weekdays,
+    .lf-calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(132px, 1fr));
+        min-width: 760px;
+    }
+
+    .lf-weekdays span {
+        padding: .5rem .75rem;
+        color: #5f6368;
+        font-size: .875rem;
+        font-weight: 600;
+    }
+
+    .lf-calendar-day {
+        min-height: 136px;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+        padding: .5rem;
+    }
+
+    .lf-weekend-day {
+        background: #f8fafc;
+    }
+
+    .lf-muted-day {
+        color: #9ca3af;
+        background-image: linear-gradient(135deg, rgba(243, 244, 246, .8), rgba(255, 255, 255, .8));
+    }
+
+    .lf-today-day {
+        outline: 2px solid #2563eb;
+        outline-offset: -2px;
+    }
+
+    .lf-day-number {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 700;
+        margin-bottom: .4rem;
+    }
+
+    .lf-event-list {
+        display: grid;
+        gap: .35rem;
+    }
+
+    .lf-calendar-event {
+        display: grid;
+        gap: .1rem;
+        border-left: 4px solid #6b7280;
+        border-radius: 6px;
+        padding: .35rem .45rem;
+        color: #111827;
+        font-size: .8rem;
+        line-height: 1.2;
+        text-decoration: none;
+        word-break: break-word;
+    }
+
+    .lf-calendar-event:hover {
+        text-decoration: underline;
+    }
+
+    .lf-event-type {
+        color: #374151;
+        font-size: .68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .lf-event-leave {
+        background: #ecfdf5;
+        border-color: #047857;
+    }
+
+    .lf-event-organizationholiday {
+        background: #eff6ff;
+        border-color: #2563eb;
+    }
+
+    .lf-event-officialholiday {
+        background: #fff7ed;
+        border-color: #c2410c;
+    }
+
+    .lf-cal-legend {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 1px solid rgba(0, 0, 0, .18);
+        border-left-width: 4px;
+        vertical-align: text-bottom;
+        margin-right: 4px;
+    }
+
+    .lf-day-today {
+        background: #fff;
+        border: 2px solid #2563eb;
+    }
+</style>
+
+@functions {
+    private static string EventCssClass(string eventType)
+    {
+        return eventType switch
+        {
+            CalendarEventTypes.Leave => "lf-event-leave",
+            CalendarEventTypes.OrganizationHoliday => "lf-event-organizationholiday",
+            CalendarEventTypes.OfficialHoliday => "lf-event-officialholiday",
+            _ => string.Empty
+        };
+    }
+
+    private static string EventTypeLabel(string eventType)
+    {
+        return eventType switch
+        {
+            CalendarEventTypes.Leave => "Leave",
+            CalendarEventTypes.OrganizationHoliday => "Org holiday",
+            CalendarEventTypes.OfficialHoliday => "Official",
+            _ => "Event"
+        };
+    }
+
+    private static string EventTitle(CalendarEvent calendarEvent)
+    {
+        var dateText = calendarEvent.StartDate == calendarEvent.EndDate
+            ? calendarEvent.StartDate.ToString("yyyy-MM-dd")
+            : $"{calendarEvent.StartDate:yyyy-MM-dd} - {calendarEvent.EndDate:yyyy-MM-dd}";
+        return $"{EventTypeLabel(calendarEvent.EventType)}: {calendarEvent.Title} ({dateText})";
+    }
+}

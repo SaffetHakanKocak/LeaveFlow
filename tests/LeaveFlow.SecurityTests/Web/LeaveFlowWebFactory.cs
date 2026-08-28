@@ -1,3 +1,4 @@
+using LeaveFlow.Application.Abstractions.Calendar;
 using LeaveFlow.Application.Abstractions.Identity;
 using LeaveFlow.Application.Abstractions.Holidays;
 using LeaveFlow.Application.Abstractions.People;
@@ -21,6 +22,7 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
     public InMemoryHolidayStore HolidayStore { get; } = new();
     public InMemoryLeaveRequestStore LeaveRequestStore { get; } = new();
     public InMemoryWorkforceTimelineStore TimelineStore { get; } = new();
+    public InMemoryOrganizationCalendarStore CalendarStore { get; } = new();
     public AspNetPasswordHashingService Hasher { get; } = new();
 
     public const string Password = "Test.Passw0rd!";
@@ -30,6 +32,10 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
     public Guid InactiveProfileConsultantId { get; } = Guid.NewGuid();
     public Guid ManagerOneId { get; } = Guid.NewGuid();
     public Guid ManagerTwoId { get; } = Guid.NewGuid();
+    public Guid CalendarConsultantOneLeaveId { get; private set; }
+    public Guid CalendarConsultantTwoLeaveId { get; private set; }
+    public Guid CalendarOrganizationHolidayId { get; private set; }
+    public Guid CalendarOfficialHolidayId { get; private set; }
 
     public LeaveFlowWebFactory()
     {
@@ -70,6 +76,7 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
             services.AddSingleton<IOfficialHolidayRepository>(HolidayStore);
             services.AddSingleton<ILeaveRequestRepository>(LeaveRequestStore);
             services.AddSingleton<IWorkforceTimelineRepository>(TimelineStore);
+            services.AddSingleton<IOrganizationCalendarRepository>(CalendarStore);
         });
     }
 
@@ -90,6 +97,8 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
         TimelineStore.AddConsultant(ConsultantOneId, "Consultant One", ConsultantOneEmail);
         TimelineStore.AddConsultant(ConsultantTwoId, "Consultant Two", ConsultantTwoEmail);
         TimelineStore.AddConsultant(InactiveProfileConsultantId, "Inactive Profile", InactiveProfileEmail, isActive: false);
+        CalendarStore.AddConsultant(ConsultantOneId, "Consultant One");
+        CalendarStore.AddConsultant(ConsultantTwoId, "Consultant Two");
         _ = ((IConsultantManagementRepository)Store).SetActiveAsync(InactiveProfileConsultantId, false).GetAwaiter().GetResult();
         Store.SetConsultant(locked.Id, Guid.NewGuid());
 
@@ -103,6 +112,13 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
         TimelineStore.AssignManager(ManagerTwoId, ConsultantTwoId);
         TimelineStore.AddApprovedLeave(ConsultantOneId, "Manager one visible leave", new DateOnly(2026, 9, 10), new DateOnly(2026, 9, 11));
         TimelineStore.AddApprovedLeave(ConsultantTwoId, "Manager two hidden leave", new DateOnly(2026, 9, 10), new DateOnly(2026, 9, 12));
+        CalendarStore.AssignManager(ManagerOneId, ConsultantOneId);
+        CalendarStore.AssignManager(ManagerTwoId, ConsultantTwoId);
+        CalendarConsultantOneLeaveId = CalendarStore.AddLeave(ConsultantOneId, "Calendar manager one visible leave", new DateOnly(2026, 9, 10), new DateOnly(2026, 9, 11));
+        CalendarConsultantTwoLeaveId = CalendarStore.AddLeave(ConsultantTwoId, "Calendar manager two hidden leave", new DateOnly(2026, 9, 10), new DateOnly(2026, 9, 12));
+        _ = CalendarStore.AddLeave(ConsultantOneId, "Calendar pending invisible leave", new DateOnly(2026, 9, 13), new DateOnly(2026, 9, 13), approved: false);
+        CalendarOrganizationHolidayId = CalendarStore.AddOrganizationHoliday("Company Calendar Day", new DateOnly(2026, 9, 15), new DateOnly(2026, 9, 15));
+        CalendarOfficialHolidayId = CalendarStore.AddOfficialHoliday("Public Calendar Day", new DateOnly(2026, 9, 16), new DateOnly(2026, 9, 16));
 
         var lockedUser = Store.GetUser(LockedEmail);
         Store.AddUser(

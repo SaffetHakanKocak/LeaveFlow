@@ -55,4 +55,10 @@ internal static class StoredProcedureNames
     internal const string LeaveRequestsReject = "dbo.usp_LeaveRequests_Reject";
     internal const string WorkforceTimelineGetForAdmin = "dbo.usp_WorkforceTimeline_GetForAdmin";
     internal const string WorkforceTimelineGetForManager = "dbo.usp_WorkforceTimeline_GetForManager";
+    internal const string OrganizationCalendarGetForAdmin = "dbo.usp_OrganizationCalendar_GetForAdmin";
+    internal const string OrganizationCalendarGetForManager = "dbo.usp_OrganizationCalendar_GetForManager";
+    internal const string OrganizationCalendarGetForConsultant = "dbo.usp_OrganizationCalendar_GetForConsultant";
+    internal const string OrganizationCalendarGetDetailForAdmin = "dbo.usp_OrganizationCalendar_GetDetailForAdmin";
+    internal const string OrganizationCalendarGetDetailForManager = "dbo.usp_OrganizationCalendar_GetDetailForManager";
+    internal const string OrganizationCalendarGetDetailForConsultant = "dbo.usp_OrganizationCalendar_GetDetailForConsultant";
 }

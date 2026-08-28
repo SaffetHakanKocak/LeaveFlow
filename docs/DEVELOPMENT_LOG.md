@@ -363,3 +363,33 @@ Stage 8 - Workforce Leave Timeline.
 ### Next Step
 
 Stage 9 - Organization Calendar.
+
+## 2026-08-28 - Stage 9 Organization Calendar
+
+### Changes Made
+
+- Added organization calendar application models, event type constants, date range generation, validation, event normalization, service, and repository contract.
+- Added Dapper stored-procedure repository implementation for role-aware calendar list and detail queries.
+- Added SQL scripts for admin, manager, and consultant organization calendar list procedures.
+- Added SQL scripts for admin, manager, and consultant calendar event detail procedures.
+- Added date-first indexes for organization and official holiday day range reads.
+- Added authenticated MVC Organization Calendar screen with month/week view, today, previous/next, event legend, empty state, responsive calendar grid, and event detail page.
+- Preserved Stage 8 workforce timeline behavior and did not implement reporting/dashboard, Azure AI, Docker, or API JWT.
+
+### Test Results
+
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors during implementation.
+- `dotnet test --no-build`: succeeded. Total tests: 159 passed, 0 failed, 0 skipped (Unit 49, Integration 44, Security 66).
+
+### Security Review
+
+- No Entity Framework, DbContext, `CommandType.Text`, or raw SQL in application C# code.
+- Calendar responses are role-aware and scoped server-side.
+- Consultants cannot see other consultant names or leave details in calendar list/detail responses.
+- Managers cannot see other-team leave events or details.
+- Active organization and official holidays are visible to authenticated users.
+- Calendar detail access prevents leave IDOR through role-specific stored procedures.
+
+### Next Step
+
+Stage 10 - Reporting & Dashboard.

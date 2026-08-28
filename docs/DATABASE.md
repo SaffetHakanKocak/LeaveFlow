@@ -152,6 +152,12 @@ Current stored procedures:
 - `dbo.usp_LeaveRequests_Reject`
 - `dbo.usp_WorkforceTimeline_GetForAdmin`
 - `dbo.usp_WorkforceTimeline_GetForManager`
+- `dbo.usp_OrganizationCalendar_GetForAdmin`
+- `dbo.usp_OrganizationCalendar_GetForManager`
+- `dbo.usp_OrganizationCalendar_GetForConsultant`
+- `dbo.usp_OrganizationCalendar_GetDetailForAdmin`
+- `dbo.usp_OrganizationCalendar_GetDetailForManager`
+- `dbo.usp_OrganizationCalendar_GetDetailForConsultant`
 - Development-only bootstrap procedures: `dbo.usp_Users_Upsert`, `dbo.usp_UserRoles_Ensure`, `dbo.usp_Consultants_EnsureForUser`, `dbo.usp_Managers_EnsureForUser`, `dbo.usp_ManagerConsultants_Ensure`
 
 Application code must refer to stored procedure names through centralized Infrastructure constants and must not accept procedure names from user input.
@@ -225,6 +231,16 @@ Administrators use `dbo.usp_WorkforceTimeline_GetForAdmin` and can optionally fi
 Timeline procedures page consultants server-side, return one or more rows per consultant for the selected date range, and avoid per-consultant loops. Application code builds the day matrix from these rows instead of passing database rows directly to the view.
 
 `db/002_Indexes/006_CreateWorkforceTimelineIndexes.sql` adds `IX_ConsultantLeaveDays_Date_Consultant` on `(LeaveDate, ConsultantId)` including `LeaveRequestId` for date-range timeline reads.
+
+## Organization Calendar Policy
+
+The organization calendar combines three day-level sources: approved consultant leave from `ConsultantLeaveDays`, active organization holidays from `HolidayDays`, and active official holidays from `OfficialHolidayDays`. Pending and rejected leave requests are not calendar inputs.
+
+Administrators use `dbo.usp_OrganizationCalendar_GetForAdmin` and can optionally filter leave events by manager or consultant. Managers use `dbo.usp_OrganizationCalendar_GetForManager`, which scopes leave events through `ManagerConsultants` while still returning organization and official holidays. Consultants use `dbo.usp_OrganizationCalendar_GetForConsultant`, which returns only their own leave events plus holidays and does not return other consultant names.
+
+Calendar detail procedures follow the same role split. Leave details require approved status and role-appropriate consultant scope. Holiday details require active definitions and are visible to authenticated users.
+
+`db/002_Indexes/007_CreateOrganizationCalendarIndexes.sql` adds date-first indexes for `HolidayDays` and `OfficialHolidayDays`. `ConsultantLeaveDays` date-range reads continue to use the Stage 8 date-first index.
 
 ## Security Model
 

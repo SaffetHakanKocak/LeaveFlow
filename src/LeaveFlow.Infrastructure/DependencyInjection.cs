@@ -1,4 +1,5 @@
 using LeaveFlow.Application.Abstractions.Data;
+using LeaveFlow.Application.Abstractions.Calendar;
 using LeaveFlow.Application.Abstractions.Holidays;
 using LeaveFlow.Application.Abstractions.Identity;
 using LeaveFlow.Application.Abstractions.LeaveRequests;
@@ -51,6 +52,7 @@ public static class DependencyInjection
         services.AddScoped<IOfficialHolidayRepository, OfficialHolidayRepository>();
         services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
         services.AddScoped<IWorkforceTimelineRepository, WorkforceTimelineRepository>();
+        services.AddScoped<IOrganizationCalendarRepository, OrganizationCalendarRepository>();
         services.AddScoped<DevelopmentIdentityRepository>();
         services.AddHostedService<DevelopmentIdentityBootstrapHostedService>();
 

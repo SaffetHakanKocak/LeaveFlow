@@ -59,6 +59,12 @@
 -- GRANT EXECUTE ON OBJECT::dbo.usp_LeaveRequests_Reject TO [$(LeaveFlowAppUser)];
 -- GRANT EXECUTE ON OBJECT::dbo.usp_WorkforceTimeline_GetForAdmin TO [$(LeaveFlowAppUser)];
 -- GRANT EXECUTE ON OBJECT::dbo.usp_WorkforceTimeline_GetForManager TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_OrganizationCalendar_GetForAdmin TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_OrganizationCalendar_GetForManager TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_OrganizationCalendar_GetForConsultant TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_OrganizationCalendar_GetDetailForAdmin TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_OrganizationCalendar_GetDetailForManager TO [$(LeaveFlowAppUser)];
+-- GRANT EXECUTE ON OBJECT::dbo.usp_OrganizationCalendar_GetDetailForConsultant TO [$(LeaveFlowAppUser)];
 --
 -- Development-only bootstrap procedures must not be granted to the production application user:
 -- dbo.usp_Users_Upsert

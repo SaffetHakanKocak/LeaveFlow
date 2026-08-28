@@ -123,7 +123,7 @@ Deliverables:
 
 ## Phase 9 - Organization Calendar
 
-Status: next.
+Status: completed.
 
 Deliverables:
 
@@ -133,6 +133,8 @@ Deliverables:
 - Role-appropriate calendar scoping.
 
 ## Phase 10 - Reporting
+
+Status: next.
 
 Deliverables:
 

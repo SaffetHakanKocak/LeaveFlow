@@ -29,6 +29,12 @@
                                 <a class="nav-link text-dark" asp-controller="LeaveRequests" asp-action="Index">My Leave Requests</a>
                             </li>
                         }
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="OrganizationCalendar" asp-action="Index">Organization Calendar</a>
+                            </li>
+                        }
                         @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">

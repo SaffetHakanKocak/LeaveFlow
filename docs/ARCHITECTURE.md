@@ -65,7 +65,7 @@ Planned contents:
 
 Application code may depend on Domain abstractions but must not know SQL details.
 
-Current status: references Domain and contains dependency injection registration, data access contracts for connections, transactions, role/user reads, authentication/authorization services, login settings, object-level consultant access evaluation, people management services, holiday management services, consultant-scoped leave request services, manager/admin leave review services, and workforce timeline services/models.
+Current status: references Domain and contains dependency injection registration, data access contracts for connections, transactions, role/user reads, authentication/authorization services, login settings, object-level consultant access evaluation, people management services, holiday management services, consultant-scoped leave request services, manager/admin leave review services, workforce timeline services/models, and organization calendar services/models.
 
 ### LeaveFlow.Infrastructure
 
@@ -83,7 +83,7 @@ Planned contents:
 
 Infrastructure may reference Application and Domain contracts.
 
-Current status: references Application and Domain. Contains SQL Server connection factory, transaction factory, Dapper stored-procedure repositories, ASP.NET Identity password hashing, audit/login-attempt persistence, development-only identity bootstrap, people management repositories, holiday repositories with transaction-wrapped write operations, leave request repositories, approval/conflict stored procedure callers, and workforce timeline stored procedure callers. No Entity Framework, DbContext, generic repository, JWT, organization calendar, or reporting implementation exists.
+Current status: references Application and Domain. Contains SQL Server connection factory, transaction factory, Dapper stored-procedure repositories, ASP.NET Identity password hashing, audit/login-attempt persistence, development-only identity bootstrap, people management repositories, holiday repositories with transaction-wrapped write operations, leave request repositories, approval/conflict stored procedure callers, workforce timeline stored procedure callers, and organization calendar stored procedure callers. No Entity Framework, DbContext, generic repository, JWT, or reporting implementation exists.
 
 ### LeaveFlow.Api
 
@@ -116,7 +116,7 @@ Planned contents:
 
 The web layer must not be treated as the source of authorization truth.
 
-Current status: MVC host exists with Home, login/logout, access denied, cookie authentication, antiforgery, a protected consultant-resource probe endpoint used for object-level authorization tests, administrator screens for consultant/manager management, administrator screens for organization/official holiday management, consultant self-service leave request screens, manager/admin leave review screens, and manager/admin workforce timeline screens. Organization calendar and reporting screens are not implemented.
+Current status: MVC host exists with Home, login/logout, access denied, cookie authentication, antiforgery, a protected consultant-resource probe endpoint used for object-level authorization tests, administrator screens for consultant/manager management, administrator screens for organization/official holiday management, consultant self-service leave request screens, manager/admin leave review screens, manager/admin workforce timeline screens, and role-aware organization calendar screens. Reporting screens are not implemented.
 
 ## Dependency Direction
 
@@ -180,6 +180,7 @@ Current data access contracts:
 - `IOfficialHolidayRepository`
 - `ILeaveRequestRepository`
 - `IWorkforceTimelineRepository`
+- `IOrganizationCalendarRepository`
 
 Current repository implementations call stored procedures through Dapper `CommandDefinition` with `CommandType.StoredProcedure`. Stored procedure names are centralized in Infrastructure and user input is not accepted as a procedure name.
 
@@ -194,6 +195,7 @@ Authentication and authorization:
 - `ILeaveRequestService` resolves the current user's consultant profile server-side and scopes create/list/detail operations to that consultant.
 - `ILeaveReviewService` resolves reviewer role/manager scope server-side and delegates pending lists, conflict reads, and decisions to scoped stored procedures.
 - `IWorkforceTimelineService` resolves admin/manager role scope server-side, ignores manager filter tampering for managers, applies the 62-day range cap, and builds view-ready timeline rows/cells from repository rows.
+- `IOrganizationCalendarService` resolves admin/manager/consultant role scope server-side, ignores manager/consultant filter tampering for non-admin scopes, applies the 62-day range cap, and normalizes day-level database rows into unified calendar events.
 
 ## Planned Domain Modules
 
