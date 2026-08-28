@@ -149,15 +149,29 @@ Export foundation and report run auditing remain future enhancements.
 
 ## Phase 11 - Professional UI/UX Pass
 
-Status: next.
+Status: completed.
 
 Deliverables:
 
 - Improve visual consistency across existing MVC screens.
 - Refine dashboard/report readability and responsive behavior.
 - Polish navigation, spacing, empty states, forms, and tables without changing business scope.
+- Add responsive sidebar/topbar application shell.
+- Add light/dark theme support.
+- Add UI/security regression coverage for shell, role navigation, and antiforgery preservation.
 
-## Phase 12 - Hardening and Release Preparation
+## Phase 12 - Security Hardening
+
+Status: next.
+
+Deliverables:
+
+- Focused security review.
+- Authorization and CSRF hardening.
+- Error handling, headers, and cookie review.
+- Dependency and secret scanning readiness.
+
+## Phase 13 - Hardening and Release Preparation
 
 Deliverables:
 

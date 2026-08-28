@@ -558,3 +558,43 @@ Use Razor/Bootstrap summary cards and tables for the reporting UI in this stage.
 - No new frontend license, package, or CDN dependency is introduced.
 - Report data remains visible, filterable, and testable with server-rendered HTML.
 - Rich charts can be evaluated in a later professional UI/UX or export/reporting phase.
+
+## ADR-0029 - Use CSS Design Tokens For The MVC UI
+
+Date: 2026-08-28
+
+Status: accepted
+
+### Context
+
+The MVC UI needed a professional pass without changing business workflows or introducing a large frontend architecture.
+
+### Decision
+
+Centralize the visual language in `site.css` using CSS custom properties for typography, spacing, radius, shadows, surfaces, text colors, interaction states, forms, tables, badges, dashboard cards, calendar, and timeline styling.
+
+### Consequences
+
+- Existing Razor views can be polished without controller/service rewrites.
+- Light and dark mode can share the same component classes.
+- Future UI work has a clear token layer instead of scattered hard-coded colors.
+
+## ADR-0030 - Keep The Professional UI Pass On Existing Bootstrap Assets
+
+Date: 2026-08-28
+
+Status: accepted
+
+### Context
+
+Stage 11 allowed lightweight open-source UI/icon assets but did not require a new dependency. The project already vendors Bootstrap, jQuery, and jQuery Validation template assets with their licenses.
+
+### Decision
+
+Use the existing Bootstrap assets and custom CSS/JavaScript for the application shell, responsive behavior, and theme toggle. Do not add Bootstrap Icons, Chart.js, CDNs, or a new frontend package in this stage.
+
+### Consequences
+
+- No new third-party license, package restore, CDN, or offline production concern is introduced.
+- UI polish remains server-rendered and easy to test through MVC security tests.
+- A dedicated icon library can be evaluated later if the product needs richer iconography.

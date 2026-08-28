@@ -74,7 +74,7 @@ else
     @if (Model.Calendar.Events.Count == 0)
     {
         <div class="lf-panel">
-            <p class="text-secondary mb-0">No calendar events found for this range.</p>
+            <div class="lf-empty-state text-secondary">No calendar events found for this range.</div>
         </div>
     }
 
@@ -116,113 +116,6 @@ else
         </div>
     </section>
 }
-
-<style>
-    .lf-calendar {
-        overflow-x: auto;
-    }
-
-    .lf-weekdays,
-    .lf-calendar-grid {
-        display: grid;
-        grid-template-columns: repeat(7, minmax(132px, 1fr));
-        min-width: 760px;
-    }
-
-    .lf-weekdays span {
-        padding: .5rem .75rem;
-        color: #5f6368;
-        font-size: .875rem;
-        font-weight: 600;
-    }
-
-    .lf-calendar-day {
-        min-height: 136px;
-        border: 1px solid #e5e7eb;
-        background: #fff;
-        padding: .5rem;
-    }
-
-    .lf-weekend-day {
-        background: #f8fafc;
-    }
-
-    .lf-muted-day {
-        color: #9ca3af;
-        background-image: linear-gradient(135deg, rgba(243, 244, 246, .8), rgba(255, 255, 255, .8));
-    }
-
-    .lf-today-day {
-        outline: 2px solid #2563eb;
-        outline-offset: -2px;
-    }
-
-    .lf-day-number {
-        display: flex;
-        justify-content: space-between;
-        font-weight: 700;
-        margin-bottom: .4rem;
-    }
-
-    .lf-event-list {
-        display: grid;
-        gap: .35rem;
-    }
-
-    .lf-calendar-event {
-        display: grid;
-        gap: .1rem;
-        border-left: 4px solid #6b7280;
-        border-radius: 6px;
-        padding: .35rem .45rem;
-        color: #111827;
-        font-size: .8rem;
-        line-height: 1.2;
-        text-decoration: none;
-        word-break: break-word;
-    }
-
-    .lf-calendar-event:hover {
-        text-decoration: underline;
-    }
-
-    .lf-event-type {
-        color: #374151;
-        font-size: .68rem;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
-
-    .lf-event-leave {
-        background: #ecfdf5;
-        border-color: #047857;
-    }
-
-    .lf-event-organizationholiday {
-        background: #eff6ff;
-        border-color: #2563eb;
-    }
-
-    .lf-event-officialholiday {
-        background: #fff7ed;
-        border-color: #c2410c;
-    }
-
-    .lf-cal-legend {
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        border: 1px solid rgba(0, 0, 0, .18);
-        border-left-width: 4px;
-        vertical-align: text-bottom;
-        margin-right: 4px;
-    }
-
-    .lf-day-today {
-        background: #fff;
-        border: 2px solid #2563eb;
-    }
-</style>
 
 @functions {
     private static string EventCssClass(string eventType)

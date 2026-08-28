@@ -88,6 +88,8 @@ Security is a core design requirement for LeaveFlow, not a later enhancement. Th
 - Production cookie `SecurePolicy` is Always. Development/Testing uses SameAsRequest so local HTTP test hosts can authenticate.
 - Sliding expiration is enabled. Ticket lifetime is `LeaveFlow:Authentication:Cookie:ExpireTimeSpanMinutes` (default 480). This keeps an active workday session alive without a persistent remember-me flag.
 - Model validation at request boundaries.
+- Authenticated navigation is role-aware for usability, while backend authorization remains the source of truth.
+- Theme preference is stored client-side only and does not contain sensitive information.
 
 ### API Security
 
@@ -220,6 +222,15 @@ Security tests should cover:
 - Reporting stored procedures keep manager scoping tied to `ManagerConsultants`.
 - Reporting data access remains Dapper stored-procedure-only with parameterized calls and centralized procedure names.
 - Security tests cover anonymous denial, consultant report denial, manager scoping, manager filter tampering, admin visibility, and consultant dashboard privacy.
+
+## Stage 11 Security Review
+
+- UI refactor did not change controller authorization attributes, application services, stored procedure callers, or object-level authorization rules.
+- Logout remains a POST form and keeps antiforgery protection.
+- Critical MVC forms keep antiforgery tokens after the layout/design refresh.
+- Role-aware sidebar links are convenience only; unauthorized protected routes remain denied by backend policies.
+- User-generated leave reason and review note data remains Razor-encoded; the Reports view no longer uses raw `HtmlString` rendering.
+- Security regression tests cover login rendering, shell/theme toggle presence, role-specific navigation, antiforgery token presence, and denied unauthorized routes.
 
 ## Open Security Decisions
 

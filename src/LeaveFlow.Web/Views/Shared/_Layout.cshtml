@@ -1,105 +1,102 @@
-﻿<!DOCTYPE html>
+@{
+    var title = ViewData["Title"]?.ToString() ?? "LeaveFlow";
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    var primaryRole = User.IsInRole("Administrator")
+        ? "Administrator"
+        : User.IsInRole("Manager")
+            ? "Manager"
+            : User.IsInRole("Consultant")
+                ? "Consultant"
+                : "User";
+    var userInitial = string.IsNullOrWhiteSpace(User.Identity?.Name)
+        ? "U"
+        : User.Identity.Name[0].ToString().ToUpperInvariant();
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - LeaveFlow</title>
+    <title>@title - LeaveFlow</title>
+    <script>
+        (function () {
+            var savedTheme = localStorage.getItem("leaveflow-theme");
+            var systemTheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+            document.documentElement.setAttribute("data-bs-theme", savedTheme || systemTheme);
+        })();
+    </script>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LeaveFlow.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LeaveFlow</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        @if (User.IsInRole("Consultant"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="LeaveRequests" asp-action="Index">My Leave Requests</a>
-                            </li>
-                        }
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="OrganizationCalendar" asp-action="Index">Organization Calendar</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="LeaveReviews" asp-action="Index">Pending Requests</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="WorkforceTimeline" asp-action="Index">Workforce Timeline</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Reports" asp-action="Index">Reports</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Administrator"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Consultants" asp-action="Index">Consultants</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Managers" asp-action="Index">Managers</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="OrganizationHolidays" asp-action="Index">Organization Holidays</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="OfficialHolidays" asp-action="Index">Official Holidays</a>
-                            </li>
-                        }
-                    </ul>
-                    <ul class="navbar-nav">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="nav-item">
-                                <span class="nav-link text-dark">@User.Identity.Name</span>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-link nav-link">Sign out</button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Sign in</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
+    @if (isAuthenticated)
+    {
+        <div class="lf-shell">
+            <aside class="lf-sidebar d-none d-lg-flex" aria-label="Primary navigation">
+                <partial name="_SidebarNav" model="controller" />
+            </aside>
+
+            <div class="lf-app">
+                <header class="lf-topbar">
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-icon d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#lfMobileNav" aria-controls="lfMobileNav" aria-label="Open navigation">
+                            <span aria-hidden="true">☰</span>
+                        </button>
+                        <div>
+                            <p class="lf-kicker mb-1">LeaveFlow</p>
+                            <h1 class="lf-page-title mb-0">@title</h1>
+                        </div>
+                    </div>
+                    <div class="lf-topbar-actions">
+                        <button class="btn btn-icon" type="button" data-lf-theme-toggle aria-label="Toggle theme" title="Toggle theme">
+                            <span data-lf-theme-icon aria-hidden="true">◐</span>
+                        </button>
+                        <div class="lf-user-chip">
+                            <span class="lf-user-avatar" aria-hidden="true">@userInitial</span>
+                            <span class="lf-user-meta">
+                                <span class="lf-user-name">@User.Identity?.Name</span>
+                                <span class="lf-role-pill">@primaryRole</span>
+                            </span>
+                        </div>
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">Sign out</button>
+                        </form>
+                    </div>
+                </header>
+
+                <main role="main" class="lf-main">
+                    @RenderBody()
+                </main>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+        </div>
+
+        <div class="offcanvas offcanvas-start lf-mobile-nav" tabindex="-1" id="lfMobileNav" aria-labelledby="lfMobileNavLabel">
+            <div class="offcanvas-header">
+                <h2 class="offcanvas-title h5" id="lfMobileNavLabel">LeaveFlow</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close navigation"></button>
+            </div>
+            <div class="offcanvas-body">
+                <partial name="_SidebarNav" model="controller" />
+            </div>
+        </div>
+    }
+    else
+    {
+        <header class="lf-public-topbar">
+            <a class="lf-brand-link" asp-controller="Home" asp-action="Index">
+                <span class="lf-brand-mark" aria-hidden="true">LF</span>
+                <span class="lf-brand-name">LeaveFlow</span>
+            </a>
+            <a class="btn btn-outline-primary btn-sm" asp-controller="Account" asp-action="Login">Sign in</a>
+        </header>
+        <main role="main" class="lf-public-main">
             @RenderBody()
         </main>
-    </div>
+    }
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - LeaveFlow
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

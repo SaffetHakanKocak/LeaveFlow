@@ -424,3 +424,34 @@ Stage 10 - Reporting & Dashboard.
 ### Next Step
 
 Stage 11 - Professional UI/UX Pass.
+
+## 2026-08-28 - Stage 11 Professional UI/UX Pass
+
+### Changes Made
+
+- Replaced the default MVC navbar with a responsive authenticated application shell using desktop sidebar, mobile offcanvas navigation, and sticky topbar.
+- Added role-aware sidebar navigation for dashboard, people management, leave requests, leave reviews, timeline, calendar, reports, and holiday administration.
+- Added a centralized CSS design system with tokens for typography, spacing, radius, shadows, surfaces, text, states, buttons, forms, cards, badges, tables, empty states, timeline, and calendar.
+- Added light/dark theme support with system preference fallback and client-side local preference.
+- Polished dashboard and reports metric cards, empty states, status badges, report sections, and tables.
+- Polished list/action surfaces for consultants, managers, holidays, official holidays, manager assignments, leave workflows, timeline, and calendar through shared CSS classes.
+- Reworked Reports view rendering to avoid raw HTML helper output.
+- Preserved existing controllers, services, repositories, stored procedures, authorization, antiforgery, and tested business behavior.
+
+### Test Results
+
+- `dotnet restore`: succeeded after allowing NuGet network access.
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors during implementation.
+- `dotnet test --no-build`: succeeded. Total tests: 204 passed, 0 failed, 0 skipped (Unit 55, Integration 69, Security 80).
+
+### Security Review
+
+- No Entity Framework, DbContext, `CommandType.Text`, or raw SQL in application C# code.
+- UI role-aware navigation remains convenience-only and backend authorization remains unchanged.
+- Login and critical POST forms keep antiforgery token coverage.
+- User-generated content remains Razor-encoded.
+- New UI security regression tests cover shell rendering, role navigation, login page rendering, antiforgery token presence, and denied unauthorized UI routes.
+
+### Next Step
+
+Stage 12 - Security Hardening.

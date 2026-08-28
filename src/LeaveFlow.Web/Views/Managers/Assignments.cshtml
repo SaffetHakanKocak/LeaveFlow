@@ -41,7 +41,7 @@
             <tr>
                 <td>@assignment.ConsultantName</td>
                 <td>@assignment.ConsultantEmail</td>
-                <td>@(assignment.IsActive ? "Active" : "Inactive")</td>
+                <td><span class="badge @(assignment.IsActive ? "text-bg-success" : "text-bg-secondary")">@(assignment.IsActive ? "Active" : "Inactive")</span></td>
                 <td class="text-end">
                     <form asp-action="RemoveAssignment" method="post">
                         <input type="hidden" name="managerId" value="@assignment.ManagerId" />

@@ -44,13 +44,13 @@
 @if (Model.Timeline is null)
 {
     <div class="lf-panel">
-        <p class="text-secondary mb-0">Choose a date range up to @LeaveFlow.Application.Timeline.WorkforceTimelineSettings.MaxRangeDays days.</p>
+        <div class="lf-empty-state text-secondary">Choose a date range up to @LeaveFlow.Application.Timeline.WorkforceTimelineSettings.MaxRangeDays days.</div>
     </div>
 }
 else if (Model.Timeline.Rows.Count == 0)
 {
     <div class="lf-panel">
-        <p class="text-secondary mb-0">No consultants found for this scope and filter.</p>
+        <div class="lf-empty-state text-secondary">No consultants found for this scope and filter.</div>
     </div>
 }
 else
@@ -112,62 +112,3 @@ else
         </nav>
     }
 }
-
-<style>
-    .lf-timeline-wrap {
-        overflow-x: auto;
-    }
-
-    .lf-timeline th,
-    .lf-timeline td {
-        min-width: 72px;
-        height: 48px;
-        white-space: nowrap;
-    }
-
-    .lf-timeline .lf-sticky-col {
-        position: sticky;
-        left: 0;
-        z-index: 2;
-        min-width: 220px;
-        background: #fff;
-        box-shadow: 1px 0 0 rgba(0, 0, 0, .08);
-    }
-
-    .lf-weekend {
-        background: #f6f7f9;
-    }
-
-    .lf-today {
-        outline: 2px solid #2563eb;
-        outline-offset: -2px;
-    }
-
-    .lf-leave {
-        background: #d1fae5;
-        color: #065f46;
-        font-weight: 600;
-    }
-
-    .lf-legend {
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        border: 1px solid rgba(0, 0, 0, .18);
-        vertical-align: text-bottom;
-        margin-right: 4px;
-    }
-
-    .lf-legend-leave {
-        background: #d1fae5;
-    }
-
-    .lf-legend-weekend {
-        background: #f6f7f9;
-    }
-
-    .lf-legend-today {
-        background: #fff;
-        border: 2px solid #2563eb;
-    }
-</style>

@@ -2,9 +2,9 @@
 
 ## Current Status
 
-LeaveFlow has completed Stage 10: Reporting & Management Dashboard.
+LeaveFlow has completed Stage 11: Professional UI/UX Pass.
 
-The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, manager/admin workforce leave timeline views based on approved leave day rows, role-aware organization calendar views for approved leave and holidays, and role-aware dashboard/reporting screens for administrators, managers, and consultants.
+The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, manager/admin workforce leave timeline views based on approved leave day rows, role-aware organization calendar views for approved leave and holidays, role-aware dashboard/reporting screens for administrators, managers, and consultants, and a modern responsive MVC application shell with light/dark theme support.
 
 Azure AI, Docker, API JWT/token authentication, exports, and report-run auditing have not been implemented yet.
 
@@ -56,6 +56,7 @@ The project is generic and white-label friendly. It must not contain real compan
 - Stage 8: Workforce Leave Timeline.
 - Stage 9: Organization Calendar.
 - Stage 10: Reporting & Management Dashboard.
+- Stage 11: Professional UI/UX Pass.
 - Cookie authentication for LeaveFlow.Web.
 - Password hashing with ASP.NET Core Identity `PasswordHasher`.
 - Configurable lockout and login-attempt auditing.
@@ -86,18 +87,22 @@ The project is generic and white-label friendly. It must not contain real compan
 - Reporting uses `ConsultantLeaveDays` for approved leave-day analytics, `LeaveRequests` for workflow/status analytics, and holiday definition/day data for upcoming holidays.
 - Managers are scoped to assigned consultants server-side and consultant users cannot access organization-wide reports.
 - Reporting date ranges default to the current year and are capped at 366 inclusive days.
+- Centralized CSS design tokens define typography, spacing, radius, shadows, surfaces, states, forms, buttons, badges, tables, dashboard cards, timeline, and calendar presentation.
+- Authenticated MVC pages use a responsive sidebar/topbar application shell with role-aware navigation and client-side light/dark theme preference.
+- UI regression tests cover shell rendering, theme toggle presence, role-aware navigation, login rendering, antiforgery token presence, and denied protected routes.
 
 ## Current Stage Scope
 
-Stage 10 intentionally does not include:
+Stage 11 intentionally does not include:
 
 - Azure AI
 - Docker
 - API JWT or other token authentication
 - export files
 - report run auditing
-- full UI design-system rewrite
+- new leave business rules
+- new reporting business features
 
 ## Next Stage
 
-Stage 11 - Professional UI/UX Pass.
+Stage 12 - Security Hardening.
