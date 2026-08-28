@@ -10,7 +10,7 @@
   function applyTheme(theme) {
     root.setAttribute("data-bs-theme", theme);
     if (icon) {
-      icon.textContent = theme === "dark" ? "☾" : "☼";
+      icon.textContent = theme === "dark" ? "D" : "L";
     }
     if (toggle) {
       toggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");

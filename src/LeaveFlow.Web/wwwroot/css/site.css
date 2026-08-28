@@ -10,8 +10,8 @@
   --lf-radius-md: .5rem;
   --lf-radius-lg: .75rem;
   --lf-shadow-sm: 0 1px 2px rgba(16, 24, 40, .06);
-  --lf-shadow-md: 0 12px 28px rgba(16, 24, 40, .08);
-  --lf-bg: #f5f7fb;
+  --lf-shadow-md: 0 16px 36px rgba(16, 24, 40, .1);
+  --lf-bg: #eef3f9;
   --lf-surface: #ffffff;
   --lf-surface-raised: #ffffff;
   --lf-surface-muted: #eef2f7;
@@ -38,14 +38,14 @@
 }
 
 [data-bs-theme="dark"] {
-  --lf-bg: #101419;
-  --lf-surface: #171d24;
-  --lf-surface-raised: #1f2730;
-  --lf-surface-muted: #222b35;
-  --lf-border: #303b48;
-  --lf-border-strong: #536173;
-  --lf-text: #edf3fb;
-  --lf-text-muted: #a8b4c4;
+  --lf-bg: #070b10;
+  --lf-surface: #121923;
+  --lf-surface-raised: #192231;
+  --lf-surface-muted: #222d3b;
+  --lf-border: #3b485a;
+  --lf-border-strong: #66758a;
+  --lf-text: #f3f7fb;
+  --lf-text-muted: #bac6d8;
   --lf-primary: #7aa7ff;
   --lf-primary-strong: #9dbdff;
   --lf-primary-soft: #182844;
@@ -168,6 +168,7 @@ a:hover {
   display: flex;
   align-items: center;
   gap: var(--lf-space-3);
+  min-width: 0;
   text-decoration: none;
 }
 
@@ -190,11 +191,18 @@ a:hover {
 }
 
 .lf-brand-mark {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--lf-radius-lg);
   background: linear-gradient(135deg, #60a5fa, #34d399);
   color: #07111f;
+  line-height: 1;
+}
+
+.lf-brand-copy {
+  display: grid;
+  min-width: 0;
+  line-height: 1.1;
 }
 
 .lf-brand-name,
@@ -205,8 +213,11 @@ a:hover {
 }
 
 .lf-brand-name {
+  overflow: hidden;
   font-size: 1.05rem;
   font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .lf-brand-subtitle {
@@ -306,7 +317,7 @@ a:hover {
 }
 
 .lf-public-topbar {
-  position: absolute;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
@@ -314,7 +325,10 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--lf-space-4) var(--lf-space-6);
+  padding: var(--lf-space-3) clamp(1rem, 4vw, 2rem);
+  border-bottom: 1px solid var(--lf-border);
+  background: color-mix(in srgb, var(--lf-surface) 94%, transparent);
+  backdrop-filter: blur(16px);
 }
 
 .lf-public-topbar .lf-brand-link {
@@ -346,9 +360,9 @@ a:hover {
 
 .lf-login-page {
   display: grid;
-  min-height: 100vh;
+  min-height: calc(100vh - 68px);
   place-items: center;
-  padding: var(--lf-space-6);
+  padding: 3rem var(--lf-space-6);
   background:
     linear-gradient(140deg, rgba(37, 99, 235, .14), transparent 42%),
     linear-gradient(320deg, rgba(4, 120, 87, .14), transparent 48%),
@@ -357,8 +371,8 @@ a:hover {
 
 .lf-login-card {
   width: 100%;
-  max-width: 440px;
-  padding: 2rem;
+  max-width: 420px;
+  padding: 2.25rem;
   box-shadow: var(--lf-shadow-md);
 }
 
@@ -373,6 +387,11 @@ a:hover {
   background: linear-gradient(135deg, #2563eb, #10b981);
   color: #fff;
   font-weight: 800;
+}
+
+.lf-login-card .form-control,
+.lf-login-card .btn-primary {
+  min-height: 46px;
 }
 
 .btn {
@@ -544,9 +563,13 @@ a:hover {
   right: 1rem;
   bottom: .7rem;
   color: var(--lf-primary-soft);
-  content: "●";
+  content: "";
   font-size: 3rem;
   line-height: 1;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--lf-primary-soft);
 }
 
 .lf-metric-card span {
@@ -749,6 +772,30 @@ dl.row dd {
   color: var(--lf-text);
 }
 
+.lf-home {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: clamp(2.5rem, 8vw, 5rem) var(--lf-space-4);
+}
+
+.lf-home-hero {
+  max-width: 680px;
+  margin: 0 auto 1.5rem;
+  text-align: center;
+}
+
+.lf-home .lf-login-mark {
+  margin-bottom: var(--lf-space-3);
+}
+
+.lf-home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--lf-space-3);
+  max-width: 860px;
+  margin: 0 auto;
+}
+
 @media (max-width: 991.98px) {
   .lf-topbar {
     align-items: flex-start;
@@ -762,6 +809,11 @@ dl.row dd {
 
   .lf-main {
     padding: var(--lf-space-4);
+  }
+
+  .lf-home-grid {
+    grid-template-columns: 1fr;
+    max-width: 520px;
   }
 
   .lf-user-chip {
@@ -785,6 +837,10 @@ dl.row dd {
 
   .lf-panel {
     padding: var(--lf-space-4);
+  }
+
+  .lf-public-topbar {
+    padding-inline: var(--lf-space-4);
   }
 
   .table td,

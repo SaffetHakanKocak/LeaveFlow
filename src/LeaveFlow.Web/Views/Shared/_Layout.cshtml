@@ -43,16 +43,15 @@
                 <header class="lf-topbar">
                     <div class="d-flex align-items-center gap-2">
                         <button class="btn btn-icon d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#lfMobileNav" aria-controls="lfMobileNav" aria-label="Open navigation">
-                            <span aria-hidden="true">☰</span>
+                            <span aria-hidden="true">M</span>
                         </button>
                         <div>
-                            <p class="lf-kicker mb-1">LeaveFlow</p>
                             <h1 class="lf-page-title mb-0">@title</h1>
                         </div>
                     </div>
                     <div class="lf-topbar-actions">
                         <button class="btn btn-icon" type="button" data-lf-theme-toggle aria-label="Toggle theme" title="Toggle theme">
-                            <span data-lf-theme-icon aria-hidden="true">◐</span>
+                            <span data-lf-theme-icon aria-hidden="true">T</span>
                         </button>
                         <div class="lf-user-chip">
                             <span class="lf-user-avatar" aria-hidden="true">@userInitial</span>
@@ -88,9 +87,11 @@
         <header class="lf-public-topbar">
             <a class="lf-brand-link" asp-controller="Home" asp-action="Index">
                 <span class="lf-brand-mark" aria-hidden="true">LF</span>
-                <span class="lf-brand-name">LeaveFlow</span>
+                <span class="lf-brand-copy">
+                    <span class="lf-brand-name">LeaveFlow</span>
+                </span>
             </a>
-            <a class="btn btn-outline-primary btn-sm" asp-controller="Account" asp-action="Login">Sign in</a>
+            <a class="btn btn-primary btn-sm px-3" asp-controller="Account" asp-action="Login">Sign in</a>
         </header>
         <main role="main" class="lf-public-main">
             @RenderBody()
