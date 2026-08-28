@@ -10,7 +10,7 @@ internal static class PeopleValidation
 
         if (input.EmployeeNumber?.Length > 64)
         {
-            result.Add(nameof(input.EmployeeNumber), "Employee number must be 64 characters or fewer.");
+            result.Add(nameof(input.EmployeeNumber), "Personel numarası en fazla 64 karakter olabilir.");
         }
 
         return result;
@@ -37,13 +37,13 @@ internal static class PeopleValidation
             }
             catch (FormatException)
             {
-                result.Add("Email", "Email format is invalid.");
+                result.Add("Email", "E-posta formatı geçersiz.");
             }
         }
 
         if (department?.Length > 120)
         {
-            result.Add("Department", "Department must be 120 characters or fewer.");
+            result.Add("Department", "Departman en fazla 120 karakter olabilir.");
         }
 
         return result;
@@ -53,13 +53,13 @@ internal static class PeopleValidation
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            result.Add(field, "This field is required.");
+            result.Add(field, "Bu alan zorunludur.");
             return;
         }
 
         if (value.Length > maxLength)
         {
-            result.Add(field, $"This field must be {maxLength} characters or fewer.");
+            result.Add(field, $"Bu alan en fazla {maxLength} karakter olabilir.");
         }
     }
 }

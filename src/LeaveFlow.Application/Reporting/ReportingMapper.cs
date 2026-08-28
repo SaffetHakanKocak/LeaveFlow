@@ -9,26 +9,26 @@ public static class ReportingMapper
             "Consultant" =>
             new DashboardMetric[]
             {
-                new DashboardMetric("Pending requests", data.PendingLeaveRequestCount),
-                new DashboardMetric("Upcoming approved leaves", data.UpcomingLeaveCount),
-                new DashboardMetric("Upcoming holidays", CountHolidaySlots(data))
+                new DashboardMetric("Bekleyen talepler", data.PendingLeaveRequestCount),
+                new DashboardMetric("Yaklaşan onaylı izinler", data.UpcomingLeaveCount),
+                new DashboardMetric("Yaklaşan tatiller", CountHolidaySlots(data))
             },
             "Manager" =>
             new DashboardMetric[]
             {
-                new DashboardMetric("Team consultants", data.ActiveConsultantCount),
-                new DashboardMetric("Team pending requests", data.PendingLeaveRequestCount),
-                new DashboardMetric("Team on leave today", data.OnLeaveTodayCount),
-                new DashboardMetric("Upcoming team leaves", data.UpcomingLeaveCount)
+                new DashboardMetric("Ekip danışmanları", data.ActiveConsultantCount),
+                new DashboardMetric("Bekleyen ekip talepleri", data.PendingLeaveRequestCount),
+                new DashboardMetric("Bugün izindeki ekip", data.OnLeaveTodayCount),
+                new DashboardMetric("Yaklaşan ekip izinleri", data.UpcomingLeaveCount)
             },
             _ =>
             new DashboardMetric[]
             {
-                new DashboardMetric("Active consultants", data.ActiveConsultantCount),
-                new DashboardMetric("Active managers", data.ActiveManagerCount),
-                new DashboardMetric("Pending requests", data.PendingLeaveRequestCount),
-                new DashboardMetric("On leave today", data.OnLeaveTodayCount),
-                new DashboardMetric("Upcoming leaves", data.UpcomingLeaveCount)
+                new DashboardMetric("Aktif danışmanlar", data.ActiveConsultantCount),
+                new DashboardMetric("Aktif yöneticiler", data.ActiveManagerCount),
+                new DashboardMetric("Bekleyen talepler", data.PendingLeaveRequestCount),
+                new DashboardMetric("Bugün izinde", data.OnLeaveTodayCount),
+                new DashboardMetric("Yaklaşan izinler", data.UpcomingLeaveCount)
             }
         };
 
@@ -43,10 +43,10 @@ public static class ReportingMapper
     {
         return
         [
-            new DashboardMetric("Approved leave days", consultantUsage.Sum(row => row.ApprovedLeaveDayCount)),
-            new DashboardMetric("Leave requests", monthlyActivity.Sum(row => row.RequestCount)),
-            new DashboardMetric("Peak day count", peakLeaveDays.FirstOrDefault()?.ConsultantCount ?? 0),
-            new DashboardMetric("Pending requests", statusDistribution.FirstOrDefault(row => row.Status == "Pending")?.RequestCount ?? 0)
+            new DashboardMetric("Onaylı izin günleri", consultantUsage.Sum(row => row.ApprovedLeaveDayCount)),
+            new DashboardMetric("İzin talepleri", monthlyActivity.Sum(row => row.RequestCount)),
+            new DashboardMetric("En yoğun gün sayısı", peakLeaveDays.FirstOrDefault()?.ConsultantCount ?? 0),
+            new DashboardMetric("Bekleyen talepler", statusDistribution.FirstOrDefault(row => row.Status == "Pending")?.RequestCount ?? 0)
         ];
     }
 

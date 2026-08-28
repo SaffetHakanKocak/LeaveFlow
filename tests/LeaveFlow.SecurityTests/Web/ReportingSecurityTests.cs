@@ -45,9 +45,9 @@ public sealed class ReportingSecurityTests : IClassFixture<LeaveFlowWebFactory>
         var html = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("Consultant Dashboard", html);
-        Assert.Contains("My leave", html);
-        Assert.Contains("Pending", html);
+        Assert.Contains("Paneli", html);
+        Assert.Contains("znim", html);
+        Assert.Contains("Bekliyor", html);
         Assert.DoesNotContain("Consultant Two", html);
     }
 
@@ -73,7 +73,7 @@ public sealed class ReportingSecurityTests : IClassFixture<LeaveFlowWebFactory>
         var html = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("Manager Dashboard", html);
+        Assert.Contains("Paneli", html);
         Assert.Contains("Consultant One", html);
         Assert.DoesNotContain("Consultant Two", html);
     }

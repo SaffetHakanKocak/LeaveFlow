@@ -6,27 +6,34 @@ public sealed class ConsultantFormViewModel
 {
     public Guid? Id { get; init; }
 
-    [Required]
-    [StringLength(80)]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
+    [StringLength(80, ErrorMessage = "Bu alan en fazla 80 karakter olabilir.")]
+    [Display(Name = "Ad")]
     public string FirstName { get; set; } = string.Empty;
 
-    [Required]
-    [StringLength(80)]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
+    [StringLength(80, ErrorMessage = "Bu alan en fazla 80 karakter olabilir.")]
+    [Display(Name = "Soyad")]
     public string LastName { get; set; } = string.Empty;
 
-    [Required]
-    [EmailAddress]
-    [StringLength(256)]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
+    [EmailAddress(ErrorMessage = "Geçerli bir e-posta adresi girin.")]
+    [StringLength(256, ErrorMessage = "Bu alan en fazla 256 karakter olabilir.")]
+    [Display(Name = "E-posta")]
     public string Email { get; set; } = string.Empty;
 
-    [StringLength(64)]
+    [StringLength(64, ErrorMessage = "Bu alan en fazla 64 karakter olabilir.")]
+    [Display(Name = "Personel No")]
     public string? EmployeeNumber { get; set; }
 
-    [StringLength(120)]
+    [StringLength(120, ErrorMessage = "Bu alan en fazla 120 karakter olabilir.")]
+    [Display(Name = "Departman")]
     public string? Department { get; set; }
 
     [DataType(DataType.Date)]
+    [Display(Name = "Başlangıç Tarihi")]
     public DateOnly? StartDate { get; set; }
 
+    [Display(Name = "Aktif")]
     public bool IsActive { get; set; } = true;
 }

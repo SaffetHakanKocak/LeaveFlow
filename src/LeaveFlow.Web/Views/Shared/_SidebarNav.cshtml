@@ -4,11 +4,11 @@
 }
 
 <div class="lf-brand">
-    <a class="lf-brand-link" asp-controller="Dashboard" asp-action="Index" aria-label="LeaveFlow dashboard">
+    <a class="lf-brand-link" asp-controller="Dashboard" asp-action="Index" aria-label="LeaveFlow paneli">
         <span class="lf-brand-mark" aria-hidden="true">LF</span>
         <span class="lf-brand-copy">
             <span class="lf-brand-name">LeaveFlow</span>
-            <span class="lf-brand-subtitle">Workforce leave</span>
+            <span class="lf-brand-subtitle">İzin yönetimi</span>
         </span>
     </a>
 </div>
@@ -16,58 +16,58 @@
 <nav class="lf-nav">
     <a class="lf-nav-link @Active("Dashboard")" asp-controller="Dashboard" asp-action="Index">
         <span class="lf-nav-icon" aria-hidden="true">D</span>
-        <span>Dashboard</span>
+        <span>Panel</span>
     </a>
     @if (User.IsInRole("Administrator"))
     {
         <a class="lf-nav-link @Active("Consultants")" asp-controller="Consultants" asp-action="Index">
             <span class="lf-nav-icon" aria-hidden="true">C</span>
-            <span>Consultants</span>
+            <span>Danışmanlar</span>
         </a>
         <a class="lf-nav-link @Active("Managers")" asp-controller="Managers" asp-action="Index">
             <span class="lf-nav-icon" aria-hidden="true">M</span>
-            <span>Managers</span>
+            <span>Yöneticiler</span>
         </a>
     }
     @if (User.IsInRole("Consultant"))
     {
         <a class="lf-nav-link @Active("LeaveRequests")" asp-controller="LeaveRequests" asp-action="Index">
             <span class="lf-nav-icon" aria-hidden="true">R</span>
-            <span>My Leave Requests</span>
+            <span>İzin Taleplerim</span>
         </a>
     }
     @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
     {
         <a class="lf-nav-link @Active("LeaveReviews")" asp-controller="LeaveReviews" asp-action="Index">
             <span class="lf-nav-icon" aria-hidden="true">A</span>
-            <span>Leave Reviews</span>
+            <span>İzin Onayları</span>
         </a>
         <a class="lf-nav-link @Active("WorkforceTimeline")" asp-controller="WorkforceTimeline" asp-action="Index">
             <span class="lf-nav-icon" aria-hidden="true">T</span>
-            <span>Workforce Timeline</span>
+            <span>İzin Zaman Çizelgesi</span>
         </a>
     }
     <a class="lf-nav-link @Active("OrganizationCalendar")" asp-controller="OrganizationCalendar" asp-action="Index">
         <span class="lf-nav-icon" aria-hidden="true">K</span>
-        <span>Calendar</span>
+        <span>Takvim</span>
     </a>
     @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
     {
         <a class="lf-nav-link @Active("Reports")" asp-controller="Reports" asp-action="Index">
             <span class="lf-nav-icon" aria-hidden="true">P</span>
-            <span>Reports</span>
+            <span>Raporlar</span>
         </a>
     }
     @if (User.IsInRole("Administrator"))
     {
-        <div class="lf-nav-section">Administration</div>
+        <div class="lf-nav-section">Yönetim</div>
         <a class="lf-nav-link @Active("OrganizationHolidays")" asp-controller="OrganizationHolidays" asp-action="Index">
             <span class="lf-nav-icon" aria-hidden="true">O</span>
-            <span>Organization Holidays</span>
+            <span>Kurum Tatilleri</span>
         </a>
         <a class="lf-nav-link @Active("OfficialHolidays")" asp-controller="OfficialHolidays" asp-action="Index">
             <span class="lf-nav-icon" aria-hidden="true">H</span>
-            <span>Official Holidays</span>
+            <span>Resmi Tatiller</span>
         </a>
     }
 </nav>

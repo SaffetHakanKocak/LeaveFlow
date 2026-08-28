@@ -1,13 +1,13 @@
 @model LoginViewModel
 @{
-    ViewData["Title"] = "Sign in";
+    ViewData["Title"] = "Giriş yap";
 }
 
 <div class="lf-login-page">
     <section class="lf-login-card">
         <span class="lf-login-mark" aria-hidden="true">LF</span>
-        <h1 class="h3 fw-semibold mb-2">Sign in to LeaveFlow</h1>
-        <p class="text-secondary mb-4">Use your work email to continue.</p>
+        <h1 class="h3 fw-semibold mb-2">LeaveFlow'a giriş yap</h1>
+        <p class="text-secondary mb-4">Devam etmek için iş e-postanızı kullanın.</p>
 
         <form asp-controller="Account" asp-action="Login" method="post" autocomplete="off">
             <input type="hidden" asp-for="ReturnUrl" />
@@ -25,7 +25,7 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Sign in</button>
+            <button type="submit" class="btn btn-primary w-100">Giriş yap</button>
         </form>
     </section>
 </div>

@@ -17,15 +17,18 @@ public sealed class MyLeaveRequestsViewModel
 
 public sealed class LeaveRequestFormViewModel
 {
-    [Required]
-    [StringLength(512)]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
+    [StringLength(512, ErrorMessage = "Bu alan en fazla 512 karakter olabilir.")]
+    [Display(Name = "Gerekçe")]
     public string Reason { get; init; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
     [DataType(DataType.Date)]
+    [Display(Name = "Başlangıç Tarihi")]
     public DateOnly? StartDate { get; init; }
 
-    [Required]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
     [DataType(DataType.Date)]
+    [Display(Name = "Bitiş Tarihi")]
     public DateOnly? EndDate { get; init; }
 }

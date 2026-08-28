@@ -3,18 +3,18 @@
     var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
     var isAuthenticated = User.Identity?.IsAuthenticated == true;
     var primaryRole = User.IsInRole("Administrator")
-        ? "Administrator"
+        ? "Yönetici"
         : User.IsInRole("Manager")
-            ? "Manager"
+            ? "Yönetici"
             : User.IsInRole("Consultant")
-                ? "Consultant"
-                : "User";
+                ? "Danışman"
+                : "Kullanıcı";
     var userInitial = string.IsNullOrWhiteSpace(User.Identity?.Name)
         ? "U"
         : User.Identity.Name[0].ToString().ToUpperInvariant();
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -35,14 +35,14 @@
     @if (isAuthenticated)
     {
         <div class="lf-shell">
-            <aside class="lf-sidebar d-none d-lg-flex" aria-label="Primary navigation">
+            <aside class="lf-sidebar d-none d-lg-flex" aria-label="Ana gezinme">
                 <partial name="_SidebarNav" model="controller" />
             </aside>
 
             <div class="lf-app">
                 <header class="lf-topbar">
                     <div class="d-flex align-items-center gap-2">
-                        <button class="btn btn-icon d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#lfMobileNav" aria-controls="lfMobileNav" aria-label="Open navigation">
+                        <button class="btn btn-icon d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#lfMobileNav" aria-controls="lfMobileNav" aria-label="Menüyü aç">
                             <span aria-hidden="true">M</span>
                         </button>
                         <div>
@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <div class="lf-topbar-actions">
-                        <button class="btn btn-icon" type="button" data-lf-theme-toggle aria-label="Toggle theme" title="Toggle theme">
+                        <button class="btn btn-icon" type="button" data-lf-theme-toggle aria-label="Temayı değiştir" title="Temayı değiştir">
                             <span data-lf-theme-icon aria-hidden="true">T</span>
                         </button>
                         <div class="lf-user-chip">
@@ -61,7 +61,7 @@
                             </span>
                         </div>
                         <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
-                            <button type="submit" class="btn btn-outline-secondary btn-sm">Sign out</button>
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">Çıkış yap</button>
                         </form>
                     </div>
                 </header>
@@ -75,7 +75,7 @@
         <div class="offcanvas offcanvas-start lf-mobile-nav" tabindex="-1" id="lfMobileNav" aria-labelledby="lfMobileNavLabel">
             <div class="offcanvas-header">
                 <h2 class="offcanvas-title h5" id="lfMobileNavLabel">LeaveFlow</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close navigation"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Menüyü kapat"></button>
             </div>
             <div class="offcanvas-body">
                 <partial name="_SidebarNav" model="controller" />
@@ -91,7 +91,7 @@
                     <span class="lf-brand-name">LeaveFlow</span>
                 </span>
             </a>
-            <a class="btn btn-primary btn-sm px-3" asp-controller="Account" asp-action="Login">Sign in</a>
+            <a class="btn btn-primary btn-sm px-3" asp-controller="Account" asp-action="Login">Giriş yap</a>
         </header>
         <main role="main" class="lf-public-main">
             @RenderBody()

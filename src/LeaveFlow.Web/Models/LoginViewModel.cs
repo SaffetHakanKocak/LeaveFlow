@@ -4,16 +4,16 @@ namespace LeaveFlow.Web.Models;
 
 public sealed class LoginViewModel
 {
-    [Required]
-    [EmailAddress]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
+    [EmailAddress(ErrorMessage = "Geçerli bir e-posta adresi girin.")]
     [MaxLength(256)]
-    [Display(Name = "Email")]
+    [Display(Name = "E-posta")]
     public string Email { get; set; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
     [DataType(DataType.Password)]
     [MaxLength(256)]
-    [Display(Name = "Password")]
+    [Display(Name = "Şifre")]
     public string Password { get; set; } = string.Empty;
 
     public string? ReturnUrl { get; set; }

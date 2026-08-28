@@ -10,33 +10,33 @@ internal static class LeaveRequestValidation
 
         if (string.IsNullOrWhiteSpace(input.Reason))
         {
-            result.Add("Reason", "This field is required.");
+            result.Add("Reason", "Bu alan zorunludur.");
         }
         else if (input.Reason.Length > 512)
         {
-            result.Add("Reason", "This field must be 512 characters or fewer.");
+            result.Add("Reason", "Bu alan en fazla 512 karakter olabilir.");
         }
 
         if (input.StartDate is null)
         {
-            result.Add("StartDate", "This field is required.");
+            result.Add("StartDate", "Bu alan zorunludur.");
         }
 
         if (input.EndDate is null)
         {
-            result.Add("EndDate", "This field is required.");
+            result.Add("EndDate", "Bu alan zorunludur.");
         }
 
         if (input.StartDate is not null && input.EndDate is not null)
         {
             if (input.StartDate > input.EndDate)
             {
-                result.Add("EndDate", "End date must be on or after start date.");
+                result.Add("EndDate", "Bitiş tarihi başlangıç tarihinde veya sonrasında olmalıdır.");
             }
 
             if (input.StartDate < today)
             {
-                result.Add("StartDate", "Start date cannot be in the past.");
+                result.Add("StartDate", "Başlangıç tarihi geçmişte olamaz.");
             }
         }
 

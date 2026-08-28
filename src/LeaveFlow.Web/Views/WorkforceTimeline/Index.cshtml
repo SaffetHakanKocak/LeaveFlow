@@ -1,12 +1,12 @@
 @model WorkforceTimelineViewModel
 @{
-    ViewData["Title"] = "Workforce Timeline";
+    ViewData["Title"] = "İzin Zaman Çizelgesi";
 }
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
     <div>
-        <h1 class="h3 mb-1">Workforce Timeline</h1>
-        <p class="text-secondary mb-0">Approved leave visibility for the selected workforce scope.</p>
+        <h1 class="h3 mb-1">İzin Zaman Çizelgesi</h1>
+        <p class="text-secondary mb-0">Seçili ekip kapsamında onaylı izin görünürlüğü.</p>
     </div>
 </div>
 
@@ -14,29 +14,29 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row g-2 align-items-end">
         <div class="col-md-2">
-            <label class="form-label" for="startDate">Start</label>
+            <label class="form-label" for="startDate">Başlangıç</label>
             <input class="form-control" id="startDate" name="startDate" type="date" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
             <span class="text-danger field-validation-valid" data-valmsg-for="StartDate"></span>
         </div>
         <div class="col-md-2">
-            <label class="form-label" for="endDate">End</label>
+            <label class="form-label" for="endDate">Bitiş</label>
             <input class="form-control" id="endDate" name="endDate" type="date" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
             <span class="text-danger field-validation-valid" data-valmsg-for="EndDate"></span>
         </div>
         <div class="col-md-3">
-            <label class="form-label" for="consultantSearch">Consultant</label>
+            <label class="form-label" for="consultantSearch">Danışman</label>
             <input class="form-control" id="consultantSearch" name="consultantSearch" value="@Model.ConsultantSearch" />
         </div>
         <div class="col-md-3">
-            <label class="form-label" for="managerId">Manager filter</label>
+            <label class="form-label" for="managerId">Yönetici filtresi</label>
             <input class="form-control" id="managerId" name="managerId" value="@Model.ManagerId" />
         </div>
         <div class="col-md-2">
             <div class="form-check mb-2">
                 <input class="form-check-input" type="checkbox" id="includeInactive" name="includeInactive" value="true" checked="@Model.IncludeInactive" />
-                <label class="form-check-label" for="includeInactive">Include inactive</label>
+                <label class="form-check-label" for="includeInactive">Pasifleri dahil et</label>
             </div>
-            <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
+            <button class="btn btn-outline-primary w-100" type="submit">Uygula</button>
         </div>
     </div>
 </form>
@@ -44,22 +44,22 @@
 @if (Model.Timeline is null)
 {
     <div class="lf-panel">
-        <div class="lf-empty-state text-secondary">Choose a date range up to @LeaveFlow.Application.Timeline.WorkforceTimelineSettings.MaxRangeDays days.</div>
+        <div class="lf-empty-state text-secondary">@LeaveFlow.Application.Timeline.WorkforceTimelineSettings.MaxRangeDays güne kadar bir tarih aralığı seçin.</div>
     </div>
 }
 else if (Model.Timeline.Rows.Count == 0)
 {
     <div class="lf-panel">
-        <div class="lf-empty-state text-secondary">No consultants found for this scope and filter.</div>
+        <div class="lf-empty-state text-secondary">Bu kapsam ve filtre için danışman bulunamadı.</div>
     </div>
 }
 else
 {
     <div class="lf-panel mb-3">
         <div class="d-flex flex-wrap gap-3 small">
-            <span><span class="lf-legend lf-legend-leave"></span> Approved leave</span>
-            <span><span class="lf-legend lf-legend-weekend"></span> Weekend</span>
-            <span><span class="lf-legend lf-legend-today"></span> Today</span>
+            <span><span class="lf-legend lf-legend-leave"></span> Onaylı izin</span>
+            <span><span class="lf-legend lf-legend-weekend"></span> Hafta sonu</span>
+            <span><span class="lf-legend lf-legend-today"></span> Bugün</span>
         </div>
     </div>
 
@@ -67,12 +67,12 @@ else
         <table class="table table-sm align-middle mb-0 lf-timeline">
             <thead>
                 <tr>
-                    <th class="lf-sticky-col">Consultant</th>
+                    <th class="lf-sticky-col">Danışman</th>
                     @foreach (var day in Model.Timeline.Days)
                     {
                         <th class="text-center @(day.IsWeekend ? "lf-weekend" : string.Empty) @(day.IsToday ? "lf-today" : string.Empty)">
-                            <div>@day.Date.ToString("MM-dd")</div>
-                            <div class="text-secondary small">@day.Date.ToString("ddd")</div>
+                            <div>@UiText.ShortMonthDay(day.Date)</div>
+                            <div class="text-secondary small">@UiText.ShortDay(day.Date)</div>
                         </th>
                     }
                 </tr>
@@ -86,17 +86,17 @@ else
                         <div class="text-secondary small">@row.ConsultantEmail</div>
                         @if (!row.ConsultantIsActive)
                         {
-                            <span class="badge text-bg-secondary">Inactive</span>
+                            <span class="badge text-bg-secondary">Pasif</span>
                         }
                     </th>
                     @foreach (var cell in row.Cells)
                     {
                         var title = cell.IsOnLeave
-                            ? $"{row.ConsultantName} on leave: {cell.Reason}"
-                            : $"{row.ConsultantName}: available";
+                            ? $"{row.ConsultantName} izinde: {cell.Reason}"
+                            : $"{row.ConsultantName}: uygun";
                         <td class="text-center @(cell.IsWeekend ? "lf-weekend" : string.Empty) @(cell.IsToday ? "lf-today" : string.Empty) @(cell.IsOnLeave ? "lf-leave" : string.Empty)" title="@title">
                             <span class="visually-hidden">@title</span>
-                            @(cell.IsOnLeave ? "Leave" : string.Empty)
+                            @(cell.IsOnLeave ? "İzin" : string.Empty)
                         </td>
                     }
                 </tr>
@@ -107,8 +107,8 @@ else
 
     @if (Model.Timeline.TotalPages > 1)
     {
-        <nav class="mt-3" aria-label="Pagination">
-            <span class="text-secondary">Page @Model.Timeline.PageNumber of @Model.Timeline.TotalPages</span>
+        <nav class="mt-3" aria-label="Sayfalama">
+            <span class="text-secondary">Sayfa @Model.Timeline.PageNumber / @Model.Timeline.TotalPages</span>
         </nav>
     }
 }

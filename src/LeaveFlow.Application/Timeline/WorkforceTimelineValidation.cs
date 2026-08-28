@@ -10,23 +10,23 @@ internal static class WorkforceTimelineValidation
 
         if (query.StartDate is null)
         {
-            result.Add("StartDate", "This field is required.");
+            result.Add("StartDate", "Bu alan zorunludur.");
         }
 
         if (query.EndDate is null)
         {
-            result.Add("EndDate", "This field is required.");
+            result.Add("EndDate", "Bu alan zorunludur.");
         }
 
         if (query.StartDate is not null && query.EndDate is not null)
         {
             if (query.StartDate > query.EndDate)
             {
-                result.Add("EndDate", "End date must be on or after start date.");
+                result.Add("EndDate", "Bitiş tarihi başlangıç tarihinde veya sonrasında olmalıdır.");
             }
             else if (TimelineDateRange.CountInclusiveDays(query.StartDate.Value, query.EndDate.Value) > WorkforceTimelineSettings.MaxRangeDays)
             {
-                result.Add("EndDate", $"Timeline range cannot exceed {WorkforceTimelineSettings.MaxRangeDays} days.");
+                result.Add("EndDate", $"Zaman çizelgesi aralığı {WorkforceTimelineSettings.MaxRangeDays} günü aşamaz.");
             }
         }
 

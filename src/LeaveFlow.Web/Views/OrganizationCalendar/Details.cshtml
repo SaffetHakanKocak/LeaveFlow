@@ -1,7 +1,7 @@
 @using LeaveFlow.Application.Calendar
 @model OrganizationCalendarDetailViewModel
 @{
-    ViewData["Title"] = "Calendar Event";
+    ViewData["Title"] = "Takvim Etkinliği";
 }
 
 <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
@@ -9,32 +9,32 @@
         <h1 class="h3 mb-1">@Model.Event.Title</h1>
         <p class="text-secondary mb-0">@EventTypeLabel(Model.Event.EventType)</p>
     </div>
-    <a class="btn btn-outline-secondary" href="@Model.ReturnUrl">Back</a>
+    <a class="btn btn-outline-secondary" href="@Model.ReturnUrl">Geri</a>
 </div>
 
 <section class="lf-panel">
     <dl class="row mb-0">
-        <dt class="col-sm-3">Date range</dt>
+        <dt class="col-sm-3">Tarih aralığı</dt>
         <dd class="col-sm-9">
             @if (Model.Event.StartDate == Model.Event.EndDate)
             {
-                @Model.Event.StartDate.ToString("yyyy-MM-dd")
+                @UiText.Date(Model.Event.StartDate)
             }
             else
             {
-                @($"{Model.Event.StartDate:yyyy-MM-dd} - {Model.Event.EndDate:yyyy-MM-dd}")
+                @($"{UiText.Date(Model.Event.StartDate)} - {UiText.Date(Model.Event.EndDate)}")
             }
         </dd>
 
         @if (!string.IsNullOrWhiteSpace(Model.Event.ConsultantName))
         {
-            <dt class="col-sm-3">Consultant</dt>
+            <dt class="col-sm-3">Danışman</dt>
             <dd class="col-sm-9">@Model.Event.ConsultantName</dd>
         }
 
         @if (!string.IsNullOrWhiteSpace(Model.Event.Summary))
         {
-            <dt class="col-sm-3">Summary</dt>
+            <dt class="col-sm-3">Özet</dt>
             <dd class="col-sm-9">@Model.Event.Summary</dd>
         }
     </dl>
@@ -45,10 +45,10 @@
     {
         return eventType switch
         {
-            CalendarEventTypes.Leave => "Leave",
-            CalendarEventTypes.OrganizationHoliday => "Organization Holiday",
-            CalendarEventTypes.OfficialHoliday => "Official Holiday",
-            _ => "Event"
+            CalendarEventTypes.Leave => "İzin",
+            CalendarEventTypes.OrganizationHoliday => "Kurum Tatili",
+            CalendarEventTypes.OfficialHoliday => "Resmi Tatil",
+            _ => "Etkinlik"
         };
     }
 }

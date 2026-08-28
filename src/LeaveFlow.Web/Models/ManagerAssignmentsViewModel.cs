@@ -14,6 +14,7 @@ public sealed class ManagerAssignmentsViewModel
 
     public IReadOnlyList<ConsultantListItem> AvailableConsultants { get; init; } = [];
 
-    [Required]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
+    [Display(Name = "Danışman")]
     public Guid? ConsultantId { get; set; }
 }

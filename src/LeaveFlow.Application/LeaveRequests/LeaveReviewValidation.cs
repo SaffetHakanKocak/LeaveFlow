@@ -10,7 +10,7 @@ internal static class LeaveReviewValidation
 
         if (input.ReviewNote?.Length > 512)
         {
-            result.Add("ReviewNote", "Review note must be 512 characters or fewer.");
+            result.Add("ReviewNote", "Değerlendirme notu en fazla 512 karakter olabilir.");
         }
 
         return result;

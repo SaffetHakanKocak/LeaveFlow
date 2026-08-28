@@ -1,21 +1,21 @@
 @using LeaveFlow.Application.Calendar
 @model OrganizationCalendarViewModel
 @{
-    ViewData["Title"] = "Organization Calendar";
+    ViewData["Title"] = "Takvim";
     var returnUrl = Context.Request.Path + Context.Request.QueryString;
 }
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
     <div>
-        <h1 class="h3 mb-1">Organization Calendar</h1>
-        <p class="text-secondary mb-0">Approved leave and holidays for your authorized scope.</p>
+        <h1 class="h3 mb-1">Takvim</h1>
+        <p class="text-secondary mb-0">Yetkili olduğunuz kapsam için onaylı izinler ve tatiller.</p>
     </div>
     @if (Model.Calendar is not null)
     {
-        <div class="btn-group" role="group" aria-label="Calendar navigation">
-            <a class="btn btn-outline-secondary" asp-action="Index" asp-route-startDate="@Model.PreviousStartDate.ToString("yyyy-MM-dd")" asp-route-endDate="@Model.PreviousEndDate.ToString("yyyy-MM-dd")" asp-route-viewMode="@Model.ViewMode" asp-route-managerId="@Model.ManagerId" asp-route-consultantId="@Model.ConsultantId">Previous</a>
-            <a class="btn btn-outline-primary" asp-action="Index" asp-route-viewMode="@Model.ViewMode">Today</a>
-            <a class="btn btn-outline-secondary" asp-action="Index" asp-route-startDate="@Model.NextStartDate.ToString("yyyy-MM-dd")" asp-route-endDate="@Model.NextEndDate.ToString("yyyy-MM-dd")" asp-route-viewMode="@Model.ViewMode" asp-route-managerId="@Model.ManagerId" asp-route-consultantId="@Model.ConsultantId">Next</a>
+        <div class="btn-group" role="group" aria-label="Takvim gezinme">
+            <a class="btn btn-outline-secondary" asp-action="Index" asp-route-startDate="@Model.PreviousStartDate.ToString("yyyy-MM-dd")" asp-route-endDate="@Model.PreviousEndDate.ToString("yyyy-MM-dd")" asp-route-viewMode="@Model.ViewMode" asp-route-managerId="@Model.ManagerId" asp-route-consultantId="@Model.ConsultantId">Önceki</a>
+            <a class="btn btn-outline-primary" asp-action="Index" asp-route-viewMode="@Model.ViewMode">Bugün</a>
+            <a class="btn btn-outline-secondary" asp-action="Index" asp-route-startDate="@Model.NextStartDate.ToString("yyyy-MM-dd")" asp-route-endDate="@Model.NextEndDate.ToString("yyyy-MM-dd")" asp-route-viewMode="@Model.ViewMode" asp-route-managerId="@Model.ManagerId" asp-route-consultantId="@Model.ConsultantId">Sonraki</a>
         </div>
     }
 </div>
@@ -24,32 +24,32 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row g-2 align-items-end">
         <div class="col-md-2">
-            <label class="form-label" for="viewMode">View</label>
+            <label class="form-label" for="viewMode">Görünüm</label>
             <select class="form-select" id="viewMode" name="viewMode">
-                <option value="@OrganizationCalendarDateRange.MonthView" selected="@(Model.ViewMode == OrganizationCalendarDateRange.MonthView)">Month</option>
-                <option value="@OrganizationCalendarDateRange.WeekView" selected="@(Model.ViewMode == OrganizationCalendarDateRange.WeekView)">Week</option>
+                <option value="@OrganizationCalendarDateRange.MonthView" selected="@(Model.ViewMode == OrganizationCalendarDateRange.MonthView)">Ay</option>
+                <option value="@OrganizationCalendarDateRange.WeekView" selected="@(Model.ViewMode == OrganizationCalendarDateRange.WeekView)">Hafta</option>
             </select>
         </div>
         <div class="col-md-2">
-            <label class="form-label" for="startDate">Start</label>
+            <label class="form-label" for="startDate">Başlangıç</label>
             <input class="form-control" id="startDate" name="startDate" type="date" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
             <span class="text-danger field-validation-valid" data-valmsg-for="StartDate"></span>
         </div>
         <div class="col-md-2">
-            <label class="form-label" for="endDate">End</label>
+            <label class="form-label" for="endDate">Bitiş</label>
             <input class="form-control" id="endDate" name="endDate" type="date" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
             <span class="text-danger field-validation-valid" data-valmsg-for="EndDate"></span>
         </div>
         <div class="col-md-3">
-            <label class="form-label" for="consultantId">Consultant filter</label>
+            <label class="form-label" for="consultantId">Danışman filtresi</label>
             <input class="form-control" id="consultantId" name="consultantId" value="@Model.ConsultantId" />
         </div>
         <div class="col-md-3">
-            <label class="form-label" for="managerId">Manager filter</label>
+            <label class="form-label" for="managerId">Yönetici filtresi</label>
             <input class="form-control" id="managerId" name="managerId" value="@Model.ManagerId" />
         </div>
         <div class="col-md-2">
-            <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
+            <button class="btn btn-outline-primary w-100" type="submit">Uygula</button>
         </div>
     </div>
 </form>
@@ -57,36 +57,36 @@
 @if (Model.Calendar is null)
 {
     <div class="lf-panel">
-        <p class="text-secondary mb-0">Choose a date range up to @OrganizationCalendarSettings.MaxRangeDays days.</p>
+        <p class="text-secondary mb-0">@OrganizationCalendarSettings.MaxRangeDays güne kadar bir tarih aralığı seçin.</p>
     </div>
 }
 else
 {
     <div class="lf-panel mb-3">
         <div class="d-flex flex-wrap gap-3 small">
-            <span><span class="lf-cal-legend lf-event-leave"></span> Leave</span>
-            <span><span class="lf-cal-legend lf-event-organizationholiday"></span> Organization Holiday</span>
-            <span><span class="lf-cal-legend lf-event-officialholiday"></span> Official Holiday</span>
-            <span><span class="lf-cal-legend lf-day-today"></span> Today</span>
+            <span><span class="lf-cal-legend lf-event-leave"></span> İzin</span>
+            <span><span class="lf-cal-legend lf-event-organizationholiday"></span> Kurum Tatili</span>
+            <span><span class="lf-cal-legend lf-event-officialholiday"></span> Resmi Tatil</span>
+            <span><span class="lf-cal-legend lf-day-today"></span> Bugün</span>
         </div>
     </div>
 
     @if (Model.Calendar.Events.Count == 0)
     {
         <div class="lf-panel">
-            <div class="lf-empty-state text-secondary">No calendar events found for this range.</div>
+            <div class="lf-empty-state text-secondary">Bu aralıkta takvim etkinliği bulunamadı.</div>
         </div>
     }
 
-    <section class="lf-calendar" aria-label="Organization calendar">
+    <section class="lf-calendar" aria-label="Kurum takvimi">
         <div class="lf-weekdays" aria-hidden="true">
-            <span>Mon</span>
-            <span>Tue</span>
-            <span>Wed</span>
-            <span>Thu</span>
-            <span>Fri</span>
-            <span>Sat</span>
-            <span>Sun</span>
+            <span>Pzt</span>
+            <span>Sal</span>
+            <span>Çar</span>
+            <span>Per</span>
+            <span>Cum</span>
+            <span>Cmt</span>
+            <span>Paz</span>
         </div>
         <div class="lf-calendar-grid">
             @foreach (var day in Model.Calendar.Days)
@@ -99,7 +99,7 @@ else
                         <span>@day.Date.Day</span>
                         @if (day.IsToday)
                         {
-                            <span class="visually-hidden">Today</span>
+                            <span class="visually-hidden">Bugün</span>
                         }
                     </div>
                     <div class="lf-event-list">
@@ -133,18 +133,18 @@ else
     {
         return eventType switch
         {
-            CalendarEventTypes.Leave => "Leave",
-            CalendarEventTypes.OrganizationHoliday => "Org holiday",
-            CalendarEventTypes.OfficialHoliday => "Official",
-            _ => "Event"
+            CalendarEventTypes.Leave => "İzin",
+            CalendarEventTypes.OrganizationHoliday => "Kurum",
+            CalendarEventTypes.OfficialHoliday => "Resmi",
+            _ => "Etkinlik"
         };
     }
 
     private static string EventTitle(CalendarEvent calendarEvent)
     {
         var dateText = calendarEvent.StartDate == calendarEvent.EndDate
-            ? calendarEvent.StartDate.ToString("yyyy-MM-dd")
-            : $"{calendarEvent.StartDate:yyyy-MM-dd} - {calendarEvent.EndDate:yyyy-MM-dd}";
+            ? UiText.Date(calendarEvent.StartDate)
+            : $"{UiText.Date(calendarEvent.StartDate)} - {UiText.Date(calendarEvent.EndDate)}";
         return $"{EventTypeLabel(calendarEvent.EventType)}: {calendarEvent.Title} ({dateText})";
     }
 }

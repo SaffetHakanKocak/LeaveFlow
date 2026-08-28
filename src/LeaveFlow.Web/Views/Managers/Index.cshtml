@@ -1,32 +1,32 @@
 @model ManagerListViewModel
 @{
-    ViewData["Title"] = "Managers";
+    ViewData["Title"] = "Yöneticiler";
 }
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
     <div>
-        <h1 class="h3 mb-1">Managers</h1>
-        <p class="text-secondary mb-0">Manage manager profiles and assignments.</p>
+        <h1 class="h3 mb-1">Yöneticiler</h1>
+        <p class="text-secondary mb-0">Yönetici profillerini ve danışman atamalarını yönetin.</p>
     </div>
-    <a class="btn btn-primary" asp-action="Create">Create</a>
+    <a class="btn btn-primary" asp-action="Create">Oluştur</a>
 </div>
 
 <form method="get" class="lf-panel mb-3">
     <div class="row g-2 align-items-end">
         <div class="col-md-6">
-            <label class="form-label" for="search">Search</label>
+            <label class="form-label" for="search">Ara</label>
             <input class="form-control" id="search" name="search" value="@Model.Search" />
         </div>
         <div class="col-md-3">
-            <label class="form-label" for="isActive">Status</label>
+            <label class="form-label" for="isActive">Durum</label>
             <select class="form-select" id="isActive" name="isActive">
-                <option value="">All</option>
-                <option value="true" selected="@(Model.IsActive == true)">Active</option>
-                <option value="false" selected="@(Model.IsActive == false)">Inactive</option>
+                <option value="">Tümü</option>
+                <option value="true" selected="@(Model.IsActive == true)">Aktif</option>
+                <option value="false" selected="@(Model.IsActive == false)">Pasif</option>
             </select>
         </div>
         <div class="col-md-3">
-            <button class="btn btn-outline-primary w-100" type="submit">Filter</button>
+            <button class="btn btn-outline-primary w-100" type="submit">Filtrele</button>
         </div>
     </div>
 </form>
@@ -35,11 +35,11 @@
     <table class="table align-middle mb-0">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Department</th>
-                <th>Status</th>
-                <th class="text-end">Actions</th>
+                <th>Ad Soyad</th>
+                <th>E-posta</th>
+                <th>Departman</th>
+                <th>Durum</th>
+                <th class="text-end">İşlemler</th>
             </tr>
         </thead>
         <tbody>
@@ -49,15 +49,15 @@
                 <td>@manager.FirstName @manager.LastName</td>
                 <td>@manager.Email</td>
                 <td>@manager.Department</td>
-                <td><span class="badge @(manager.IsActive ? "text-bg-success" : "text-bg-secondary")">@(manager.IsActive ? "Active" : "Inactive")</span></td>
+                <td><span class="badge @(manager.IsActive ? "text-bg-success" : "text-bg-secondary")">@UiText.Active(manager.IsActive)</span></td>
                 <td class="text-end">
                     <div class="lf-action-row">
-                        <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@manager.Id">Details</a>
-                        <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@manager.Id">Edit</a>
-                        <a class="btn btn-sm btn-outline-success" asp-action="Assignments" asp-route-id="@manager.Id">Assignments</a>
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@manager.Id">Detay</a>
+                        <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@manager.Id">Düzenle</a>
+                        <a class="btn btn-sm btn-outline-success" asp-action="Assignments" asp-route-id="@manager.Id">Atamalar</a>
                         <form asp-action="SetActive" asp-route-id="@manager.Id" method="post" class="d-inline">
                             <input type="hidden" name="isActive" value="@(!manager.IsActive)" />
-                            <button class="btn btn-sm btn-outline-warning" type="submit">@(manager.IsActive ? "Deactivate" : "Activate")</button>
+                            <button class="btn btn-sm btn-outline-warning" type="submit">@(manager.IsActive ? "Pasifleştir" : "Aktifleştir")</button>
                         </form>
                     </div>
                 </td>

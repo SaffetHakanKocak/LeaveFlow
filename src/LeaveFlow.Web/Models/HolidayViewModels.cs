@@ -32,18 +32,22 @@ public sealed class OrganizationHolidayFormViewModel
 {
     public Guid? Id { get; init; }
 
-    [Required]
-    [StringLength(160)]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
+    [StringLength(160, ErrorMessage = "Bu alan en fazla 160 karakter olabilir.")]
+    [Display(Name = "Ad")]
     public string Name { get; init; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
     [DataType(DataType.Date)]
+    [Display(Name = "Başlangıç Tarihi")]
     public DateOnly? StartDate { get; init; }
 
-    [Required]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
     [DataType(DataType.Date)]
+    [Display(Name = "Bitiş Tarihi")]
     public DateOnly? EndDate { get; init; }
 
+    [Display(Name = "Aktif")]
     public bool IsActive { get; init; } = true;
 }
 
@@ -51,15 +55,18 @@ public sealed class OfficialHolidayFormViewModel
 {
     public Guid? Id { get; init; }
 
-    [Required]
-    [StringLength(160)]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
+    [StringLength(160, ErrorMessage = "Bu alan en fazla 160 karakter olabilir.")]
+    [Display(Name = "Ad")]
     public string Name { get; init; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
     [DataType(DataType.Date)]
+    [Display(Name = "Başlangıç Tarihi")]
     public DateOnly? StartDate { get; init; }
 
-    [Required]
+    [Required(ErrorMessage = "Bu alan zorunludur.")]
     [DataType(DataType.Date)]
+    [Display(Name = "Bitiş Tarihi")]
     public DateOnly? EndDate { get; init; }
 }

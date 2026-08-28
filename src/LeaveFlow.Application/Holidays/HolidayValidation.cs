@@ -18,26 +18,26 @@ internal static class HolidayValidation
 
         if (string.IsNullOrWhiteSpace(name))
         {
-            result.Add("Name", "This field is required.");
+            result.Add("Name", "Bu alan zorunludur.");
         }
         else if (name.Length > 160)
         {
-            result.Add("Name", "This field must be 160 characters or fewer.");
+            result.Add("Name", "Bu alan en fazla 160 karakter olabilir.");
         }
 
         if (startDate is null)
         {
-            result.Add("StartDate", "This field is required.");
+            result.Add("StartDate", "Bu alan zorunludur.");
         }
 
         if (endDate is null)
         {
-            result.Add("EndDate", "This field is required.");
+            result.Add("EndDate", "Bu alan zorunludur.");
         }
 
         if (startDate is not null && endDate is not null && startDate > endDate)
         {
-            result.Add("EndDate", "End date must be on or after start date.");
+            result.Add("EndDate", "Bitiş tarihi başlangıç tarihinde veya sonrasında olmalıdır.");
         }
 
         return result;

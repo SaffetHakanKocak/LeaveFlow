@@ -1,32 +1,32 @@
 @model LeaveFlow.Application.Holidays.OfficialHolidayDetail
 @{
-    ViewData["Title"] = "Official Holiday";
+    ViewData["Title"] = "Resmi Tatil";
 }
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
     <div>
         <h1 class="h3 mb-1">@Model.Name</h1>
-        <p class="text-secondary mb-0">@Model.StartDate.ToString("yyyy-MM-dd") - @Model.EndDate.ToString("yyyy-MM-dd")</p>
+        <p class="text-secondary mb-0">@UiText.Date(Model.StartDate) - @UiText.Date(Model.EndDate)</p>
     </div>
     <div class="d-flex gap-2">
-        <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
-        <a class="btn btn-outline-secondary" asp-action="Index">Back</a>
+        <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model.Id">Düzenle</a>
+        <a class="btn btn-outline-secondary" asp-action="Index">Geri</a>
     </div>
 </div>
 
 <div class="lf-panel">
     <dl class="row mb-0">
-        <dt class="col-sm-3">Generated days</dt>
+        <dt class="col-sm-3">Oluşturulan günler</dt>
         <dd class="col-sm-9">@Model.Days.Count</dd>
     </dl>
 </div>
 
 <div class="lf-panel mt-3">
-    <h2 class="h5">Days</h2>
+    <h2 class="h5">Günler</h2>
     <div class="d-flex flex-wrap gap-2">
         @foreach (var day in Model.Days)
         {
-            <span class="badge text-bg-light border">@day.ToString("yyyy-MM-dd")</span>
+            <span class="badge text-bg-light border">@UiText.Date(day)</span>
         }
     </div>
 </div>

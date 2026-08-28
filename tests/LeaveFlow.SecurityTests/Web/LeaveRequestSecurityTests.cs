@@ -85,8 +85,8 @@ public sealed class LeaveRequestSecurityTests : IClassFixture<LeaveFlowWebFactor
         var body = await detail.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, detail.StatusCode);
-        Assert.Contains("Pending", body);
-        Assert.DoesNotContain("Approved", body);
+        Assert.Contains("Bekliyor", body);
+        Assert.DoesNotContain("Onaylandı", body);
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public sealed class LeaveRequestSecurityTests : IClassFixture<LeaveFlowWebFactor
         var body = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("active consultant profile", body, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("aktif bir", body, StringComparison.OrdinalIgnoreCase);
     }
 
     private HttpClient CreateClient()

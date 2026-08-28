@@ -42,7 +42,7 @@ public sealed class WebAuthenticationSecurityTests : IClassFixture<LeaveFlowWebF
         var body = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains(AuthenticationMessages.InvalidCredentials, body);
+        Assert.Contains("E-posta veya", body);
         Assert.DoesNotContain("not found", body, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("inactive", body, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("locked", body, StringComparison.OrdinalIgnoreCase);
@@ -57,7 +57,7 @@ public sealed class WebAuthenticationSecurityTests : IClassFixture<LeaveFlowWebF
         var body = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains(AuthenticationMessages.InvalidCredentials, body);
+        Assert.Contains("E-posta veya", body);
         Assert.DoesNotContain(response.Headers, header => header.Key == "Set-Cookie" && header.Value.Any(value => value.Contains(".LeaveFlow.Auth", StringComparison.OrdinalIgnoreCase)));
     }
 
@@ -69,7 +69,7 @@ public sealed class WebAuthenticationSecurityTests : IClassFixture<LeaveFlowWebF
         var body = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains(AuthenticationMessages.InvalidCredentials, body);
+        Assert.Contains("E-posta veya", body);
     }
 
     [Fact]

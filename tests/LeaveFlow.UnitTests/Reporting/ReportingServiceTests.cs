@@ -25,8 +25,8 @@ public sealed class ReportingServiceTests
 
         var metrics = ReportingMapper.ToMetrics(data, "Manager");
 
-        Assert.Contains(metrics, metric => metric.Label == "Team consultants" && metric.Value == 4);
-        Assert.Contains(metrics, metric => metric.Label == "Team pending requests" && metric.Value == 3);
+        Assert.Contains(metrics, metric => metric.Label == "Ekip danışmanları" && metric.Value == 4);
+        Assert.Contains(metrics, metric => metric.Label == "Bekleyen ekip talepleri" && metric.Value == 3);
     }
 
     [Fact]
@@ -38,8 +38,8 @@ public sealed class ReportingServiceTests
             [new PeakLeaveDay(new DateOnly(2026, 9, 10), 2)],
             [new StatusDistributionItem("Pending", 7)]);
 
-        Assert.Contains(metrics, metric => metric.Label == "Approved leave days" && metric.Value == 5);
-        Assert.Contains(metrics, metric => metric.Label == "Pending requests" && metric.Value == 7);
+        Assert.Contains(metrics, metric => metric.Label == "Onaylı izin günleri" && metric.Value == 5);
+        Assert.Contains(metrics, metric => metric.Label == "Bekleyen talepler" && metric.Value == 7);
     }
 
     [Fact]

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using LeaveFlow.Application.Common;
 using LeaveFlow.Application.LeaveRequests;
 
@@ -42,6 +43,7 @@ public sealed class LeaveReviewDetailViewModel
 
 public sealed class ReviewDecisionViewModel
 {
+    [Display(Name = "Değerlendirme Notu")]
     public string? ReviewNote { get; init; }
 }
 

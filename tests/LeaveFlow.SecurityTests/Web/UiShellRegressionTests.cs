@@ -22,7 +22,7 @@ public sealed class UiShellRegressionTests : IClassFixture<LeaveFlowWebFactory>
         var html = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("Sign in to LeaveFlow", html);
+        Assert.Contains("Devam etmek", html);
         Assert.Contains("__RequestVerificationToken", html);
     }
 
@@ -39,7 +39,7 @@ public sealed class UiShellRegressionTests : IClassFixture<LeaveFlowWebFactory>
         Assert.Contains("lf-sidebar", html);
         Assert.Contains("lf-topbar", html);
         Assert.Contains("data-lf-theme-toggle", html);
-        Assert.Contains("Manager", html);
+        Assert.Contains("netici", html);
     }
 
     [Fact]
@@ -52,11 +52,11 @@ public sealed class UiShellRegressionTests : IClassFixture<LeaveFlowWebFactory>
         var html = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("My Leave Requests", html);
-        Assert.Contains("Calendar", html);
-        Assert.DoesNotContain(">Reports<", html);
-        Assert.DoesNotContain(">Managers<", html);
-        Assert.DoesNotContain(">Organization Holidays<", html);
+        Assert.Contains("zin Taleplerim", html);
+        Assert.Contains("Takvim", html);
+        Assert.DoesNotContain(">Raporlar<", html);
+        Assert.DoesNotContain("href=\"/Managers\"", html);
+        Assert.DoesNotContain(">Kurum Tatilleri<", html);
     }
 
     [Fact]
@@ -69,10 +69,10 @@ public sealed class UiShellRegressionTests : IClassFixture<LeaveFlowWebFactory>
         var html = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains(">Consultants<", html);
-        Assert.Contains(">Managers<", html);
-        Assert.Contains(">Organization Holidays<", html);
-        Assert.Contains(">Reports<", html);
+        Assert.Contains("manlar", html);
+        Assert.Contains("neticiler", html);
+        Assert.Contains(">Kurum Tatilleri<", html);
+        Assert.Contains(">Raporlar<", html);
     }
 
     [Fact]

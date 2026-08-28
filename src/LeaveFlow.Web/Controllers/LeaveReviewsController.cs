@@ -122,9 +122,9 @@ public sealed class LeaveReviewsController(ILeaveReviewService reviewService) : 
     {
         var message = errorCode switch
         {
-            "Unauthorized" => "You are not authorized to review this request.",
-            "NotPendingOrUnauthorized" => "This request is no longer pending or cannot be reviewed by you.",
-            _ => "The review decision could not be applied."
+            "Unauthorized" => "Bu talebi değerlendirme yetkiniz yok.",
+            "NotPendingOrUnauthorized" => "Bu talep artık beklemede değil veya sizin tarafınızdan değerlendirilemez.",
+            _ => "Değerlendirme kararı uygulanamadı."
         };
 
         ModelState.AddModelError(string.Empty, message);

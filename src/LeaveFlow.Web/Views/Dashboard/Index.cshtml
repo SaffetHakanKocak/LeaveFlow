@@ -1,16 +1,16 @@
 @model DashboardViewModel
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Panel";
 }
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
     <div>
-        <h1 class="h3 mb-1">@Model.Dashboard.Scope Dashboard</h1>
-        <p class="text-secondary mb-0">Operational leave and holiday overview for your authorized scope.</p>
+        <h1 class="h3 mb-1">@UiText.Scope(Model.Dashboard.Scope) Paneli</h1>
+        <p class="text-secondary mb-0">Yetkili olduğunuz kapsam için izin ve tatil özeti.</p>
     </div>
     @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
     {
-        <a class="btn btn-outline-primary" asp-controller="Reports" asp-action="Index">Reports</a>
+        <a class="btn btn-outline-primary" asp-controller="Reports" asp-action="Index">Raporlar</a>
     }
 </div>
 
@@ -28,10 +28,10 @@
 <div class="row g-3">
     <section class="col-lg-6">
         <div class="lf-panel h-100">
-            <h2 class="h5 mb-3">Upcoming Leaves</h2>
+            <h2 class="h5 mb-3">Yaklaşan İzinler</h2>
             @if (Model.Dashboard.UpcomingLeaves.Count == 0)
             {
-                <div class="lf-empty-state text-secondary">No upcoming approved leaves.</div>
+                <div class="lf-empty-state text-secondary">Yaklaşan onaylı izin yok.</div>
             }
             else
             {
@@ -39,8 +39,8 @@
                     @foreach (var leave in Model.Dashboard.UpcomingLeaves)
                     {
                         <div class="list-group-item px-0">
-                            <div class="fw-semibold">@(leave.ConsultantName ?? "My leave")</div>
-                            <div class="text-secondary small">@leave.StartDate.ToString("yyyy-MM-dd") - @leave.EndDate.ToString("yyyy-MM-dd") · @leave.DayCount day(s)</div>
+                            <div class="fw-semibold">@(leave.ConsultantName ?? "İznim")</div>
+                            <div class="text-secondary small">@UiText.Date(leave.StartDate) - @UiText.Date(leave.EndDate) · @leave.DayCount gün</div>
                         </div>
                     }
                 </div>
@@ -49,10 +49,10 @@
     </section>
     <section class="col-lg-6">
         <div class="lf-panel h-100">
-            <h2 class="h5 mb-3">Upcoming Holidays</h2>
+            <h2 class="h5 mb-3">Yaklaşan Tatiller</h2>
             @if (Model.Dashboard.UpcomingHolidays.Count == 0)
             {
-                <div class="lf-empty-state text-secondary">No upcoming holidays.</div>
+                <div class="lf-empty-state text-secondary">Yaklaşan tatil yok.</div>
             }
             else
             {
@@ -61,7 +61,7 @@
                     {
                         <div class="list-group-item px-0">
                             <div class="fw-semibold">@holiday.Name</div>
-                            <div class="text-secondary small">@holiday.EventType · @holiday.StartDate.ToString("yyyy-MM-dd") - @holiday.EndDate.ToString("yyyy-MM-dd")</div>
+                            <div class="text-secondary small">@UiText.EventType(holiday.EventType) · @UiText.Date(holiday.StartDate) - @UiText.Date(holiday.EndDate)</div>
                         </div>
                     }
                 </div>
@@ -73,23 +73,23 @@
 @if (Model.Dashboard.RecentLeaveRequests.Count > 0)
 {
     <section class="lf-panel mt-3">
-        <h2 class="h5 mb-3">Recent Leave Requests</h2>
+        <h2 class="h5 mb-3">Son İzin Talepleri</h2>
         <div class="table-responsive">
             <table class="table table-sm align-middle mb-0">
                 <thead>
                     <tr>
-                        <th>Status</th>
-                        <th>Start</th>
-                        <th>End</th>
+                        <th>Durum</th>
+                        <th>Başlangıç</th>
+                        <th>Bitiş</th>
                     </tr>
                 </thead>
                 <tbody>
                 @foreach (var request in Model.Dashboard.RecentLeaveRequests)
                 {
                     <tr>
-                        <td><span class="badge @LeaveFlow.Web.Controllers.LeaveRequestsController.StatusBadgeClass(request.Status)">@request.Status</span></td>
-                        <td>@request.StartDate.ToString("yyyy-MM-dd")</td>
-                        <td>@request.EndDate.ToString("yyyy-MM-dd")</td>
+                        <td><span class="badge @LeaveFlow.Web.Controllers.LeaveRequestsController.StatusBadgeClass(request.Status)">@UiText.Status(request.Status)</span></td>
+                        <td>@UiText.Date(request.StartDate)</td>
+                        <td>@UiText.Date(request.EndDate)</td>
                     </tr>
                 }
                 </tbody>

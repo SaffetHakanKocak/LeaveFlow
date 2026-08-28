@@ -1,14 +1,14 @@
 @model LeaveFlow.Application.Holidays.OfficialHolidayDetail
 @{
-    ViewData["Title"] = "Delete Official Holiday";
+    ViewData["Title"] = "Resmi Tatili Sil";
 }
 
-<h1 class="h3 mb-3">Delete Official Holiday</h1>
+<h1 class="h3 mb-3">Resmi Tatili Sil</h1>
 
 <div class="lf-panel">
-    <p>Delete <strong>@Model.Name</strong> for @Model.StartDate.ToString("yyyy-MM-dd") - @Model.EndDate.ToString("yyyy-MM-dd")?</p>
+    <p><strong>@Model.Name</strong> tatili @UiText.Date(Model.StartDate) - @UiText.Date(Model.EndDate) aralığı için silinsin mi?</p>
     <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-flex gap-2">
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+        <button type="submit" class="btn btn-danger">Sil</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">İptal</a>
     </form>
 </div>

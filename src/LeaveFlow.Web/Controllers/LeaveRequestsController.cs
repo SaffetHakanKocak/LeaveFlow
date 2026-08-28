@@ -82,9 +82,9 @@ public sealed class LeaveRequestsController(ILeaveRequestService leaveRequestSer
     {
         var message = errorCode switch
         {
-            "InvalidConsultant" => "An active consultant profile is required to create leave requests.",
-            "Overlap" => "This request overlaps an existing pending or approved leave request.",
-            _ => "The leave request could not be created."
+            "InvalidConsultant" => "İzin talebi oluşturmak için aktif bir danışman profili gerekir.",
+            "Overlap" => "Bu talep mevcut bekleyen veya onaylı bir izin talebiyle çakışıyor.",
+            _ => "İzin talebi oluşturulamadı."
         };
 
         ModelState.AddModelError(string.Empty, message);
