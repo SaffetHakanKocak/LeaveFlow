@@ -18,6 +18,19 @@ BEGIN
     ALTER TABLE dbo.Consultants ADD IsActive bit NOT NULL CONSTRAINT DF_Consultants_IsActive DEFAULT 1;
 END;
 
+IF EXISTS
+(
+    SELECT 1
+    FROM sys.key_constraints
+    WHERE name = N'UQ_Consultants_EmployeeNumber'
+        AND parent_object_id = OBJECT_ID(N'dbo.Consultants')
+)
+BEGIN
+    ALTER TABLE dbo.Consultants DROP CONSTRAINT UQ_Consultants_EmployeeNumber;
+END;
+
+GO
+
 UPDATE c
 SET
     FirstName = COALESCE(c.FirstName, LEFT(u.DisplayName, 80)),

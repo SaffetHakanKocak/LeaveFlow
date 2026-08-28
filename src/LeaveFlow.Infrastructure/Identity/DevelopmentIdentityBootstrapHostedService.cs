@@ -2,6 +2,7 @@ using LeaveFlow.Application.Abstractions.Identity;
 using LeaveFlow.Application.Identity;
 using LeaveFlow.Domain.Identity;
 using LeaveFlow.Infrastructure.Persistence.Repositories;
+using LeaveFlow.Infrastructure.Persistence.SqlServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,6 +13,7 @@ namespace LeaveFlow.Infrastructure.Identity;
 internal sealed class DevelopmentIdentityBootstrapHostedService(
     IHostEnvironment environment,
     IConfiguration configuration,
+    DatabaseOptions databaseOptions,
     IServiceScopeFactory scopeFactory,
     ILogger<DevelopmentIdentityBootstrapHostedService> logger) : IHostedService
 {
@@ -33,10 +35,16 @@ internal sealed class DevelopmentIdentityBootstrapHostedService(
             var repository = scope.ServiceProvider.GetRequiredService<DevelopmentIdentityRepository>();
             var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHashingService>();
             await BootstrapAsync(repository, passwordHasher, cancellationToken);
+            logger.LogInformation(
+                "Development identity bootstrap completed using connection string name {ConnectionStringName}.",
+                databaseOptions.ConnectionStringName);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
-            logger.LogWarning("Development identity bootstrap was skipped because the database is not available.");
+            logger.LogWarning(
+                exception,
+                "Development identity bootstrap failed using connection string name {ConnectionStringName}. Run local database setup and confirm development stored procedures are applied.",
+                databaseOptions.ConnectionStringName);
         }
     }
 
@@ -47,22 +55,6 @@ internal sealed class DevelopmentIdentityBootstrapHostedService(
         IPasswordHashingService passwordHasher,
         CancellationToken cancellationToken)
     {
-        Guid? consultantId = null;
-
-        var consultantUserId = await TryUpsertAsync(
-            repository,
-            passwordHasher,
-            "consultant@leaveflow.local",
-            "Demo Consultant",
-            RoleNames.Consultant,
-            "Consultant",
-            cancellationToken);
-
-        if (consultantUserId is Guid consultantUser)
-        {
-            consultantId = await repository.EnsureConsultantForUserAsync(consultantUser, cancellationToken);
-        }
-
         var managerUserId = await TryUpsertAsync(
             repository,
             passwordHasher,
@@ -72,24 +64,45 @@ internal sealed class DevelopmentIdentityBootstrapHostedService(
             "Manager",
             cancellationToken);
 
+        Guid? managerId = null;
         if (managerUserId is Guid managerUser)
         {
-            var managerId = await repository.EnsureManagerForUserAsync(managerUser, cancellationToken);
-            if (consultantId is Guid assignedConsultantId)
+            managerId = await repository.EnsureManagerForUserAsync(managerUser, cancellationToken);
+        }
+
+        foreach (var consultant in GetDemoConsultants())
+        {
+            var consultantUserId = await TryUpsertAsync(
+                repository,
+                passwordHasher,
+                consultant.Email,
+                consultant.DisplayName,
+                RoleNames.Consultant,
+                "Consultant",
+                cancellationToken);
+
+            if (consultantUserId is Guid consultantUser && managerId is Guid assignedManagerId)
             {
-                await repository.EnsureManagerConsultantAssignmentAsync(managerId, assignedConsultantId, cancellationToken);
+                var consultantId = await repository.EnsureConsultantForUserAsync(consultantUser, cancellationToken);
+                await repository.EnsureManagerConsultantAssignmentAsync(assignedManagerId, consultantId, cancellationToken);
             }
         }
 
         _ = await TryUpsertAsync(
             repository,
             passwordHasher,
-            "administrator@leaveflow.local",
-            "Demo Administrator",
+            "admin@leaveflow.local",
+            "Demo Admin",
             RoleNames.Administrator,
             "Administrator",
             cancellationToken);
     }
+
+    private static IReadOnlyList<(string Email, string DisplayName)> GetDemoConsultants() =>
+    [
+        ("consultant1@leaveflow.local", "Demo Consultant 1"),
+        ("consultant2@leaveflow.local", "Demo Consultant 2")
+    ];
 
     private async Task<Guid?> TryUpsertAsync(
         DevelopmentIdentityRepository repository,
@@ -100,7 +113,8 @@ internal sealed class DevelopmentIdentityBootstrapHostedService(
         string passwordKey,
         CancellationToken cancellationToken)
     {
-        var password = configuration[$"LeaveFlow:Development:Passwords:{passwordKey}"];
+        var password = configuration["LeaveFlow:Development:DemoPassword"]
+            ?? configuration[$"LeaveFlow:Development:Passwords:{passwordKey}"];
         if (string.IsNullOrWhiteSpace(password))
         {
             logger.LogWarning(

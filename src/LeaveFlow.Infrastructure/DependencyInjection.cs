@@ -32,6 +32,8 @@ public static class DependencyInjection
             throw new InvalidOperationException("The database connection string name is not configured.");
         }
 
+        SqlServerTypeHandlers.Register();
+
         var connectionString = configuration.GetConnectionString(databaseOptions.ConnectionStringName) ?? string.Empty;
 
         services.AddSingleton(databaseOptions);

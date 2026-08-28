@@ -184,13 +184,13 @@ Application code must refer to stored procedure names through centralized Infras
 
 No real users, real emails, real company data, or production data are seeded.
 
-Development demo users are not stored as plaintext passwords in `/db`. When `LeaveFlow:Development:BootstrapIdentity` is true in Development, the host upserts fictional local users (`consultant@leaveflow.local`, `manager@leaveflow.local`, `administrator@leaveflow.local`) using hashes created at runtime from user secrets or environment variables:
+Development demo users are not stored as plaintext passwords in `/db`. When `LeaveFlow:Development:BootstrapIdentity` is true in Development, the host upserts fictional local users using hashes created at runtime from user secrets or environment variables:
 
 ```powershell
-$env:LeaveFlow__Development__Passwords__Consultant="..."
-$env:LeaveFlow__Development__Passwords__Manager="..."
-$env:LeaveFlow__Development__Passwords__Administrator="..."
+$env:LeaveFlow__Development__DemoPassword="..."
 ```
+
+The local demo users are `admin@leaveflow.local`, `manager@leaveflow.local`, `consultant1@leaveflow.local`, and `consultant2@leaveflow.local`. The two consultants are assigned to the demo manager through development-only stored procedures.
 
 ## Configuration
 

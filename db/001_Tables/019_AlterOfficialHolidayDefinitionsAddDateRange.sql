@@ -8,6 +8,8 @@ BEGIN
     ALTER TABLE dbo.OfficialHolidayDefinitions ADD EndDate date NULL;
 END;
 
+GO
+
 UPDATE hd
 SET
     StartDate = COALESCE(hd.StartDate, days.StartDate, CONVERT(date, hd.CreatedAt)),

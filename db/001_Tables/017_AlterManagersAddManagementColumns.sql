@@ -18,6 +18,8 @@ BEGIN
     ALTER TABLE dbo.Managers ADD IsActive bit NOT NULL CONSTRAINT DF_Managers_IsActive DEFAULT 1;
 END;
 
+GO
+
 UPDATE m
 SET
     FirstName = COALESCE(m.FirstName, LEFT(u.DisplayName, 80)),
