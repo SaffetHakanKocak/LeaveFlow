@@ -498,3 +498,63 @@ Default organization calendar to month view and cap requested ranges at 62 inclu
 - Month and two-month planning windows are supported.
 - Large reporting-style queries are deferred to the future reporting/dashboard stage.
 - Calendar UI stays responsive and predictable.
+
+## ADR-0026 - Cap Reporting Date Range At 366 Days
+
+Date: 2026-08-28
+
+Status: accepted
+
+### Context
+
+Reports aggregate leave days, request statuses, team usage, peak dates, and upcoming holidays. Arbitrary multi-year ranges can produce expensive queries and noisy screens before export/background report execution exists.
+
+### Decision
+
+Default report filters to the current calendar year and cap requested ranges at 366 inclusive days through application validation.
+
+### Consequences
+
+- Normal annual reporting is supported.
+- Very large reporting windows are rejected before querying or rendering.
+- Multi-year analytics should be handled by a future export/background reporting design.
+
+## ADR-0027 - Resolve Reporting Scope Server-Side
+
+Date: 2026-08-28
+
+Status: accepted
+
+### Context
+
+Reporting can expose organization-wide leave and staffing information. Querystring `managerId` or `consultantId` values must not be trusted for non-admin users.
+
+### Decision
+
+Administrators may run organization reports with optional filters. Managers have their effective manager id resolved from the authenticated user and supplied filters cannot expand scope. Consultants are denied organization-wide reports and receive only a personal dashboard.
+
+### Consequences
+
+- Manager filter tampering is ignored.
+- Consultant users cannot access organization analytics.
+- Stored procedures still receive scoped parameters so database reads align with application authorization.
+
+## ADR-0028 - Keep Reporting UI Server-Rendered Without A Chart Dependency
+
+Date: 2026-08-28
+
+Status: accepted
+
+### Context
+
+Stage 10 needs practical dashboard and report screens without introducing frontend package management or CDN availability concerns.
+
+### Decision
+
+Use Razor/Bootstrap summary cards and tables for the reporting UI in this stage. Do not add Chart.js or another chart dependency yet.
+
+### Consequences
+
+- No new frontend license, package, or CDN dependency is introduced.
+- Report data remains visible, filterable, and testable with server-rendered HTML.
+- Rich charts can be evaluated in a later professional UI/UX or export/reporting phase.

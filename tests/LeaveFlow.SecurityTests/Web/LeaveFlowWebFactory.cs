@@ -4,6 +4,8 @@ using LeaveFlow.Application.Abstractions.Holidays;
 using LeaveFlow.Application.Abstractions.People;
 using LeaveFlow.Application.Abstractions.LeaveRequests;
 using LeaveFlow.Application.Abstractions.Timeline;
+using LeaveFlow.Application.Abstractions.Reporting;
+using LeaveFlow.Application.Reporting;
 using LeaveFlow.Application.Identity;
 using LeaveFlow.Domain.Identity;
 using LeaveFlow.Infrastructure.Identity;
@@ -23,6 +25,7 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
     public InMemoryLeaveRequestStore LeaveRequestStore { get; } = new();
     public InMemoryWorkforceTimelineStore TimelineStore { get; } = new();
     public InMemoryOrganizationCalendarStore CalendarStore { get; } = new();
+    public InMemoryReportingStore ReportingStore { get; } = new();
     public AspNetPasswordHashingService Hasher { get; } = new();
 
     public const string Password = "Test.Passw0rd!";
@@ -77,6 +80,7 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
             services.AddSingleton<ILeaveRequestRepository>(LeaveRequestStore);
             services.AddSingleton<IWorkforceTimelineRepository>(TimelineStore);
             services.AddSingleton<IOrganizationCalendarRepository>(CalendarStore);
+            services.AddSingleton<IReportingRepository>(ReportingStore);
         });
     }
 
@@ -99,6 +103,8 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
         TimelineStore.AddConsultant(InactiveProfileConsultantId, "Inactive Profile", InactiveProfileEmail, isActive: false);
         CalendarStore.AddConsultant(ConsultantOneId, "Consultant One");
         CalendarStore.AddConsultant(ConsultantTwoId, "Consultant Two");
+        ReportingStore.AddConsultant(ConsultantOneId, "Consultant One");
+        ReportingStore.AddConsultant(ConsultantTwoId, "Consultant Two");
         _ = ((IConsultantManagementRepository)Store).SetActiveAsync(InactiveProfileConsultantId, false).GetAwaiter().GetResult();
         Store.SetConsultant(locked.Id, Guid.NewGuid());
 
@@ -114,11 +120,19 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
         TimelineStore.AddApprovedLeave(ConsultantTwoId, "Manager two hidden leave", new DateOnly(2026, 9, 10), new DateOnly(2026, 9, 12));
         CalendarStore.AssignManager(ManagerOneId, ConsultantOneId);
         CalendarStore.AssignManager(ManagerTwoId, ConsultantTwoId);
+        ReportingStore.AssignManager(ManagerOneId, ConsultantOneId);
+        ReportingStore.AssignManager(ManagerTwoId, ConsultantTwoId);
         CalendarConsultantOneLeaveId = CalendarStore.AddLeave(ConsultantOneId, "Calendar manager one visible leave", new DateOnly(2026, 9, 10), new DateOnly(2026, 9, 11));
         CalendarConsultantTwoLeaveId = CalendarStore.AddLeave(ConsultantTwoId, "Calendar manager two hidden leave", new DateOnly(2026, 9, 10), new DateOnly(2026, 9, 12));
         _ = CalendarStore.AddLeave(ConsultantOneId, "Calendar pending invisible leave", new DateOnly(2026, 9, 13), new DateOnly(2026, 9, 13), approved: false);
         CalendarOrganizationHolidayId = CalendarStore.AddOrganizationHoliday("Company Calendar Day", new DateOnly(2026, 9, 15), new DateOnly(2026, 9, 15));
         CalendarOfficialHolidayId = CalendarStore.AddOfficialHoliday("Public Calendar Day", new DateOnly(2026, 9, 16), new DateOnly(2026, 9, 16));
+        ReportingStore.AddLeave(Guid.NewGuid(), ConsultantOneId, "Approved", new DateOnly(2026, 9, 10), new DateOnly(2026, 9, 11));
+        ReportingStore.AddLeave(Guid.NewGuid(), ConsultantOneId, "Pending", new DateOnly(2026, 9, 20), new DateOnly(2026, 9, 21));
+        ReportingStore.AddLeave(Guid.NewGuid(), ConsultantTwoId, "Approved", new DateOnly(2026, 9, 12), new DateOnly(2026, 9, 14));
+        ReportingStore.AddLeave(Guid.NewGuid(), ConsultantTwoId, "Rejected", new DateOnly(2026, 9, 22), new DateOnly(2026, 9, 23));
+        ReportingStore.AddHoliday(new UpcomingHolidayItem("OrganizationHoliday", CalendarOrganizationHolidayId, "Company Calendar Day", new DateOnly(2026, 9, 15), new DateOnly(2026, 9, 15)));
+        ReportingStore.AddHoliday(new UpcomingHolidayItem("OfficialHoliday", CalendarOfficialHolidayId, "Public Calendar Day", new DateOnly(2026, 9, 16), new DateOnly(2026, 9, 16)));
 
         var lockedUser = Store.GetUser(LockedEmail);
         Store.AddUser(

@@ -68,6 +68,8 @@ Security is a core design requirement for LeaveFlow, not a later enhancement. Th
 - Leave review screens resolve manager/admin scope server-side and never rely on hidden UI controls for approval authorization.
 - Workforce timeline screens deny consultants, scope managers to assigned consultants server-side, and ignore manager filter tampering for manager users.
 - Organization calendar responses are role-aware: admins see all approved leave, managers see assigned consultant leave, and consultants see only their own leave plus holidays.
+- Reporting dashboards are role-aware: administrators see organization metrics, managers see assigned-team metrics, and consultants see only personal summary data.
+- Report screens are administrator/manager only; manager report scope is resolved server-side and consultant users are denied organization-wide analytics.
 
 ### Data Access
 
@@ -208,6 +210,16 @@ Security tests should cover:
 - Manager and consultant querystring tampering is ignored or scoped server-side by the application service and stored procedures.
 - Calendar detail access is role-aware and prevents cross-consultant and cross-team leave IDOR.
 - Calendar list/detail data excludes pending and rejected leave requests and inactive holiday definitions.
+
+## Stage 10 Security Review
+
+- Dashboard and report endpoints require authentication.
+- Dashboards return only role-appropriate data: administrators receive organization metrics, managers receive assigned-team metrics, and consultants receive only personal leave/request data plus holidays.
+- Consultant users are denied from organization-wide report screens.
+- Manager report scope is resolved from the authenticated user id; supplied `managerId` and `consultantId` values cannot expand visibility.
+- Reporting stored procedures keep manager scoping tied to `ManagerConsultants`.
+- Reporting data access remains Dapper stored-procedure-only with parameterized calls and centralized procedure names.
+- Security tests cover anonymous denial, consultant report denial, manager scoping, manager filter tampering, admin visibility, and consultant dashboard privacy.
 
 ## Open Security Decisions
 

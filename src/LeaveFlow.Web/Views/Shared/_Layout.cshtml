@@ -32,6 +32,9 @@
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="OrganizationCalendar" asp-action="Index">Organization Calendar</a>
                             </li>
                         }
@@ -42,6 +45,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="WorkforceTimeline" asp-action="Index">Workforce Timeline</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Reports" asp-action="Index">Reports</a>
                             </li>
                         }
                         @if (User.IsInRole("Administrator"))

@@ -2,11 +2,11 @@
 
 ## Current Status
 
-LeaveFlow has completed Stage 9: Organization Calendar.
+LeaveFlow has completed Stage 10: Reporting & Management Dashboard.
 
-The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, manager/admin workforce leave timeline views based on approved leave day rows, and role-aware organization calendar views for approved leave and holidays.
+The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, manager/admin workforce leave timeline views based on approved leave day rows, role-aware organization calendar views for approved leave and holidays, and role-aware dashboard/reporting screens for administrators, managers, and consultants.
 
-Reporting, Azure AI, Docker, and API JWT/token authentication have not been implemented yet.
+Azure AI, Docker, API JWT/token authentication, exports, and report-run auditing have not been implemented yet.
 
 This repository is intended to become a production-grade, open-source portfolio project for workforce leave and calendar management.
 
@@ -55,6 +55,7 @@ The project is generic and white-label friendly. It must not contain real compan
 - Stage 7: Leave Approval & Conflict Detection.
 - Stage 8: Workforce Leave Timeline.
 - Stage 9: Organization Calendar.
+- Stage 10: Reporting & Management Dashboard.
 - Cookie authentication for LeaveFlow.Web.
 - Password hashing with ASP.NET Core Identity `PasswordHasher`.
 - Configurable lockout and login-attempt auditing.
@@ -81,16 +82,22 @@ The project is generic and white-label friendly. It must not contain real compan
 - Consultant calendar responses include only the authenticated consultant's leave plus holidays.
 - Manager calendar responses include assigned consultant leave plus holidays.
 - Calendar date ranges default to month view and are capped at 62 inclusive days.
+- Role-aware dashboards for administrators, managers, and consultants.
+- Reporting uses `ConsultantLeaveDays` for approved leave-day analytics, `LeaveRequests` for workflow/status analytics, and holiday definition/day data for upcoming holidays.
+- Managers are scoped to assigned consultants server-side and consultant users cannot access organization-wide reports.
+- Reporting date ranges default to the current year and are capped at 366 inclusive days.
 
 ## Current Stage Scope
 
-Stage 9 intentionally does not include:
+Stage 10 intentionally does not include:
 
-- Reporting/dashboard
 - Azure AI
 - Docker
 - API JWT or other token authentication
+- export files
+- report run auditing
+- full UI design-system rewrite
 
 ## Next Stage
 
-Stage 10 - Reporting & Dashboard.
+Stage 11 - Professional UI/UX Pass.

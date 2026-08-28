@@ -61,4 +61,15 @@ internal static class StoredProcedureNames
     internal const string OrganizationCalendarGetDetailForAdmin = "dbo.usp_OrganizationCalendar_GetDetailForAdmin";
     internal const string OrganizationCalendarGetDetailForManager = "dbo.usp_OrganizationCalendar_GetDetailForManager";
     internal const string OrganizationCalendarGetDetailForConsultant = "dbo.usp_OrganizationCalendar_GetDetailForConsultant";
+    internal const string DashboardGetForAdmin = "dbo.usp_Dashboard_GetForAdmin";
+    internal const string DashboardGetForManager = "dbo.usp_Dashboard_GetForManager";
+    internal const string DashboardGetForConsultant = "dbo.usp_Dashboard_GetForConsultant";
+    internal const string ReportsConsultantLeaveUsage = "dbo.usp_Reports_ConsultantLeaveUsage";
+    internal const string ReportsMonthlyLeaveActivity = "dbo.usp_Reports_MonthlyLeaveActivity";
+    internal const string ReportsTeamLeaveUsage = "dbo.usp_Reports_TeamLeaveUsage";
+    internal const string ReportsPeakLeaveDays = "dbo.usp_Reports_PeakLeaveDays";
+    internal const string ReportsStatusDistribution = "dbo.usp_Reports_StatusDistribution";
+    internal const string ReportsUpcomingLeaves = "dbo.usp_Reports_UpcomingLeaves";
+    internal const string ReportsUpcomingHolidays = "dbo.usp_Reports_UpcomingHolidays";
+    internal const string ReportsRecentLeaveRequests = "dbo.usp_Reports_RecentLeaveRequests";
 }

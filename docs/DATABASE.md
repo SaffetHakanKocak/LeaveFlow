@@ -91,6 +91,7 @@ Indexes were added for likely lookup paths:
 - consultant and manager management lists by active state and name
 - holiday management lists by active state, name, and date range
 - consultant leave requests by consultant, status, and date range
+- reporting reads by leave request status, date range, and consultant
 
 Indexes should be revisited when real stored procedure query patterns are implemented.
 
@@ -158,6 +159,17 @@ Current stored procedures:
 - `dbo.usp_OrganizationCalendar_GetDetailForAdmin`
 - `dbo.usp_OrganizationCalendar_GetDetailForManager`
 - `dbo.usp_OrganizationCalendar_GetDetailForConsultant`
+- `dbo.usp_Dashboard_GetForAdmin`
+- `dbo.usp_Dashboard_GetForManager`
+- `dbo.usp_Dashboard_GetForConsultant`
+- `dbo.usp_Reports_ConsultantLeaveUsage`
+- `dbo.usp_Reports_MonthlyLeaveActivity`
+- `dbo.usp_Reports_TeamLeaveUsage`
+- `dbo.usp_Reports_PeakLeaveDays`
+- `dbo.usp_Reports_StatusDistribution`
+- `dbo.usp_Reports_UpcomingLeaves`
+- `dbo.usp_Reports_UpcomingHolidays`
+- `dbo.usp_Reports_RecentLeaveRequests`
 - Development-only bootstrap procedures: `dbo.usp_Users_Upsert`, `dbo.usp_UserRoles_Ensure`, `dbo.usp_Consultants_EnsureForUser`, `dbo.usp_Managers_EnsureForUser`, `dbo.usp_ManagerConsultants_Ensure`
 
 Application code must refer to stored procedure names through centralized Infrastructure constants and must not accept procedure names from user input.
@@ -241,6 +253,14 @@ Administrators use `dbo.usp_OrganizationCalendar_GetForAdmin` and can optionally
 Calendar detail procedures follow the same role split. Leave details require approved status and role-appropriate consultant scope. Holiday details require active definitions and are visible to authenticated users.
 
 `db/002_Indexes/007_CreateOrganizationCalendarIndexes.sql` adds date-first indexes for `HolidayDays` and `OfficialHolidayDays`. `ConsultantLeaveDays` date-range reads continue to use the Stage 8 date-first index.
+
+## Reporting Policy
+
+Reporting separates approved leave-day analytics from workflow analytics. Approved usage, monthly approved activity, team usage, peak leave days, and upcoming approved leave read from `ConsultantLeaveDays` joined back to approved `LeaveRequests`. Status distribution and recent request snapshots read from `LeaveRequests`. Upcoming holiday reports read active organization and official holiday definitions.
+
+Administrators can run organization-wide reports with optional manager or consultant filters. Managers are always scoped through `ManagerConsultants` using their server-resolved manager id; request parameters cannot expand manager scope. Consultants receive only their personal dashboard and are denied organization-wide report screens.
+
+Reporting ranges default to the current calendar year and are capped at 366 inclusive days in the application layer. `db/002_Indexes/008_CreateReportingIndexes.sql` adds `IX_LeaveRequests_Status_Date_Consultant` for status/date/consultant reporting lookups.
 
 ## Security Model
 

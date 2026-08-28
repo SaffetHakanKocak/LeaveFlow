@@ -134,17 +134,30 @@ Deliverables:
 
 ## Phase 10 - Reporting
 
-Status: next.
+Status: completed.
 
 Deliverables:
 
 - Administrator reports.
 - Manager team reports.
 - Leave usage summaries.
-- Export foundation.
-- Report run auditing.
+- Role-aware dashboards for administrators, managers, and consultants.
+- Report range filters, summary cards, and report tables.
+- Reporting authorization and manager scope tampering tests.
 
-## Phase 11 - Hardening and Release Preparation
+Export foundation and report run auditing remain future enhancements.
+
+## Phase 11 - Professional UI/UX Pass
+
+Status: next.
+
+Deliverables:
+
+- Improve visual consistency across existing MVC screens.
+- Refine dashboard/report readability and responsive behavior.
+- Polish navigation, spacing, empty states, forms, and tables without changing business scope.
+
+## Phase 12 - Hardening and Release Preparation
 
 Deliverables:
 

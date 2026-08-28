@@ -1,0 +1,127 @@
+@model ReportsViewModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">Reports</h1>
+        <p class="text-secondary mb-0">Leave usage, activity, peaks, and upcoming schedule for your authorized scope.</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+</div>
+
+<form method="get" class="lf-panel mb-3">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label" for="startDate">Start</label>
+            <input class="form-control" id="startDate" name="startDate" type="date" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="endDate">End</label>
+            <input class="form-control" id="endDate" name="endDate" type="date" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="managerId">Manager filter</label>
+            <input class="form-control" id="managerId" name="managerId" value="@Model.ManagerId" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="consultantId">Consultant filter</label>
+            <input class="form-control" id="consultantId" name="consultantId" value="@Model.ConsultantId" />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
+        </div>
+    </div>
+</form>
+
+@if (Model.Reports is null)
+{
+    <section class="lf-panel">
+        <p class="text-secondary mb-0">Choose a report range up to @LeaveFlow.Application.Reporting.ReportingSettings.MaxRangeDays days.</p>
+    </section>
+}
+else
+{
+    <section class="lf-dashboard-metrics mb-3">
+        @foreach (var metric in Model.Reports.SummaryMetrics)
+        {
+            <article class="lf-metric-card">
+                <span>@metric.Label</span>
+                <strong>@metric.Value</strong>
+            </article>
+        }
+    </section>
+
+    <div class="row g-3">
+        <section class="col-lg-6">@TablePanel("Consultant Leave Usage", Model.Reports.ConsultantLeaveUsage, row => row.ConsultantName, row => row.ApprovedLeaveDayCount.ToString())</section>
+        <section class="col-lg-6">@TablePanel("Team Leave Usage", Model.Reports.TeamLeaveUsage, row => row.ManagerName, row => $"{row.ApprovedLeaveDayCount} day(s), {row.ConsultantCount} consultant(s)")</section>
+        <section class="col-lg-6">@TablePanel("Monthly Leave Activity", Model.Reports.MonthlyLeaveActivity, row => $"{row.Year}-{row.Month:00}", row => $"{row.ApprovedLeaveDayCount} day(s), {row.RequestCount} request(s)")</section>
+        <section class="col-lg-6">@TablePanel("Peak Leave Days", Model.Reports.PeakLeaveDays, row => row.LeaveDate.ToString("yyyy-MM-dd"), row => $"{row.ConsultantCount} consultant(s)")</section>
+        <section class="col-lg-6">@TablePanel("Status Distribution", Model.Reports.StatusDistribution, row => row.Status, row => row.RequestCount.ToString())</section>
+        <section class="col-lg-6">@TablePanel("Upcoming Leaves", Model.Reports.UpcomingLeaves, row => row.ConsultantName ?? "My leave", row => $"{row.StartDate:yyyy-MM-dd} - {row.EndDate:yyyy-MM-dd}")</section>
+        <section class="col-12">@TablePanel("Upcoming Holidays", Model.Reports.UpcomingHolidays, row => $"{row.Name} ({row.EventType})", row => $"{row.StartDate:yyyy-MM-dd} - {row.EndDate:yyyy-MM-dd}")</section>
+    </div>
+}
+
+<style>
+    .lf-dashboard-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: .75rem;
+    }
+
+    .lf-metric-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: #fff;
+        padding: 1rem;
+    }
+
+    .lf-metric-card span {
+        display: block;
+        color: #5f6368;
+        font-size: .875rem;
+    }
+
+    .lf-metric-card strong {
+        display: block;
+        font-size: 1.9rem;
+        line-height: 1.1;
+        margin-top: .35rem;
+    }
+</style>
+
+@functions {
+    private static Microsoft.AspNetCore.Html.IHtmlContent TablePanel<T>(
+        string title,
+        IReadOnlyList<T> rows,
+        Func<T, string> label,
+        Func<T, string> value)
+    {
+        var builder = new System.Text.StringBuilder();
+        builder.Append("<div class=\"lf-panel h-100\"><h2 class=\"h5 mb-3\">");
+        builder.Append(System.Net.WebUtility.HtmlEncode(title));
+        builder.Append("</h2>");
+
+        if (rows.Count == 0)
+        {
+            builder.Append("<p class=\"text-secondary mb-0\">No data for this range.</p></div>");
+            return new Microsoft.AspNetCore.Html.HtmlString(builder.ToString());
+        }
+
+        builder.Append("<div class=\"table-responsive\"><table class=\"table table-sm align-middle mb-0\"><tbody>");
+        foreach (var row in rows)
+        {
+            builder.Append("<tr><td>");
+            builder.Append(System.Net.WebUtility.HtmlEncode(label(row)));
+            builder.Append("</td><td class=\"text-end fw-semibold\">");
+            builder.Append(System.Net.WebUtility.HtmlEncode(value(row)));
+            builder.Append("</td></tr>");
+        }
+
+        builder.Append("</tbody></table></div></div>");
+        return new Microsoft.AspNetCore.Html.HtmlString(builder.ToString());
+    }
+}

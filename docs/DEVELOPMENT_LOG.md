@@ -393,3 +393,34 @@ Stage 9 - Organization Calendar.
 ### Next Step
 
 Stage 10 - Reporting & Dashboard.
+
+## 2026-08-28 - Stage 10 Reporting & Management Dashboard
+
+### Changes Made
+
+- Added role-aware reporting application models, validation, mapper, service, and repository contract.
+- Added Dapper stored-procedure repository implementation for dashboard and report reads.
+- Added SQL scripts for administrator, manager, and consultant dashboards.
+- Added SQL scripts for consultant leave usage, monthly leave activity, team leave usage, peak leave days, status distribution, upcoming leaves, upcoming holidays, and recent leave requests.
+- Added a reporting index for leave request status/date/consultant lookups.
+- Added authenticated MVC Dashboard screen for administrators, managers, and consultants.
+- Added administrator/manager Reports screen with date-range filters, summary cards, and report tables.
+- Preserved Stage 9 organization calendar behavior and did not implement exports, Azure AI, Docker, API JWT, or a full UI design-system rewrite.
+
+### Test Results
+
+- `dotnet restore`: succeeded after allowing NuGet network access.
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors.
+- `dotnet test --no-build`: succeeded. Total tests: 198 passed, 0 failed, 0 skipped (Unit 55, Integration 69, Security 74).
+
+### Security Review
+
+- No Entity Framework, DbContext, `CommandType.Text`, or raw SQL in application C# code.
+- Dashboard responses are role-aware and scoped server-side.
+- Consultants are denied from organization-wide reports.
+- Managers cannot expand report scope through querystring `managerId` or `consultantId` tampering.
+- Reporting stored procedures use date filters and manager assignment checks for scoped data.
+
+### Next Step
+
+Stage 11 - Professional UI/UX Pass.
