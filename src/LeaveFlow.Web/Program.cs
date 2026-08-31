@@ -61,9 +61,7 @@ if (!app.Environment.IsDevelopment())
 
 app.Use(async (context, next) =>
 {
-    context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
-    context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
-    context.Response.Headers.TryAdd("Referrer-Policy", "no-referrer");
+    SecurityHeaderPolicy.Apply(context, app.Environment.IsProduction());
     await next(context);
 });
 

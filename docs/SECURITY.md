@@ -232,9 +232,42 @@ Security tests should cover:
 - User-generated leave reason and review note data remains Razor-encoded; the Reports view no longer uses raw `HtmlString` rendering.
 - Security regression tests cover login rendering, shell/theme toggle presence, role-specific navigation, antiforgery token presence, and denied unauthorized routes.
 
+## Stage 12 Security Hardening Review
+
+- Login success explicitly signs out any existing web cookie before issuing a new authentication ticket to reduce session fixation risk.
+- Web responses include centralized security headers: `Content-Security-Policy`, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `X-Permitted-Cross-Domain-Policies`, and `Permissions-Policy`.
+- CSP limits default loading to same-origin, denies object embedding, denies framing through `frame-ancestors`, and restricts form posts to same-origin.
+- Open redirect protection remains based on `Url.IsLocalUrl`; tests cover malicious external `returnUrl` values.
+- Logout remains POST-only and antiforgery-protected.
+- XSS regressions cover user-controlled leave reasons, review notes, and holiday names.
+- Role tampering regressions cover a consultant attempting an administrator-only POST action with overposted role data.
+- Cross-user data leakage tests continue to cover dashboard, reports, timeline, and calendar manager/consultant scopes.
+
+## Threat Matrix
+
+| Threat | Primary risk | Current controls | Regression coverage |
+| --- | --- | --- | --- |
+| Broken authentication | Unauthorized account access | PBKDF2 password hashing, generic login errors, inactive user denial, lockout, login audit records | Login success/failure, inactive user, locked user, failed count reset |
+| Session fixation | Reuse of a pre-authentication ticket | Existing cookie is signed out before a successful sign-in, server-generated auth ticket | Login cookie and authentication flow tests |
+| Insecure cookies | Cookie theft or weak transport defaults | HttpOnly, SameSite=Lax, production SecurePolicy=Always, explicit cookie name and lifetime | Authentication cookie configuration tests |
+| Broken authorization | Vertical privilege escalation | Role policies on controllers/actions, backend authorization as source of truth | Admin/manager/consultant route access tests |
+| IDOR | Horizontal access to another user's resources | Object-level consultant, manager assignment, leave detail, calendar detail, and report scoping | Consultant/manager cross-resource denial tests |
+| Query tampering | Expanded data scope through querystring filters | Manager/consultant scopes resolved server-side, tampered filters ignored or constrained | Timeline, calendar, and reports tampering tests |
+| CSRF | Forged state-changing form posts | Global MVC antiforgery validation plus explicit POST attributes on critical actions | Login, logout, leave, review, people, and holiday POST tests |
+| XSS | Script execution through user-controlled text | Razor output encoding, no `Html.Raw` in views, CSP defense-in-depth | Reason, ReviewNote, holiday Name encoding tests and source guard |
+| Overposting | Client sets server-owned fields | Explicit form view models, service-side actor resolution, ignored posted security fields | Leave request, review, holiday overposting tests |
+| SQL injection | User input changes SQL commands | Dapper stored procedures only, no EF/DbContext, no raw SQL in application/infrastructure | Data access and stored procedure contract tests |
+| Sensitive error leakage | Stack traces or internal details exposed | Production exception handler and ProblemDetails behavior | Production error response tests |
+| Secret leakage | Passwords/connection strings in repo or logs | Demo password from environment/user secrets, source and SQL secret scans, logging by user id | Secret leakage guard tests |
+| Clickjacking | App framed by attacker | `X-Frame-Options: DENY` and CSP `frame-ancestors 'none'` | Security header tests |
+| MIME sniffing | Browser interprets content unsafely | `X-Content-Type-Options: nosniff` | Security header tests |
+| Concurrency regression | Duplicate approval day rows or stale decisions | Pending-only approval, unique day-row behavior, repository transaction/concurrency guards | Repeated approval concurrency test |
+
 ## Open Security Decisions
 
 - API token/JWT design remains deferred until an API client stage.
 - Password complexity policy beyond length/required fields.
 - Rate limit thresholds beyond account lockout.
 - Audit log retention policy.
+- CSP currently allows inline scripts/styles to remain compatible with the existing Razor layout, Bootstrap validation, and inline confirmation handlers. A future stricter CSP should move inline scripts to external files or nonced scripts.
+- Least-privilege database execution permissions are documented; enforcement depends on the production SQL login/user provisioned outside the application.

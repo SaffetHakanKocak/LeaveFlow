@@ -58,6 +58,8 @@ public sealed class AccountController(ILoginService loginService) : Controller
             return View(model);
         }
 
+        await HttpContext.SignOutAsync(LeaveFlowAuthenticationSchemes.WebCookie);
+
         var principal = LeaveFlowPrincipalFactory.Create(result.User);
         await HttpContext.SignInAsync(
             LeaveFlowAuthenticationSchemes.WebCookie,

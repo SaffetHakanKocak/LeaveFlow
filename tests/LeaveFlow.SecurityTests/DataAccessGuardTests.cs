@@ -51,6 +51,25 @@ public sealed class DataAccessGuardTests
         Assert.Empty(matches);
     }
 
+    [Fact]
+    public void WebViews_Should_NotUse_HtmlRawRendering()
+    {
+        var root = FindRepositoryRoot();
+        var files = Directory.EnumerateFiles(
+                Path.Combine(root, "src", "LeaveFlow.Web", "Views"),
+                "*.cshtml",
+                SearchOption.AllDirectories)
+            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal)
+                && !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal));
+
+        var matches = files
+            .Where(file => File.ReadAllText(file).Contains("Html.Raw", StringComparison.Ordinal))
+            .Select(file => Path.GetRelativePath(root, file))
+            .ToArray();
+
+        Assert.Empty(matches);
+    }
+
     private static IEnumerable<string> EnumerateSourceFiles(string path, string pattern)
     {
         return Directory
