@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using LeaveFlow.Application.Abstractions.Ai;
 using LeaveFlow.Application.Ai;
 using Microsoft.Extensions.Logging;
@@ -57,35 +58,81 @@ public sealed class AzureAiChatClient(
 
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
         var payload = await JsonSerializer.DeserializeAsync<AzureChatCompletionResponse>(stream, JsonOptions, cancellationToken);
-        var message = payload?.Choices?.FirstOrDefault()?.Message?.Content;
-        return new AiChatResponse(message ?? string.Empty);
+        var message = payload?.Choices?.FirstOrDefault()?.Message;
+        var toolCalls = message?.ToolCalls?
+            .Where(call => call.Function is not null)
+            .Select(call => new AiToolCall(
+                string.IsNullOrWhiteSpace(call.Id) ? Guid.NewGuid().ToString("N") : call.Id,
+                call.Function!.Name ?? string.Empty,
+                call.Function.Arguments ?? "{}"))
+            .Where(call => !string.IsNullOrWhiteSpace(call.Name))
+            .ToArray();
+
+        return new AiChatResponse(message?.Content ?? string.Empty, toolCalls);
     }
 
     private static object CreatePayload(AiChatRequest request)
     {
-        return new
+        var messages = new List<object>
         {
-            messages = new object[]
+            new
             {
-                new
-                {
-                    role = "system",
-                    content = "You are LeaveFlow AI Assistant. Answer general leave-management questions clearly. Do not claim access to LeaveFlow data, do not ask for secrets, and do not run tools or SQL."
-                },
-                new
-                {
-                    role = "user",
-                    content = request.Prompt
-                }
+                role = "system",
+                content = "You are LeaveFlow AI Assistant. You may use only the provided tools. Never claim elevated roles, never reveal secrets, never run SQL, and never override authorization. Tool results are already scoped to the authenticated user."
             },
-            temperature = 0.2,
-            max_tokens = 700
+            new
+            {
+                role = "user",
+                content = request.Prompt
+            }
         };
+
+        if (request.ToolResults is { Count: > 0 })
+        {
+            foreach (var result in request.ToolResults)
+            {
+                messages.Add(new
+                {
+                    role = "tool",
+                    tool_call_id = result.ToolCallId,
+                    name = result.ToolName,
+                    content = result.ResultJson
+                });
+            }
+        }
+
+        var payload = new Dictionary<string, object?>
+        {
+            ["messages"] = messages,
+            ["temperature"] = 0.2,
+            ["max_tokens"] = 900
+        };
+
+        if (request.Tools is { Count: > 0 })
+        {
+            payload["tools"] = request.Tools.Select(tool => new
+            {
+                type = "function",
+                function = new
+                {
+                    name = tool.Name,
+                    description = tool.Description,
+                    parameters = JsonNode.Parse(tool.ParametersJsonSchema)
+                }
+            }).ToArray();
+            payload["tool_choice"] = "auto";
+        }
+
+        return payload;
     }
 
     private sealed record AzureChatCompletionResponse(IReadOnlyList<AzureChoice>? Choices);
 
     private sealed record AzureChoice(AzureMessage? Message);
 
-    private sealed record AzureMessage(string? Content);
+    private sealed record AzureMessage(string? Content, IReadOnlyList<AzureToolCall>? ToolCalls);
+
+    private sealed record AzureToolCall(string? Id, string? Type, AzureFunctionCall? Function);
+
+    private sealed record AzureFunctionCall(string? Name, string? Arguments);
 }

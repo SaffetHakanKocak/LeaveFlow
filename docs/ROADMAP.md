@@ -186,7 +186,7 @@ Deliverables:
 
 ## Phase 14 - Secure AI Tool Calling
 
-Status: next.
+Status: completed.
 
 Deliverables:
 
@@ -194,7 +194,17 @@ Deliverables:
 - Enforce authorization, audit, and allowlists for any AI-assisted business action.
 - Continue prohibiting direct SQL/database access from AI.
 
-## Phase 15 - Hardening and Release Preparation
+## Phase 15 - Intelligent Workforce Queries
+
+Status: next.
+
+Deliverables:
+
+- Add richer natural-language workforce questions over the approved AI tool boundary.
+- Improve query interpretation without bypassing authorization or stored-procedure data access.
+- Keep AI actions read-only unless a later stage explicitly approves write workflows.
+
+## Phase 16 - Hardening and Release Preparation
 
 Status: planned.
 

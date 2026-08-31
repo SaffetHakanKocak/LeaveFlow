@@ -2,11 +2,11 @@
 
 ## Current Status
 
-LeaveFlow has completed Stage 13: Azure AI Assistant Foundation.
+LeaveFlow has completed Stage 14: Secure AI Tool Calling.
 
-The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, manager/admin workforce leave timeline views based on approved leave day rows, role-aware organization calendar views for approved leave and holidays, role-aware dashboard/reporting screens for administrators, managers, and consultants, a modern responsive MVC application shell with light/dark theme support, security hardening controls, and an optional Azure AI assistant foundation.
+The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, manager/admin workforce leave timeline views based on approved leave day rows, role-aware organization calendar views for approved leave and holidays, role-aware dashboard/reporting screens for administrators, managers, and consultants, a modern responsive MVC application shell with light/dark theme support, security hardening controls, an optional Azure AI assistant foundation, and secure AI tool calling through existing application services.
 
-Secure AI tool calling, Docker, API JWT/token authentication, exports, and report-run auditing have not been implemented yet.
+Intelligent workforce queries, Docker, API JWT/token authentication, exports, and report-run auditing have not been implemented yet.
 
 This repository is intended to become a production-grade, open-source portfolio project for workforce leave and calendar management.
 
@@ -59,6 +59,7 @@ The project is generic and white-label friendly. It must not contain real compan
 - Stage 11: Professional UI/UX Pass.
 - Stage 12: Security Hardening.
 - Stage 13: Azure AI Assistant Foundation.
+- Stage 14: Secure AI Tool Calling.
 - Cookie authentication for LeaveFlow.Web.
 - Password hashing with ASP.NET Core Identity `PasswordHasher`.
 - Configurable lockout and login-attempt auditing.
@@ -83,7 +84,9 @@ The project is generic and white-label friendly. It must not contain real compan
 - Optional AI assistant foundation with provider-neutral Application abstractions.
 - Azure AI provider implementation in Infrastructure using configuration-driven endpoint, deployment, API version, and API key.
 - Authenticated `AI Asistan` Web screen with disabled feature-flag state.
-- AI is disabled by default and has no SQL, repository, stored procedure, or tool-calling capability in Stage 13.
+- AI is disabled by default. When enabled, AI can call only registered application tools; it still has no direct SQL, repository, stored procedure, or database access.
+- Stage 14 registered controlled tools for my leave requests, my leave summary, upcoming holidays, team availability, leave conflicts, upcoming leaves, and organization leave statistics.
+- AI tool execution is audited without sensitive argument/content logging.
 - Role-aware organization calendar with approved leave, active organization holidays, and active official holidays.
 - Calendar source-of-truth tables are `ConsultantLeaveDays`, `HolidayDays`, and `OfficialHolidayDays`.
 - Consultant calendar responses include only the authenticated consultant's leave plus holidays.
@@ -99,9 +102,10 @@ The project is generic and white-label friendly. It must not contain real compan
 
 ## Current Stage Scope
 
-Stage 11 intentionally does not include:
+Stage 14 intentionally does not include:
 
-- Azure AI
+- Intelligent natural-language workforce query planning beyond the fixed Stage 14 tool set.
+- Direct SQL, ad hoc query, or database execution tools.
 - Docker
 - API JWT or other token authentication
 - export files
@@ -111,4 +115,4 @@ Stage 11 intentionally does not include:
 
 ## Next Stage
 
-Stage 12 - Security Hardening.
+Stage 15 - Intelligent Workforce Queries.

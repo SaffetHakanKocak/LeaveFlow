@@ -54,14 +54,16 @@ public sealed class AiAssistantController(
             prompt: model.Prompt,
             response: result.Message,
             errorMessage: result.ErrorMessage,
-            isEnabled: result.IsEnabled));
+            isEnabled: result.IsEnabled,
+            usedTools: result.UsedTools));
     }
 
     private AiAssistantViewModel CreateViewModel(
         string? prompt = null,
         string? response = null,
         string? errorMessage = null,
-        bool? isEnabled = null)
+        bool? isEnabled = null,
+        IReadOnlyList<string>? usedTools = null)
     {
         var settings = aiOptions.Value;
         return new AiAssistantViewModel
@@ -70,7 +72,8 @@ public sealed class AiAssistantController(
             MaxPromptLength = settings.MaxPromptLength,
             Prompt = prompt ?? string.Empty,
             Response = response,
-            ErrorMessage = errorMessage
+            ErrorMessage = errorMessage,
+            UsedTools = usedTools ?? []
         };
     }
 }

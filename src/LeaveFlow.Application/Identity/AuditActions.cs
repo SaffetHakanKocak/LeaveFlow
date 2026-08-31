@@ -6,6 +6,7 @@ public static class AuditActions
     public const string LoginFailure = "Authentication.LoginFailure";
     public const string Lockout = "Authentication.Lockout";
     public const string Logout = "Authentication.Logout";
+    public const string AiToolCall = "Ai.ToolCall";
 }
 
 public static class AuditOutcomes

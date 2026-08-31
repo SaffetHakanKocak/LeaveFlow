@@ -255,6 +255,17 @@ Security tests should cover:
 - Azure credentials must be supplied through environment variables or user secrets, for example `AI__Azure__ApiKey`; committed config contains only non-secret defaults.
 - Security tests cover disabled AI behavior, unauthorized access, antiforgery on AI POST, provider unavailability, invalid provider config, prompt validation, and AI secret leakage regression.
 
+## Stage 14 AI Tool Calling Security Review
+
+- AI tool calling is allowlist-based through `IAiToolRegistry`; there are no SQL/query/database execution tools.
+- Registered tools call existing Application services only, preserving the Application -> Dapper -> Stored Procedure data path.
+- Tool execution uses the authenticated `UserId`; model-provided role, consultant, and manager identifiers cannot expand scope.
+- Consultant scope remains personal, manager scope remains assigned-team, and administrator scope remains organization-wide through existing services.
+- Tool arguments are parsed as JSON and validated for type, required IDs, date ranges, and allowed status values before execution.
+- Tool call audit records store tool name, user id, timestamp, success/failure, duration, and error code only. Prompt text, tool arguments, result content, credentials, and tokens are not logged.
+- Prompt injection attempts such as role claims or instruction overrides remain subject to backend authorization and tool scoping.
+- Tests cover prompt injection, role tampering, all-consultant data requests, cross-user data requests, invalid arguments, unknown tools, tool failures, HTTP auth/CSRF, and secret leakage.
+
 ## Threat Matrix
 
 | Threat | Primary risk | Current controls | Regression coverage |
@@ -271,6 +282,7 @@ Security tests should cover:
 | SQL injection | User input changes SQL commands | Dapper stored procedures only, no EF/DbContext, no raw SQL in application/infrastructure | Data access and stored procedure contract tests |
 | Sensitive error leakage | Stack traces or internal details exposed | Production exception handler and ProblemDetails behavior | Production error response tests |
 | Secret leakage | Passwords/connection strings in repo or logs | Demo password from environment/user secrets, source and SQL secret scans, logging by user id | Secret leakage guard tests |
+| AI tool abuse | Model attempts to expand scope or call unsafe tools | Allowlisted tools, authenticated user context, service-level authorization, no SQL/query tools | AI tool calling unit and HTTP security tests |
 | Clickjacking | App framed by attacker | `X-Frame-Options: DENY` and CSP `frame-ancestors 'none'` | Security header tests |
 | MIME sniffing | Browser interprets content unsafely | `X-Content-Type-Options: nosniff` | Security header tests |
 | Concurrency regression | Duplicate approval day rows or stale decisions | Pending-only approval, unique day-row behavior, repository transaction/concurrency guards | Repeated approval concurrency test |

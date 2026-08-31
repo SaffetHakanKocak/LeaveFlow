@@ -15,4 +15,6 @@ public sealed class AiAssistantViewModel
     public string? Response { get; init; }
 
     public string? ErrorMessage { get; init; }
+
+    public IReadOnlyList<string> UsedTools { get; init; } = [];
 }

@@ -1,5 +1,34 @@
 # Development Log
 
+## 2026-08-31 - Stage 14 Secure AI Tool Calling
+
+### Changes Made
+
+- Added `IAiTool` and `IAiToolRegistry` abstractions in Application.
+- Added allowlisted AI tools for my leave requests, my leave summary, upcoming holidays, team availability, leave conflicts, upcoming leaves, and organization leave statistics.
+- Routed every tool through existing Application services; no SQL, raw query, repository, or stored procedure execution tool was added.
+- Extended Azure AI provider with a bounded tool-calling loop using function/tool schemas and structured tool result messages.
+- Added tool argument JSON parsing, type checks, status validation, date range validation, unknown-tool handling, tool failure handling, and safe final response behavior.
+- Added audit metadata for tool calls without logging prompts, arguments, returned business data, credentials, or tokens.
+- Added a small AI Asistan UI summary showing only the count of safe tools used.
+- Updated security, architecture, roadmap, decisions, and project context documentation.
+
+### Security Review
+
+- No Entity Framework, DbContext, `CommandType.Text`, raw SQL, `ExecuteSql`, `RunQuery`, or `QueryDatabase` tool was introduced.
+- Prompt injection and role claims from the model remain non-authoritative.
+- Tool scoping relies on authenticated user context and existing role-aware Application services.
+- Tool audit metadata excludes sensitive arguments and content.
+
+### Test Results
+
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors.
+- `dotnet test --no-build`: succeeded with 226 passing tests.
+
+### Next Step
+
+Stage 15 - Intelligent Workforce Queries.
+
 ## 2026-08-31 - Stage 13 Azure AI Assistant Foundation
 
 ### Changes Made

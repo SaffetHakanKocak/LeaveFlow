@@ -9,6 +9,7 @@ using LeaveFlow.Application.Abstractions.Reporting;
 using LeaveFlow.Application.Abstractions.Timeline;
 using LeaveFlow.Application.Authorization;
 using LeaveFlow.Application.Ai;
+using LeaveFlow.Application.Ai.Tools;
 using LeaveFlow.Application.Calendar;
 using LeaveFlow.Application.Holidays;
 using LeaveFlow.Application.Identity;
@@ -28,6 +29,14 @@ public static class DependencyInjection
     {
         services.TryAddSingleton(TimeProvider.System);
         services.AddScoped<IAiAssistantService, AiAssistantService>();
+        services.AddScoped<IAiToolRegistry, AiToolRegistry>();
+        services.AddScoped<IAiTool, GetMyLeaveRequestsTool>();
+        services.AddScoped<IAiTool, GetMyLeaveSummaryTool>();
+        services.AddScoped<IAiTool, GetUpcomingHolidaysTool>();
+        services.AddScoped<IAiTool, GetTeamAvailabilityTool>();
+        services.AddScoped<IAiTool, GetLeaveConflictsTool>();
+        services.AddScoped<IAiTool, GetUpcomingLeavesTool>();
+        services.AddScoped<IAiTool, GetOrganizationLeaveStatisticsTool>();
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IConsultantResourceAuthorizationService, ConsultantResourceAuthorizationService>();
         services.AddScoped<IConsultantManagementService, ConsultantManagementService>();

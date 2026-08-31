@@ -619,3 +619,24 @@ Use the existing Bootstrap assets and custom CSS/JavaScript for the application 
 - No new third-party license, package restore, CDN, or offline production concern is introduced.
 - UI polish remains server-rendered and easy to test through MVC security tests.
 - A dedicated icon library can be evaluated later if the product needs richer iconography.
+
+## ADR-0031 - Route AI Tool Calling Through Application Services Only
+
+Date: 2026-08-31
+
+Status: accepted
+
+### Context
+
+LeaveFlow needs AI-assisted answers over leave data without allowing the model to become a database client or an authorization bypass.
+
+### Decision
+
+Expose a small allowlisted `IAiTool` set in Application. Each tool receives authenticated user context, validates JSON arguments, and calls existing Application services. Azure AI receives tool schemas and structured tool results, but it never receives SQL execution capability or direct repository/database access.
+
+### Consequences
+
+- Consultant, manager, and administrator scoping remains enforced by existing services.
+- Prompt injection cannot grant broader data access.
+- Tool usage can be audited without logging prompts, arguments, or returned sensitive data.
+- More flexible workforce query planning is deferred to Stage 15.

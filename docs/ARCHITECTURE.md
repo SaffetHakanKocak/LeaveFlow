@@ -88,7 +88,10 @@ LeaveFlow includes an optional AI assistant foundation behind the `AI:Enabled` f
 - `LeaveFlow.Infrastructure` owns the Azure implementation and reads provider configuration from `AI:Azure`.
 - `LeaveFlow.Web` owns the authenticated `AI Asistan` MVC screen.
 - AI has no direct database access and does not receive repositories, connection factories, stored procedure names, or SQL execution capabilities.
-- Stage 13 is chat-only. Secure AI tool calling is explicitly deferred to Stage 14.
+- Stage 14 adds secure AI tool calling through registered application tools only. Tools call existing application services, which call Dapper repositories and stored procedures. AI has no direct database, repository, stored procedure, raw SQL, or ad hoc query execution access.
+- Registered Stage 14 tools are `GetMyLeaveRequests`, `GetMyLeaveSummary`, `GetUpcomingHolidays`, `GetTeamAvailability`, `GetLeaveConflicts`, `GetUpcomingLeaves`, and `GetOrganizationLeaveStatistics`.
+- Tool execution uses the authenticated user id supplied by the Web controller. Model-provided `ConsultantId`, `ManagerId`, role claims, and prompt instructions are not trusted for authorization decisions.
+- The Azure provider performs a bounded chat -> tool call -> tool result -> final response loop. Tool results are structured JSON DTOs produced by Application services.
 - Date/time provider implementation
 - Email or notification infrastructure in later phases
 
