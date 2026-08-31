@@ -595,6 +595,18 @@ a:hover {
   text-align: center;
 }
 
+.lf-ai-assistant {
+  max-width: 820px;
+}
+
+.lf-ai-response {
+  border: 1px solid var(--lf-border);
+  border-radius: var(--lf-radius-lg);
+  background: var(--lf-surface-raised);
+  padding: var(--lf-space-5);
+  white-space: pre-wrap;
+}
+
 .lf-action-row {
   display: flex;
   flex-wrap: wrap;

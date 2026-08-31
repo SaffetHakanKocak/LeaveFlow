@@ -1,3 +1,4 @@
+using LeaveFlow.Application.Abstractions.Ai;
 using LeaveFlow.Application.Abstractions.Authorization;
 using LeaveFlow.Application.Abstractions.Calendar;
 using LeaveFlow.Application.Abstractions.Holidays;
@@ -7,6 +8,7 @@ using LeaveFlow.Application.Abstractions.People;
 using LeaveFlow.Application.Abstractions.Reporting;
 using LeaveFlow.Application.Abstractions.Timeline;
 using LeaveFlow.Application.Authorization;
+using LeaveFlow.Application.Ai;
 using LeaveFlow.Application.Calendar;
 using LeaveFlow.Application.Holidays;
 using LeaveFlow.Application.Identity;
@@ -25,6 +27,7 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration? configuration = null)
     {
         services.TryAddSingleton(TimeProvider.System);
+        services.AddScoped<IAiAssistantService, AiAssistantService>();
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IConsultantResourceAuthorizationService, ConsultantResourceAuthorizationService>();
         services.AddScoped<IConsultantManagementService, ConsultantManagementService>();
@@ -48,6 +51,15 @@ public static class DependencyInjection
             .Validate(settings => settings.LockoutDurationMinutes > 0, "LeaveFlow:Authentication:LockoutDurationMinutes must be greater than zero.")
             .Validate(settings => settings.MaxPasswordLength > 0, "LeaveFlow:Authentication:MaxPasswordLength must be greater than zero.")
             .Validate(settings => settings.Cookie.ExpireTimeSpanMinutes > 0, "LeaveFlow:Authentication:Cookie:ExpireTimeSpanMinutes must be greater than zero.");
+
+        var aiOptions = services.AddOptions<AiOptions>();
+        if (configuration is not null)
+        {
+            aiOptions.Bind(configuration.GetSection(AiOptions.SectionName));
+        }
+
+        aiOptions.Validate(settings => settings.MaxPromptLength is > 0 and <= 8000, "AI:MaxPromptLength must be between 1 and 8000.");
+        aiOptions.Validate(settings => settings.TimeoutSeconds is > 0 and <= 60, "AI:TimeoutSeconds must be between 1 and 60.");
 
         return services;
     }

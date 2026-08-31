@@ -14,7 +14,7 @@ public sealed class SecretLeakageGuardTests
             .Concat(EnumerateSourceFiles(Path.Combine(root, "docs"), "*.md"));
 
         var secretPattern = new Regex(
-            @"\bPassword\s*=\s*['""][^'""]+['""]|\bpwd\s*=\s*[^;]+|BEGIN (RSA |OPENSSH )?PRIVATE KEY|""Password""\s*:\s*""[^""]+""",
+            @"\bPassword\s*=\s*['""][^'""]+['""]|\bpwd\s*=\s*[^;]+|BEGIN (RSA |OPENSSH )?PRIVATE KEY|""Password""\s*:\s*""[^""]+""|""ApiKey""\s*:\s*""[^""]+""|AI__Azure__ApiKey\s*=\s*\S+",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         var matches = files

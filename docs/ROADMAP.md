@@ -162,7 +162,7 @@ Deliverables:
 
 ## Phase 12 - Security Hardening
 
-Status: next.
+Status: completed.
 
 Deliverables:
 
@@ -171,7 +171,32 @@ Deliverables:
 - Error handling, headers, and cookie review.
 - Dependency and secret scanning readiness.
 
-## Phase 13 - Hardening and Release Preparation
+## Phase 13 - Azure AI Assistant Foundation
+
+Status: completed.
+
+Deliverables:
+
+- Optional AI feature flag and configuration.
+- Provider-neutral Application AI abstractions.
+- Azure AI provider in Infrastructure.
+- Authenticated MVC `AI Asistan` screen.
+- Prompt validation, timeout handling, safe provider errors, and secret-safe logging.
+- Tests and documentation for AI foundation security boundaries.
+
+## Phase 14 - Secure AI Tool Calling
+
+Status: next.
+
+Deliverables:
+
+- Design and implement constrained AI tool calling through existing application services only.
+- Enforce authorization, audit, and allowlists for any AI-assisted business action.
+- Continue prohibiting direct SQL/database access from AI.
+
+## Phase 15 - Hardening and Release Preparation
+
+Status: planned.
 
 Deliverables:
 

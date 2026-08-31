@@ -78,6 +78,27 @@ Every sensitive resource must be authorized in backend code. Stored procedures s
 
 - Consultants cannot access other consultants' private leave data through direct id manipulation.
 - Managers must be scoped to assigned consultants and teams.
+
+## ADR-0005 - Add AI As An Optional Provider Boundary
+
+Date: 2026-08-31
+
+Status: accepted
+
+### Context
+
+LeaveFlow needs an Azure AI assistant foundation without changing existing business logic, authorization, database, or UI behavior.
+
+### Decision
+
+Add provider-neutral AI chat abstractions in Application and an Azure provider implementation in Infrastructure. Keep AI disabled by default and expose only an authenticated chat UI in Stage 13.
+
+### Consequences
+
+- LeaveFlow can run without Azure credentials or AI availability.
+- Secrets are supplied through environment variables or user secrets.
+- AI does not receive direct SQL, repository, stored procedure, or database access.
+- Secure business tool calling requires a later explicit stage with authorization, audit, and allowlisted application-service operations.
 - Tests must include object-level authorization cases.
 
 ## ADR-0005 - Keep Initial Scope To Documentation Only

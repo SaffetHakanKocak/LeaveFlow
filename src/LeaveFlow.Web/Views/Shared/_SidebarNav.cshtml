@@ -51,6 +51,10 @@
         <span class="lf-nav-icon" aria-hidden="true">K</span>
         <span>Takvim</span>
     </a>
+    <a class="lf-nav-link @Active("AiAssistant")" asp-controller="AiAssistant" asp-action="Index">
+        <span class="lf-nav-icon" aria-hidden="true">AI</span>
+        <span>AI Asistan</span>
+    </a>
     @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
     {
         <a class="lf-nav-link @Active("Reports")" asp-controller="Reports" asp-action="Index">

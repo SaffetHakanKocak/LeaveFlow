@@ -243,6 +243,18 @@ Security tests should cover:
 - Role tampering regressions cover a consultant attempting an administrator-only POST action with overposted role data.
 - Cross-user data leakage tests continue to cover dashboard, reports, timeline, and calendar manager/consultant scopes.
 
+## Stage 13 AI Security Review
+
+- AI is disabled by default and LeaveFlow remains fully functional without AI configuration.
+- The AI assistant is authenticated, CSRF-protected, and exposed as a simple chat UI only.
+- Application exposes provider-neutral `IAiChatClient` and `IAiAssistantService` abstractions; Infrastructure supplies the Azure implementation.
+- AI has no direct database access, no repository dependencies, no stored procedure execution path, and no SQL/query execution tool.
+- User prompts are length-limited and validated before provider calls.
+- Prompt text, credentials, API keys, tokens, and provider response bodies are not logged.
+- Provider failures, invalid configuration, and timeouts return safe user-facing errors instead of crashing the host.
+- Azure credentials must be supplied through environment variables or user secrets, for example `AI__Azure__ApiKey`; committed config contains only non-secret defaults.
+- Security tests cover disabled AI behavior, unauthorized access, antiforgery on AI POST, provider unavailability, invalid provider config, prompt validation, and AI secret leakage regression.
+
 ## Threat Matrix
 
 | Threat | Primary risk | Current controls | Regression coverage |

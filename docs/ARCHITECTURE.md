@@ -65,7 +65,7 @@ Planned contents:
 
 Application code may depend on Domain abstractions but must not know SQL details.
 
-Current status: references Domain and contains dependency injection registration, data access contracts for connections, transactions, role/user reads, authentication/authorization services, login settings, object-level consultant access evaluation, people management services, holiday management services, consultant-scoped leave request services, manager/admin leave review services, workforce timeline services/models, organization calendar services/models, and reporting/dashboard services/models.
+Current status: references Domain and contains dependency injection registration, data access contracts for connections, transactions, role/user reads, authentication/authorization services, login settings, object-level consultant access evaluation, people management services, holiday management services, consultant-scoped leave request services, manager/admin leave review services, workforce timeline services/models, organization calendar services/models, reporting/dashboard services/models, and provider-neutral AI assistant abstractions/services.
 
 ### LeaveFlow.Infrastructure
 
@@ -78,6 +78,17 @@ Planned contents:
 - SQL Server connection factory
 - Password hashing implementation
 - Audit logging persistence
+- Azure AI provider implementation
+
+## Optional AI Assistant Foundation
+
+LeaveFlow includes an optional AI assistant foundation behind the `AI:Enabled` feature flag.
+
+- `LeaveFlow.Application` owns `IAiAssistantService`, `IAiChatClient`, request/response models, prompt validation, timeout orchestration, and safe provider-failure handling.
+- `LeaveFlow.Infrastructure` owns the Azure implementation and reads provider configuration from `AI:Azure`.
+- `LeaveFlow.Web` owns the authenticated `AI Asistan` MVC screen.
+- AI has no direct database access and does not receive repositories, connection factories, stored procedure names, or SQL execution capabilities.
+- Stage 13 is chat-only. Secure AI tool calling is explicitly deferred to Stage 14.
 - Date/time provider implementation
 - Email or notification infrastructure in later phases
 

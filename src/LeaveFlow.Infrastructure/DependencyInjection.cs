@@ -1,3 +1,4 @@
+using LeaveFlow.Application.Abstractions.Ai;
 using LeaveFlow.Application.Abstractions.Data;
 using LeaveFlow.Application.Abstractions.Calendar;
 using LeaveFlow.Application.Abstractions.Holidays;
@@ -6,6 +7,7 @@ using LeaveFlow.Application.Abstractions.LeaveRequests;
 using LeaveFlow.Application.Abstractions.People;
 using LeaveFlow.Application.Abstractions.Reporting;
 using LeaveFlow.Application.Abstractions.Timeline;
+using LeaveFlow.Infrastructure.Ai;
 using LeaveFlow.Infrastructure.Identity;
 using LeaveFlow.Infrastructure.Persistence.Repositories;
 using LeaveFlow.Infrastructure.Persistence.SqlServer;
@@ -40,6 +42,7 @@ public static class DependencyInjection
         services.AddSingleton<IDbConnectionFactory>(_ => new SqlServerConnectionFactory(connectionString));
         services.AddSingleton<IDataTransactionFactory>(_ => new SqlDataTransactionFactory(connectionString));
         services.AddSingleton<IPasswordHashingService, AspNetPasswordHashingService>();
+        services.AddScoped<IAiChatClient, AzureAiChatClient>();
         services.AddScoped<IRoleReadRepository, RoleReadRepository>();
         services.AddScoped<IUserReadRepository, UserReadRepository>();
         services.AddScoped<IUserAuthRepository, UserAuthRepository>();

@@ -1,5 +1,29 @@
 # Development Log
 
+## 2026-08-31 - Stage 13 Azure AI Assistant Foundation
+
+### Changes Made
+
+- Added provider-neutral AI assistant contracts and models in Application.
+- Added safe AI assistant orchestration with feature flag, prompt length validation, timeout handling, cancellation support, and safe error handling.
+- Added Azure AI chat provider in Infrastructure using REST over `HttpClient`.
+- Added authenticated MVC `AI Asistan` screen with disabled-state behavior.
+- Added non-secret AI configuration defaults.
+- Added AI unit and security tests for disabled mode, unavailable provider, invalid config, unauthorized access, CSRF, validation, and secret leakage.
+- Updated architecture, security, decision, roadmap, and project context documentation.
+
+### Security Review
+
+- AI cannot execute SQL, run queries, call stored procedures, or access repositories.
+- Azure credential values are not committed and must come from environment variables or user secrets.
+- Prompt text and secrets are not logged.
+- LeaveFlow remains operational when AI is disabled or unavailable.
+
+### Test Results
+
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors.
+- `dotnet test --no-build`: succeeded with 219 passing tests.
+
 ## 2026-08-27 - Initial Planning Documentation
 
 ### Changes Made

@@ -1,0 +1,50 @@
+@model AiAssistantViewModel
+@{
+    ViewData["Title"] = "AI Asistan";
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">AI Asistan</h1>
+        <p class="text-secondary mb-0">Genel izin yönetimi soruları için güvenli sohbet alanı.</p>
+    </div>
+</div>
+
+@if (!Model.IsEnabled)
+{
+    <section class="lf-panel">
+        <div class="lf-empty-state text-secondary">AI Asistan şu anda kapalı.</div>
+    </section>
+}
+else
+{
+    <section class="lf-panel lf-ai-assistant">
+        <form asp-action="Index" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="mb-3">
+                <label asp-for="Prompt" class="form-label"></label>
+                <textarea asp-for="Prompt" class="form-control" rows="5" maxlength="@Model.MaxPromptLength"></textarea>
+                <div class="form-text">En fazla @Model.MaxPromptLength karakter.</div>
+                <span asp-validation-for="Prompt" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Gönder</button>
+        </form>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-warning mt-3" role="alert">@Model.ErrorMessage</div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.Response))
+        {
+            <div class="lf-ai-response mt-3">
+                <h2 class="h5 mb-2">Yanıt</h2>
+                <p class="mb-0">@Model.Response</p>
+            </div>
+        }
+    </section>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
