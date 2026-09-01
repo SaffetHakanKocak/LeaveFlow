@@ -1,14 +1,24 @@
+@using Microsoft.Extensions.Options
 @model string
+@inject IOptions<BrandingOptions> BrandingOptions
 @{
+    var branding = BrandingViewModel.From(BrandingOptions.Value);
     string Active(string controllerName) => string.Equals(Model, controllerName, StringComparison.OrdinalIgnoreCase) ? "active" : string.Empty;
 }
 
 <div class="lf-brand">
-    <a class="lf-brand-link" asp-controller="Dashboard" asp-action="Index" aria-label="LeaveFlow paneli">
-        <span class="lf-brand-mark" aria-hidden="true">LF</span>
+    <a class="lf-brand-link" asp-controller="Dashboard" asp-action="Index" aria-label="@branding.ProductName paneli">
+        @if (branding.HasLogo)
+        {
+            <img class="lf-brand-logo" src="@branding.LogoUrl" alt="" />
+        }
+        else
+        {
+            <span class="lf-brand-mark" aria-hidden="true">@branding.BrandMarkText</span>
+        }
         <span class="lf-brand-copy">
-            <span class="lf-brand-name">LeaveFlow</span>
-            <span class="lf-brand-subtitle">İzin yönetimi</span>
+            <span class="lf-brand-name">@branding.ProductName</span>
+            <span class="lf-brand-subtitle">@branding.OrganizationName</span>
         </span>
     </a>
 </div>

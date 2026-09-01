@@ -1,12 +1,15 @@
+@using Microsoft.Extensions.Options
 @model DashboardViewModel
+@inject IOptions<BrandingOptions> BrandingOptions
 @{
+    var branding = BrandingViewModel.From(BrandingOptions.Value);
     ViewData["Title"] = "Panel";
 }
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
     <div>
         <h1 class="h3 mb-1">@UiText.Scope(Model.Dashboard.Scope) Paneli</h1>
-        <p class="text-secondary mb-0">Yetkili olduğunuz kapsam için izin ve tatil özeti.</p>
+        <p class="text-secondary mb-0">@branding.OrganizationName kapsamı için izin ve tatil özeti.</p>
     </div>
     @if (User.IsInRole("Manager") || User.IsInRole("Administrator"))
     {
@@ -40,7 +43,7 @@
                     {
                         <div class="list-group-item px-0">
                             <div class="fw-semibold">@(leave.ConsultantName ?? "İznim")</div>
-                            <div class="text-secondary small">@UiText.Date(leave.StartDate) - @UiText.Date(leave.EndDate) · @leave.DayCount gün</div>
+                            <div class="text-secondary small">@UiText.Date(leave.StartDate) - @UiText.Date(leave.EndDate) - @leave.DayCount gün</div>
                         </div>
                     }
                 </div>
@@ -61,7 +64,7 @@
                     {
                         <div class="list-group-item px-0">
                             <div class="fw-semibold">@holiday.Name</div>
-                            <div class="text-secondary small">@UiText.EventType(holiday.EventType) · @UiText.Date(holiday.StartDate) - @UiText.Date(holiday.EndDate)</div>
+                            <div class="text-secondary small">@UiText.EventType(holiday.EventType) - @UiText.Date(holiday.StartDate) - @UiText.Date(holiday.EndDate)</div>
                         </div>
                     }
                 </div>

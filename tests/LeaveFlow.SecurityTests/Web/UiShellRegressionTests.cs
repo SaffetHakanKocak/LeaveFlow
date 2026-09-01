@@ -1,6 +1,10 @@
 using System.Net;
 using System.Text.RegularExpressions;
+using LeaveFlow.Web;
+using LeaveFlow.Web.Branding;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 
 namespace LeaveFlow.SecurityTests.Web;
 
@@ -24,6 +28,118 @@ public sealed class UiShellRegressionTests : IClassFixture<LeaveFlowWebFactory>
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Contains("Devam etmek", html);
         Assert.Contains("__RequestVerificationToken", html);
+    }
+
+    [Fact]
+    public async Task LoginPage_Should_RenderDefaultBranding_WithTextFallback()
+    {
+        using var client = CreateClient();
+
+        using var response = await client.GetAsync("/Account/Login");
+        var html = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("LeaveFlow'a giriş yap", html);
+        Assert.Contains("LF</span>", html);
+        Assert.DoesNotContain("lf-login-logo", html);
+    }
+
+    [Fact]
+    public async Task CustomBranding_Should_RenderConfiguredOrganizationAndProductName()
+    {
+        using var factory = CreateFactoryWithBranding(new Dictionary<string, string?>
+        {
+            ["LeaveFlow:Branding:OrganizationName"] = "Contoso People",
+            ["LeaveFlow:Branding:ProductName"] = "PeopleOps",
+            ["LeaveFlow:Branding:ShortName"] = "PO",
+            ["LeaveFlow:Branding:PrimaryBrandColor"] = "#0f766e",
+            ["LeaveFlow:Branding:FooterText"] = "Contoso support",
+            ["LeaveFlow:Branding:SupportEmail"] = "support@example.test"
+        });
+        using var client = CreateClient(factory);
+        _ = await LoginAsync(client, _factory.ManagerOneEmail, LeaveFlowWebFactory.Password);
+
+        using var response = await client.GetAsync("/Dashboard");
+        var html = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("PeopleOps", html);
+        Assert.Contains("Contoso People kapsamı", html);
+        Assert.Contains("--lf-primary: #0f766e", html);
+        Assert.Contains("Contoso support", html);
+        Assert.Contains("mailto:support@example.test", html);
+    }
+
+    [Fact]
+    public async Task MissingLogo_Should_FallBackToConfiguredShortNameText()
+    {
+        using var factory = CreateFactoryWithBranding(new Dictionary<string, string?>
+        {
+            ["LeaveFlow:Branding:ProductName"] = "Workforce Hub",
+            ["LeaveFlow:Branding:ShortName"] = "WH",
+            ["LeaveFlow:Branding:LogoUrl"] = ""
+        });
+        using var client = CreateClient(factory);
+
+        using var response = await client.GetAsync("/Account/Login");
+        var html = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("WH</span>", html);
+        Assert.DoesNotContain("lf-login-logo", html);
+    }
+
+    [Fact]
+    public void InvalidColor_Should_NotBecomeCustomCss()
+    {
+        var branding = BrandingViewModel.From(new BrandingOptions
+        {
+            PrimaryBrandColor = "red; background: url(javascript:alert(1))"
+        });
+
+        Assert.False(branding.HasCustomPrimaryBrandColor);
+        Assert.Null(branding.PrimaryBrandColor);
+    }
+
+    [Fact]
+    public async Task Layout_Should_KeepDarkModeBootstrapThemeScript()
+    {
+        using var client = CreateClient();
+
+        using var response = await client.GetAsync("/Account/Login");
+        var html = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("prefers-color-scheme: dark", html);
+        Assert.Contains("data-bs-theme", html);
+        Assert.Contains("leaveflow-theme", html);
+    }
+
+    [Fact]
+    public async Task UserSuppliedBranding_Should_NotRenderHtmlCssOrJavascriptInjection()
+    {
+        using var factory = CreateFactoryWithBranding(new Dictionary<string, string?>
+        {
+            ["LeaveFlow:Branding:OrganizationName"] = "<script>alert(1)</script>",
+            ["LeaveFlow:Branding:ProductName"] = "</title><script>alert(2)</script>",
+            ["LeaveFlow:Branding:ShortName"] = "<img",
+            ["LeaveFlow:Branding:LogoUrl"] = "javascript:alert(3)",
+            ["LeaveFlow:Branding:PrimaryBrandColor"] = "#fff; background:url(javascript:alert(4))",
+            ["LeaveFlow:Branding:SupportEmail"] = "javascript:alert(5)",
+            ["LeaveFlow:Branding:FooterText"] = "<img src=x onerror=alert(6)>"
+        });
+        using var client = CreateClient(factory);
+
+        using var response = await client.GetAsync("/Account/Login");
+        var html = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.DoesNotContain("</title><script>alert(2)</script>", html);
+        Assert.DoesNotContain("<img src=x onerror=alert(6)>", html);
+        Assert.DoesNotContain("javascript:alert", html);
+        Assert.DoesNotContain("background:url", html);
+        Assert.DoesNotContain("#fff; background", html);
+        Assert.DoesNotContain("lf-login-logo", html);
     }
 
     [Fact]
@@ -105,6 +221,25 @@ public sealed class UiShellRegressionTests : IClassFixture<LeaveFlowWebFactory>
         return _factory.CreateClient(new WebApplicationFactoryClientOptions
         {
             AllowAutoRedirect = false
+        });
+    }
+
+    private static HttpClient CreateClient(WebApplicationFactory<WebEntryPoint> factory)
+    {
+        return factory.CreateClient(new WebApplicationFactoryClientOptions
+        {
+            AllowAutoRedirect = false
+        });
+    }
+
+    private WebApplicationFactory<WebEntryPoint> CreateFactoryWithBranding(IReadOnlyDictionary<string, string?> values)
+    {
+        return _factory.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureAppConfiguration((_, configuration) =>
+            {
+                configuration.AddInMemoryCollection(values);
+            });
         });
     }
 

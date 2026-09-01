@@ -1,11 +1,21 @@
+@using Microsoft.Extensions.Options
+@inject IOptions<BrandingOptions> BrandingOptions
 @{
+    var branding = BrandingViewModel.From(BrandingOptions.Value);
     ViewData["Title"] = "Ana sayfa";
 }
 
 <section class="lf-home">
     <div class="lf-home-hero">
-        <span class="lf-login-mark" aria-hidden="true">LF</span>
-        <h1 class="display-6 fw-semibold mb-2">LeaveFlow</h1>
+        @if (branding.HasLogo)
+        {
+            <img class="lf-login-logo" src="@branding.LogoUrl" alt="" />
+        }
+        else
+        {
+            <span class="lf-login-mark" aria-hidden="true">@branding.BrandMarkText</span>
+        }
+        <h1 class="display-6 fw-semibold mb-2">@branding.ProductName</h1>
         <p class="lead text-secondary mb-0">
             İzin talepleri, onaylar, takvim ve raporlar tek odaklı çalışma alanında.
         </p>

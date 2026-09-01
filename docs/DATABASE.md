@@ -210,6 +210,8 @@ $env:ConnectionStrings__DefaultConnection="Server=localhost,1433;Database=LeaveF
 
 `.env` is ignored by git. `.env.example` contains placeholders only and is safe to commit.
 
+White-label branding is intentionally not database-backed in Stage 18. `LeaveFlow:Branding` is read by the Web layer from configuration, so no tables, indexes, stored procedures, seed scripts, or Dapper repositories were added for branding.
+
 The committed `appsettings.json` files contain only the safe connection string name:
 
 ```json

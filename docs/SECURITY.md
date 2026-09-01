@@ -294,6 +294,15 @@ Security tests should cover:
 - Public-repo audit found no real company names, proprietary data, real person data, committed API keys/tokens/passwords, private connection strings, internal endpoints, local absolute user paths, or private assets/logos.
 - Stage 16 real database smoke remains a manual release check and is not marked completed by Stage 17 documentation.
 
+## Stage 18 White-Label Security Review
+
+- Branding configuration is presentation-only in LeaveFlow.Web and cannot change authorization policies, role scope, routes, database access, stored procedures, or AI tool allowlists.
+- Brand text is rendered through Razor encoding.
+- `PrimaryBrandColor` is ignored unless it is a hex color in `#RGB` or `#RRGGBB` format.
+- `LogoUrl` is ignored unless it is an app-local `/...` path or an absolute `http`/`https` URL.
+- `SupportEmail` is ignored unless it validates as an email address.
+- Regression tests cover default branding, custom branding, missing logo fallback, invalid color fallback, dark-mode shell behavior, and HTML/CSS/JavaScript injection attempts through branding config.
+
 ## Threat Matrix
 
 | Threat | Primary risk | Current controls | Regression coverage |

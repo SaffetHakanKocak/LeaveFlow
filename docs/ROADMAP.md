@@ -254,17 +254,23 @@ Completed notes:
 
 ## Phase 18 - White-Label Organization Customization
 
-Status: planned.
+Status: completed.
 
 Deliverables:
 
 - Organization branding/configuration model.
-- White-label UI text and theme configuration.
+- White-label UI text configuration across the public shell, authenticated shell, login, home, and dashboard surfaces.
+- Safe optional logo, primary brand color, support email, and footer text configuration.
 - Tests and documentation for customization boundaries.
+
+Completed notes:
+
+- Branding is Web-layer options based under `LeaveFlow:Branding` and is generic by default.
+- No database schema, stored procedure, route, authorization, business rule, or AI tool behavior changed.
+- Invalid brand colors and unsafe logo/email values are ignored before rendering.
 
 ## Future Enhancements
 
-- White-label customization.
 - Multi-organization support.
 - Calendar integration.
 - Notification system.

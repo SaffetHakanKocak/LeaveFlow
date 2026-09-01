@@ -118,6 +118,27 @@ Create planning documentation and stop before generating application code.
 ### Consequences
 
 - The repository now has a durable context system for future phases.
+
+## ADR-0006 - Keep White-Label Branding In Web Configuration
+
+Date: 2026-09-01
+
+Status: accepted
+
+### Context
+
+LeaveFlow needs to be reusable for different organizations without adding tenant logic, new business workflows, or database-backed administration.
+
+### Decision
+
+Use `LeaveFlow:Branding` typed options in LeaveFlow.Web for organization name, product name, short name, optional logo URL, optional primary brand color, optional support email, and optional footer text. Keep theme mode separate from branding.
+
+### Consequences
+
+- Fresh clones can rebrand the UI through environment variables, user secrets, or local appsettings overrides.
+- Branding does not affect authorization, routes, database schema, stored procedures, domain rules, or AI tool behavior.
+- Unsafe color, logo, and email values are ignored before rendering.
+- Database-backed branding, admin CRUD, and multi-tenant customization remain future work.
 - No build or test commands are meaningful until solution files exist.
 
 ## ADR-0006 - Use Repository-Level Build Defaults

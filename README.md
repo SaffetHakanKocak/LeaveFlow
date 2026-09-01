@@ -111,6 +111,24 @@ consultant2@leaveflow.local
 
 The demo password is hashed at startup and is never stored in source, SQL scripts, or committed config. The bootstrap also assigns both demo consultants to the demo manager.
 
+## White-Label Configuration
+
+LeaveFlow branding is configured through `LeaveFlow:Branding` options in environment variables, user secrets, or local appsettings overrides. It does not change routes, authorization, database schema, business rules, or AI tool behavior.
+
+Example local override:
+
+```powershell
+$env:LeaveFlow__Branding__OrganizationName="Example Organization"
+$env:LeaveFlow__Branding__ProductName="PeopleFlow"
+$env:LeaveFlow__Branding__ShortName="PF"
+$env:LeaveFlow__Branding__LogoUrl="/images/example-logo.svg"
+$env:LeaveFlow__Branding__PrimaryBrandColor="#0f766e"
+$env:LeaveFlow__Branding__SupportEmail="support@example.test"
+$env:LeaveFlow__Branding__FooterText="Example Organization workforce operations"
+```
+
+Defaults are generic: `ProductName=LeaveFlow`, `OrganizationName=Organization`, and text fallback is used when no safe logo URL is configured. `PrimaryBrandColor` accepts only hex colors such as `#2563eb`; invalid values are ignored.
+
 ## Azure AI Configuration
 
 AI is disabled by default and LeaveFlow runs normally without Azure AI credentials.
@@ -156,3 +174,4 @@ Stage 16 quality gate currently verifies unit, integration, and security coverag
 - CI and public repository automation are deferred until repository publication work.
 - The local database setup is script-based, not migration-framework based.
 - Azure AI is optional and disabled by default.
+- White-label settings are configuration-driven; admin CRUD and per-tenant branding are not implemented.

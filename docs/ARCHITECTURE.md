@@ -134,7 +134,7 @@ Planned contents:
 
 The web layer must not be treated as the source of authorization truth.
 
-Current status: MVC host exists with Home, login/logout, access denied, cookie authentication, antiforgery, a protected consultant-resource probe endpoint used for object-level authorization tests, administrator screens for consultant/manager management, administrator screens for organization/official holiday management, consultant self-service leave request screens, manager/admin leave review screens, manager/admin workforce timeline screens, role-aware organization calendar screens, role-aware dashboard screens, and admin/manager report screens. The authenticated UI uses a responsive sidebar/topbar application shell; public pages use a lighter shell. Styling is centralized in CSS custom-property design tokens with light and dark themes.
+Current status: MVC host exists with Home, login/logout, access denied, cookie authentication, antiforgery, a protected consultant-resource probe endpoint used for object-level authorization tests, administrator screens for consultant/manager management, administrator screens for organization/official holiday management, consultant self-service leave request screens, manager/admin leave review screens, manager/admin workforce timeline screens, role-aware organization calendar screens, role-aware dashboard screens, and admin/manager report screens. The authenticated UI uses a responsive sidebar/topbar application shell; public pages use a lighter shell. Branding is centralized in Web-layer typed options and view model helpers, with generic defaults and safe fallback behavior. Styling is centralized in CSS custom-property design tokens with light and dark themes.
 
 ## Dependency Direction
 
@@ -174,6 +174,7 @@ Stage 2 kept the same production project dependency direction. Test projects may
 - Secure cookie and authentication settings
 - Database access through stored procedures only
 - Token-based MVC design system and responsive application shell
+- Web-layer white-label branding options separate from domain rules and theme mode
 
 ## Data Access
 

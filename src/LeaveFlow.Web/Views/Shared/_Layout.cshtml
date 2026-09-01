@@ -1,5 +1,11 @@
+@using Microsoft.Extensions.Options
+@inject IOptions<BrandingOptions> BrandingOptions
 @{
-    var title = ViewData["Title"]?.ToString() ?? "LeaveFlow";
+    var branding = BrandingViewModel.From(BrandingOptions.Value);
+    var title = ViewData["Title"]?.ToString() ?? branding.ProductName;
+    var brandStyle = branding.HasCustomPrimaryBrandColor
+        ? $"--lf-primary: {branding.PrimaryBrandColor}; --lf-primary-strong: {branding.PrimaryBrandColor};"
+        : null;
     var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
     var isAuthenticated = User.Identity?.IsAuthenticated == true;
     var primaryRole = User.IsInRole("Administrator")
@@ -18,7 +24,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@title - LeaveFlow</title>
+    <title>@title - @branding.ProductName</title>
     <script>
         (function () {
             var savedTheme = localStorage.getItem("leaveflow-theme");
@@ -31,7 +37,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LeaveFlow.Web.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body style="@brandStyle">
     @if (isAuthenticated)
     {
         <div class="lf-shell">
@@ -69,12 +75,25 @@
                 <main role="main" class="lf-main">
                     @RenderBody()
                 </main>
+                @if (!string.IsNullOrWhiteSpace(branding.FooterText) || !string.IsNullOrWhiteSpace(branding.SupportEmail))
+                {
+                    <footer class="lf-footer">
+                        @if (!string.IsNullOrWhiteSpace(branding.FooterText))
+                        {
+                            <span>@branding.FooterText</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(branding.SupportEmail))
+                        {
+                            <a href="mailto:@branding.SupportEmail">@branding.SupportEmail</a>
+                        }
+                    </footer>
+                }
             </div>
         </div>
 
         <div class="offcanvas offcanvas-start lf-mobile-nav" tabindex="-1" id="lfMobileNav" aria-labelledby="lfMobileNavLabel">
             <div class="offcanvas-header">
-                <h2 class="offcanvas-title h5" id="lfMobileNavLabel">LeaveFlow</h2>
+                <h2 class="offcanvas-title h5" id="lfMobileNavLabel">@branding.ProductName</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Menüyü kapat"></button>
             </div>
             <div class="offcanvas-body">
@@ -85,10 +104,17 @@
     else
     {
         <header class="lf-public-topbar">
-            <a class="lf-brand-link" asp-controller="Home" asp-action="Index">
-                <span class="lf-brand-mark" aria-hidden="true">LF</span>
+            <a class="lf-brand-link" asp-controller="Home" asp-action="Index" aria-label="@branding.ProductName">
+                @if (branding.HasLogo)
+                {
+                    <img class="lf-brand-logo" src="@branding.LogoUrl" alt="" />
+                }
+                else
+                {
+                    <span class="lf-brand-mark" aria-hidden="true">@branding.BrandMarkText</span>
+                }
                 <span class="lf-brand-copy">
-                    <span class="lf-brand-name">LeaveFlow</span>
+                    <span class="lf-brand-name">@branding.ProductName</span>
                 </span>
             </a>
             <a class="btn btn-primary btn-sm px-3" asp-controller="Account" asp-action="Login">Giriş yap</a>
@@ -96,6 +122,19 @@
         <main role="main" class="lf-public-main">
             @RenderBody()
         </main>
+        @if (!string.IsNullOrWhiteSpace(branding.FooterText) || !string.IsNullOrWhiteSpace(branding.SupportEmail))
+        {
+            <footer class="lf-footer lf-public-footer">
+                @if (!string.IsNullOrWhiteSpace(branding.FooterText))
+                {
+                    <span>@branding.FooterText</span>
+                }
+                @if (!string.IsNullOrWhiteSpace(branding.SupportEmail))
+                {
+                    <a href="mailto:@branding.SupportEmail">@branding.SupportEmail</a>
+                }
+            </footer>
+        }
     }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

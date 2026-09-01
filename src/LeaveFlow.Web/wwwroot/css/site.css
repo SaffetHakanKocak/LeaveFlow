@@ -194,9 +194,17 @@ a:hover {
   width: 40px;
   height: 40px;
   border-radius: var(--lf-radius-lg);
-  background: linear-gradient(135deg, #60a5fa, #34d399);
+  background: linear-gradient(135deg, var(--lf-primary), #34d399);
   color: #07111f;
   line-height: 1;
+}
+
+.lf-brand-logo {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  border-radius: var(--lf-radius-md);
+  object-fit: contain;
 }
 
 .lf-brand-copy {
@@ -384,9 +392,33 @@ a:hover {
   height: 48px;
   margin-bottom: var(--lf-space-4);
   border-radius: var(--lf-radius-lg);
-  background: linear-gradient(135deg, #2563eb, #10b981);
+  background: linear-gradient(135deg, var(--lf-primary), #10b981);
   color: #fff;
   font-weight: 800;
+}
+
+.lf-login-logo {
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin-bottom: var(--lf-space-4);
+  border-radius: var(--lf-radius-md);
+  object-fit: contain;
+}
+
+.lf-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lf-space-2);
+  align-items: center;
+  justify-content: center;
+  padding: var(--lf-space-4) var(--lf-space-6);
+  color: var(--lf-text-muted);
+  font-size: .88rem;
+}
+
+.lf-public-footer {
+  border-top: 1px solid var(--lf-border);
 }
 
 .lf-login-card .form-control,

@@ -2,6 +2,7 @@ using LeaveFlow.Application;
 using LeaveFlow.Application.Authorization;
 using LeaveFlow.Application.Identity;
 using LeaveFlow.Infrastructure;
+using LeaveFlow.Web.Branding;
 using LeaveFlow.Web.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -14,6 +15,7 @@ builder.Logging.AddConsole();
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddLeaveFlowAuthorization();
+builder.Services.Configure<BrandingOptions>(builder.Configuration.GetSection(BrandingOptions.SectionName));
 
 builder.Services.AddAuthentication(options =>
 {

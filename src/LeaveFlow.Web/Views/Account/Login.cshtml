@@ -1,12 +1,22 @@
+@using Microsoft.Extensions.Options
 @model LoginViewModel
+@inject IOptions<BrandingOptions> BrandingOptions
 @{
+    var branding = BrandingViewModel.From(BrandingOptions.Value);
     ViewData["Title"] = "Giriş yap";
 }
 
 <div class="lf-login-page">
     <section class="lf-login-card">
-        <span class="lf-login-mark" aria-hidden="true">LF</span>
-        <h1 class="h3 fw-semibold mb-2">LeaveFlow'a giriş yap</h1>
+        @if (branding.HasLogo)
+        {
+            <img class="lf-login-logo" src="@branding.LogoUrl" alt="" />
+        }
+        else
+        {
+            <span class="lf-login-mark" aria-hidden="true">@branding.BrandMarkText</span>
+        }
+        <h1 class="h3 fw-semibold mb-2">@branding.ProductName'a giriş yap</h1>
         <p class="text-secondary mb-4">Devam etmek için iş e-postanızı kullanın.</p>
 
         <form asp-controller="Account" asp-action="Login" method="post" autocomplete="off">

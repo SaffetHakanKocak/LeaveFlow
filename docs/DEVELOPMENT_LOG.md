@@ -1,5 +1,28 @@
 # Development Log
 
+## 2026-09-01 - Stage 18 White-Label Organization Customization
+
+### Changes Made
+
+- Added `LeaveFlow.Web.Branding` options and view model types for organization/product display configuration.
+- Registered `LeaveFlow:Branding` in the Web composition root.
+- Updated public shell, authenticated sidebar, mobile title, login page, home page, dashboard subtitle, optional footer, and brand mark/logo rendering to use centralized branding configuration.
+- Added optional placeholder branding variables to `.env.example` and a README white-label configuration example.
+- Updated project, architecture, database, security, decisions, roadmap, and development documentation.
+
+### Security Review
+
+- Branding remains a Web-layer presentation concern and does not alter authorization, routes, DB schema, stored procedures, business logic, or AI tool calling.
+- Primary brand color is applied only when it is a safe hex value.
+- Logo URL is accepted only for app-local `/...` paths or `http`/`https` absolute URLs; `javascript:` and malformed paths are ignored.
+- Support email is rendered only when it validates as an email address.
+- User-supplied branding text is rendered through Razor encoding.
+
+### Test Results
+
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors.
+- `dotnet test --no-build`: succeeded with 240 passing tests.
+
 ## 2026-09-01 - Stage 17 Docker & Public Repository Preparation
 
 ### Changes Made
