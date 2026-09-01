@@ -88,7 +88,7 @@ public sealed class AiAssistantSecurityTests : IClassFixture<LeaveFlowWebFactory
 
         using var response = await client.PostAsync("/AiAssistant", new FormUrlEncodedContent(new Dictionary<string, string>
         {
-            ["Prompt"] = "Izin ozetimi getir",
+            ["Prompt"] = "Izin politikasini acikla",
             ["__RequestVerificationToken"] = token
         }));
         var html = await response.Content.ReadAsStringAsync();

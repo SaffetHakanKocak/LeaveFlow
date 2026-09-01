@@ -19,7 +19,7 @@
 else
 {
     <section class="lf-panel lf-ai-assistant">
-        <form asp-action="Index" method="post">
+        <form asp-action="Index" method="post" data-ai-assistant-form>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="mb-3">
                 <label asp-for="Prompt" class="form-label"></label>
@@ -27,8 +27,12 @@ else
                 <div class="form-text">En fazla @Model.MaxPromptLength karakter.</div>
                 <span asp-validation-for="Prompt" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">Gonder</button>
+            <button type="submit" class="btn btn-primary" data-ai-submit>Gonder</button>
         </form>
+
+        <div class="alert alert-info mt-3 d-none" role="status" aria-live="polite" data-ai-loading>
+            Yanit hazirlaniyor...
+        </div>
 
         @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
         {
@@ -54,4 +58,19 @@ else
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        (() => {
+            const form = document.querySelector('[data-ai-assistant-form]');
+            const loading = document.querySelector('[data-ai-loading]');
+            const submit = document.querySelector('[data-ai-submit]');
+            if (!form || !loading || !submit) {
+                return;
+            }
+
+            form.addEventListener('submit', () => {
+                loading.classList.remove('d-none');
+                submit.disabled = true;
+            });
+        })();
+    </script>
 }

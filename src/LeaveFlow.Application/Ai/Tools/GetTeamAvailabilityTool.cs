@@ -34,7 +34,7 @@ public sealed class GetTeamAvailabilityTool(IWorkforceTimelineService timelineSe
 
         var timeline = await timelineService.GetAsync(
             context.UserId,
-            new WorkforceTimelineQuery(startDate, endDate, null, null, false, 1, 25),
+            new WorkforceTimelineQuery(startDate, endDate, null, null, false, 1, 100),
             cancellationToken);
 
         return timeline is null

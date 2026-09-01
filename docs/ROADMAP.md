@@ -196,13 +196,20 @@ Deliverables:
 
 ## Phase 15 - Intelligent Workforce Queries
 
-Status: next.
+Status: completed.
 
 Deliverables:
 
 - Add richer natural-language workforce questions over the approved AI tool boundary.
 - Improve query interpretation without bypassing authorization or stored-procedure data access.
 - Keep AI actions read-only unless a later stage explicitly approves write workflows.
+
+Completed notes:
+
+- Supported deterministic Turkish workforce intents for upcoming leaves, team availability, date-range conflict checks, peak leave days, request status counts, upcoming holidays, personal leave usage, and team leave summaries.
+- Relative date handling covers today, tomorrow, this week, next week, this month, next month, and this year.
+- Multi-tool answers use only existing read-only tools and keep role scope server-side.
+- Domain, hallucination, no-data, prompt-injection, and provider/tool failure guards are covered by tests.
 
 ## Phase 16 - Hardening and Release Preparation
 

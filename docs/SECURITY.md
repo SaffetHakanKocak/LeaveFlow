@@ -266,6 +266,17 @@ Security tests should cover:
 - Prompt injection attempts such as role claims or instruction overrides remain subject to backend authorization and tool scoping.
 - Tests cover prompt injection, role tampering, all-consultant data requests, cross-user data requests, invalid arguments, unknown tools, tool failures, HTTP auth/CSRF, and secret leakage.
 
+## Stage 15 Intelligent Workforce Query Security Review
+
+- Natural-language workforce query planning is deterministic and runs in Application before provider fallback.
+- Supported prompts map only to the existing read-only tool allowlist; no write workflow, SQL, repository, stored procedure, or generic database query tool was added.
+- Counts, dates, names, statuses, availability, conflicts, and holiday facts are formatted only from tool results.
+- Consultant, manager, and administrator scope remains enforced by the existing services behind each tool.
+- Ambiguous date or scope requests ask for clarification. Empty results produce no-data responses instead of invented records.
+- Domain-external prompts receive a LeaveFlow-only response, limiting the assistant from becoming a general-purpose chatbot.
+- Prompt injection cannot change the allowlist, role scope, authenticated user id, or tool arguments trusted by backend authorization.
+- Tests cover intent routing, relative date handling, no-data, multi-tool flow, role scope, hallucination/domain guards, prompt injection, and provider/tool failure.
+
 ## Threat Matrix
 
 | Threat | Primary risk | Current controls | Regression coverage |
@@ -282,7 +293,7 @@ Security tests should cover:
 | SQL injection | User input changes SQL commands | Dapper stored procedures only, no EF/DbContext, no raw SQL in application/infrastructure | Data access and stored procedure contract tests |
 | Sensitive error leakage | Stack traces or internal details exposed | Production exception handler and ProblemDetails behavior | Production error response tests |
 | Secret leakage | Passwords/connection strings in repo or logs | Demo password from environment/user secrets, source and SQL secret scans, logging by user id | Secret leakage guard tests |
-| AI tool abuse | Model attempts to expand scope or call unsafe tools | Allowlisted tools, authenticated user context, service-level authorization, no SQL/query tools | AI tool calling unit and HTTP security tests |
+| AI tool abuse | Model attempts to expand scope or call unsafe tools | Deterministic query planning for supported workforce questions, allowlisted tools, authenticated user context, service-level authorization, no SQL/query tools | AI natural-language and tool calling unit tests, HTTP security tests |
 | Clickjacking | App framed by attacker | `X-Frame-Options: DENY` and CSP `frame-ancestors 'none'` | Security header tests |
 | MIME sniffing | Browser interprets content unsafely | `X-Content-Type-Options: nosniff` | Security header tests |
 | Concurrency regression | Duplicate approval day rows or stale decisions | Pending-only approval, unique day-row behavior, repository transaction/concurrency guards | Repeated approval concurrency test |

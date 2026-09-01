@@ -639,4 +639,25 @@ Expose a small allowlisted `IAiTool` set in Application. Each tool receives auth
 - Consultant, manager, and administrator scoping remains enforced by existing services.
 - Prompt injection cannot grant broader data access.
 - Tool usage can be audited without logging prompts, arguments, or returned sensitive data.
-- More flexible workforce query planning is deferred to Stage 15.
+- More flexible workforce query planning was added in Stage 15 through a deterministic planner over the existing read-only tool allowlist.
+
+## ADR-0032 - Plan Supported Workforce Queries Deterministically
+
+Date: 2026-09-01
+
+Status: accepted
+
+### Context
+
+Stage 15 requires the AI Assistant to answer common LeaveFlow workforce questions in natural language while ensuring the LLM is not the source of truth for business facts, counts, dates, or authorization.
+
+### Decision
+
+Add deterministic natural-language query planning in Application before provider fallback. Supported Turkish workforce intents resolve relative dates application-side and map only to the existing read-only AI tool allowlist. The final answer formatter uses tool results as the only source for LeaveFlow facts and returns clarification, no-data, domain guard, or authorization messages when needed.
+
+### Consequences
+
+- Supported workforce questions do not depend on the provider to choose tools correctly.
+- Prompt injection cannot expand role scope, change the allowlist, or make model-provided facts authoritative.
+- Multi-tool answers remain bounded and auditable.
+- Broader language understanding, write workflows, and richer conversation memory remain future work.

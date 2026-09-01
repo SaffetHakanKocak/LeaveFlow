@@ -92,6 +92,8 @@ LeaveFlow includes an optional AI assistant foundation behind the `AI:Enabled` f
 - Registered Stage 14 tools are `GetMyLeaveRequests`, `GetMyLeaveSummary`, `GetUpcomingHolidays`, `GetTeamAvailability`, `GetLeaveConflicts`, `GetUpcomingLeaves`, and `GetOrganizationLeaveStatistics`.
 - Tool execution uses the authenticated user id supplied by the Web controller. Model-provided `ConsultantId`, `ManagerId`, role claims, and prompt instructions are not trusted for authorization decisions.
 - The Azure provider performs a bounded chat -> tool call -> tool result -> final response loop. Tool results are structured JSON DTOs produced by Application services.
+- Stage 15 adds deterministic workforce query planning in Application before provider fallback. Supported natural-language LeaveFlow questions are mapped to the existing read-only tool allowlist, relative dates are resolved application-side, and answer formatting uses tool results as the only source for counts, dates, names, and statuses.
+- Unsupported domain-external prompts are contained with a LeaveFlow-only response. Ambiguous date or scope questions ask for clarification instead of guessing.
 - Date/time provider implementation
 - Email or notification infrastructure in later phases
 

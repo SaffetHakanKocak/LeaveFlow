@@ -1,5 +1,35 @@
 # Development Log
 
+## 2026-09-01 - Stage 15 Intelligent Workforce Queries
+
+### Changes Made
+
+- Added deterministic natural-language workforce query planning before provider fallback.
+- Supported Turkish relative dates for today, tomorrow, this week, next week, this month, next month, and this year.
+- Mapped supported LeaveFlow questions to the existing read-only AI tool allowlist instead of adding SQL, repository, or stored procedure access.
+- Added application-side answer formatting so numeric and date facts come from tool results only.
+- Added controlled multi-tool handling for team monthly leave summaries.
+- Added no-data, authorization failure, ambiguous-date clarification, domain guard, prompt-injection, and provider/tool failure coverage.
+- Added an AI Assistant loading state while preserving internal tool argument/result secrecy in the UI.
+- Updated AI architecture, security, roadmap, and project context documentation.
+
+### Security Review
+
+- The LLM remains non-authoritative for LeaveFlow facts, dates, counts, scope, authorization, and tool allowlist decisions.
+- Role scope remains enforced by existing Application services: Consultant self, Manager assigned team, Administrator organization.
+- Prompt content cannot provide a trusted role, consultant id, manager id, SQL command, repository access, or new tool capability.
+- Domain-external prompts are contained with a LeaveFlow-only response.
+- Empty tool results produce no-data answers instead of invented records.
+
+### Test Results
+
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors.
+- `dotnet test --no-build`: succeeded with 232 passing tests.
+
+### Next Step
+
+Stage 16 - Comprehensive Test & Quality Gate. Not started.
+
 ## 2026-08-31 - Stage 14 Secure AI Tool Calling
 
 ### Changes Made
