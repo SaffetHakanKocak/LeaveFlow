@@ -1,5 +1,43 @@
 # Development Log
 
+## 2026-09-01 - Stage 17 Docker & Public Repository Preparation
+
+### Changes Made
+
+- Added `docker-compose.yml` for a local SQL Server 2022 Developer container named `leaveflow-sql`.
+- Added `.env.example` with placeholder-only local configuration for SQL Server, demo password, app connection string, and optional Azure AI settings.
+- Added `.dockerignore` and expanded `.gitignore` for `.env`, secrets, logs, coverage, publish output, and local database artifacts.
+- Updated README with project overview, architecture, tech stack, prerequisites, quick start, Docker SQL setup, local DB initialization, development demo users, Azure AI configuration, security architecture, testing, and known limitations.
+- Kept `scripts/setup-local-db.ps1` as the single local database initialization path; no second SQL initialization system was added.
+- Updated project, architecture, database, security, roadmap, and development documentation for public-repo readiness.
+
+### Public Repository Audit
+
+- No real company-specific names, proprietary content, real user data, committed passwords, committed API keys, private connection strings, private endpoints, local absolute user paths, or private assets/logos were found in production source or docs.
+- Audit matches for `localhost` are limited to local development launch settings, README instructions, and sample configuration.
+- Guard matches for `QueryDatabase`, `EntityFramework`, `DbContext`, and `CommandType.Text` are limited to security tests and documentation of prohibited patterns.
+
+### Security Review
+
+- SA password, demo password, and Azure AI API key remain uncommitted placeholders only.
+- Real `.env` files remain ignored; `.env.example` is explicitly allowed for public setup guidance.
+- AI remains disabled by default and the main application runs without Azure AI credentials.
+- Development demo users remain created only by the Development bootstrap when a demo password is configured.
+- SQL Server Compose healthcheck verifies readiness without adding a second DB migration/init path.
+
+### Test Results
+
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors.
+- `dotnet test --no-build`: succeeded with 234 passing tests.
+
+### Manual Follow-Up
+
+- Stage 16 real DB smoke remains manual and was not marked completed. It requires a running local Web instance, Docker SQL Server, and demo credentials available to the test runner/session.
+
+### Next Step
+
+Stage 18 - White-Label Organization Customization. Not started.
+
 ## 2026-09-01 - Stage 16 Comprehensive Test & Quality Gate
 
 ### Changes Made

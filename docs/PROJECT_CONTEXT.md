@@ -2,11 +2,11 @@
 
 ## Current Status
 
-LeaveFlow has completed Stage 16: Comprehensive Test & Quality Gate.
+LeaveFlow has completed Stage 17: Docker & Public Repository Preparation.
 
-The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, manager/admin workforce leave timeline views based on approved leave day rows, role-aware organization calendar views for approved leave and holidays, role-aware dashboard/reporting screens for administrators, managers, and consultants, a modern responsive MVC application shell with light/dark theme support, security hardening controls, an optional Azure AI assistant foundation, secure AI tool calling through existing application services, intelligent workforce query planning for supported LeaveFlow natural-language questions, and a completed pre-v1.0 quality gate pass.
+The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, manager/admin workforce leave timeline views based on approved leave day rows, role-aware organization calendar views for approved leave and holidays, role-aware dashboard/reporting screens for administrators, managers, and consultants, a modern responsive MVC application shell with light/dark theme support, security hardening controls, an optional Azure AI assistant foundation, secure AI tool calling through existing application services, intelligent workforce query planning for supported LeaveFlow natural-language questions, a completed pre-v1.0 quality gate pass, and Docker SQL/public-repo setup documentation for fresh-clone local development.
 
-Docker, API JWT/token authentication, exports, and report-run auditing have not been implemented yet.
+API JWT/token authentication, exports, report-run auditing, full app containerization, and CI automation have not been implemented yet.
 
 This repository is intended to become a production-grade, open-source portfolio project for workforce leave and calendar management.
 
@@ -62,6 +62,7 @@ The project is generic and white-label friendly. It must not contain real compan
 - Stage 14: Secure AI Tool Calling.
 - Stage 15: Intelligent Workforce Queries.
 - Stage 16: Comprehensive Test & Quality Gate.
+- Stage 17: Docker & Public Repository Preparation.
 - Cookie authentication for LeaveFlow.Web.
 - Password hashing with ASP.NET Core Identity `PasswordHasher`.
 - Configurable lockout and login-attempt auditing.
@@ -107,20 +108,24 @@ The project is generic and white-label friendly. It must not contain real compan
 - UI regression tests cover shell rendering, theme toggle presence, role-aware navigation, login rendering, antiforgery token presence, and denied protected routes.
 - Stage 16 quality gate completed with `dotnet clean`, `dotnet restore`, `dotnet build --no-restore`, and `dotnet test --no-build`; direct test verification reported 234 passing tests.
 - Stage 16 added regression coverage for AI leap-year relative date handling and approve invalid-transition failure behavior.
+- Stage 17 added Docker Compose for local SQL Server, `.env.example`, `.dockerignore`, public-repo-oriented `.gitignore` coverage, and fresh-clone setup documentation.
+- `scripts/setup-local-db.ps1` remains the single local DB initialization path and applies tables, indexes, stored procedures, and seed scripts in order.
 
 ## Current Stage Scope
 
-Stage 16 intentionally does not include:
+Stage 17 intentionally does not include:
 
 - Direct SQL, ad hoc query, or database execution tools.
-- Docker
 - API JWT or other token authentication
 - export files
 - report run auditing
 - new leave business rules
 - new reporting business features
 - new product features beyond targeted quality fixes
+- full LeaveFlow.Web or LeaveFlow.Api application containerization
+- CI automation
+- white-label organization customization
 
 ## Next Stage
 
-Stage 17 - Docker & Public Repository Preparation.
+Stage 18 - White-Label Organization Customization.

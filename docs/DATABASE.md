@@ -37,6 +37,8 @@ For a fresh development database:
 6. Review and adapt scripts in `db/005_Security` for the target environment.
 7. Use `db/006_TestData` only for fictional local test data.
 
+For local Docker development, start SQL Server with `docker compose up -d sqlserver`, then run `scripts/setup-local-db.ps1`. The setup script remains the single initialization path; Docker Compose only provides the SQL Server process and persistent local volume.
+
 No migration framework is used. New authentication columns for existing databases are added by `db/001_Tables/015_AlterUsersAddAuthenticationColumns.sql`. Stage 4 people-management columns for existing consultant and manager tables are added by `db/001_Tables/016_AlterConsultantsAddManagementColumns.sql` and `db/001_Tables/017_AlterManagersAddManagementColumns.sql`. Stage 5 holiday date ranges are added by `db/001_Tables/018_AlterHolidayDefinitionsAddDateRange.sql` and `db/001_Tables/019_AlterOfficialHolidayDefinitionsAddDateRange.sql`. Stage 6 review columns for leave requests are added by `db/001_Tables/020_AlterLeaveRequestsAddReviewColumns.sql`.
 
 ## Tables
@@ -199,6 +201,14 @@ Local development should provide the connection string through user secrets or e
 ```powershell
 $env:ConnectionStrings__DefaultConnection="Server=localhost;Database=LeaveFlow;Integrated Security=true;TrustServerCertificate=true"
 ```
+
+For Docker SQL Server, copy `.env.example` to `.env`, set a strong `LEAVEFLOW_SQL_PASSWORD`, and use:
+
+```powershell
+$env:ConnectionStrings__DefaultConnection="Server=localhost,1433;Database=LeaveFlow;User Id=sa;Password=$env:LEAVEFLOW_SQL_PASSWORD;Encrypt=True;TrustServerCertificate=True"
+```
+
+`.env` is ignored by git. `.env.example` contains placeholders only and is safe to commit.
 
 The committed `appsettings.json` files contain only the safe connection string name:
 

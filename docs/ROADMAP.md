@@ -229,12 +229,38 @@ Completed notes:
 - Added targeted regression coverage for AI leap-year date handling and invalid approve transition failure behavior.
 - Local SQL smoke was attempted but blocked by unavailable local SQL/Docker SQL configuration.
 
-Deferred to Stage 17:
+Completed in Stage 17:
 
 - Docker setup.
-- CI workflow.
 - Open-source repository polish.
-- License and contribution guidance.
+
+## Phase 17 - Docker & Public Repository Preparation
+
+Status: completed.
+
+Deliverables:
+
+- Docker Compose local SQL Server setup.
+- Placeholder-only `.env.example`.
+- Public-repo-oriented `.gitignore` and `.dockerignore`.
+- Fresh-clone README setup flow.
+- Documentation for DB initialization, secrets, AI configuration, and manual smoke checks.
+
+Completed notes:
+
+- Docker Compose provides SQL Server only; LeaveFlow.Web and LeaveFlow.Api continue to run with `dotnet run`.
+- `scripts/setup-local-db.ps1` remains the single database initialization path.
+- Stage 16 real DB smoke remains a manual release check and is not marked completed.
+
+## Phase 18 - White-Label Organization Customization
+
+Status: planned.
+
+Deliverables:
+
+- Organization branding/configuration model.
+- White-label UI text and theme configuration.
+- Tests and documentation for customization boundaries.
 
 ## Future Enhancements
 

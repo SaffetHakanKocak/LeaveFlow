@@ -16,11 +16,15 @@ obj/
 
 .env
 .env.*
+!.env.example
 *.secret.json
 secrets/
 
 logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 TestResults/
 coverage/
@@ -31,6 +35,10 @@ coverage.*/
 
 artifacts/
 publish/
+docker-data/
+*.bak
+*.mdf
+*.ldf
 
 appsettings.Local.json
 appsettings.*.Local.json

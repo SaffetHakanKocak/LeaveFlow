@@ -682,3 +682,24 @@ Use Stage 16 for targeted test review, source guard checks, clean/restore/build/
 - Test harness cleanup and focused regression tests are acceptable Stage 16 changes.
 - Real database smoke remains dependent on local SQL Server/Docker SQL availability and configured credentials.
 - Docker, CI, public repository polish, license, and contribution work remain Stage 17 concerns.
+
+## ADR-0034 - Use Docker Compose For Local SQL Server Only
+
+Date: 2026-09-01
+
+Status: accepted
+
+### Context
+
+Fresh-clone developers need a repeatable local SQL Server setup without introducing a second database initialization mechanism or committing secrets.
+
+### Decision
+
+Add Docker Compose for SQL Server 2022 Developer with a named `leaveflow-sql` container, persistent local volume, and healthcheck. Keep `scripts/setup-local-db.ps1` as the single database initialization path for tables, indexes, stored procedures, and seed data. Provide `.env.example` with placeholders and keep real `.env` files ignored.
+
+### Consequences
+
+- Local SQL startup is simpler and public-repo friendly.
+- Database setup order remains explicit and aligned with existing scripts.
+- SA password, demo password, and AI keys remain local-only configuration.
+- LeaveFlow.Web and LeaveFlow.Api containerization can be added later if needed.

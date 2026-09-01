@@ -285,6 +285,15 @@ Security tests should cover:
 - Regression coverage was added for AI leap-year relative date handling and invalid approve transition failure behavior.
 - Real local SQL smoke could not be completed because no usable SQL Server/Docker SQL instance or credentials were available in the current environment.
 
+## Stage 17 Public Repository Security Review
+
+- Docker Compose starts SQL Server with `LEAVEFLOW_SQL_PASSWORD` from local environment or `.env`; no SA password is committed.
+- `.env.example` contains placeholders only. Real `.env` files, secrets, logs, coverage output, publish output, and local database artifacts are ignored by git.
+- Development demo users are bootstrapped only in the Development environment and only when a demo password is configured.
+- Azure AI stays disabled by default. The application continues to run without `AI__Azure__ApiKey`.
+- Public-repo audit found no real company names, proprietary data, real person data, committed API keys/tokens/passwords, private connection strings, internal endpoints, local absolute user paths, or private assets/logos.
+- Stage 16 real database smoke remains a manual release check and is not marked completed by Stage 17 documentation.
+
 ## Threat Matrix
 
 | Threat | Primary risk | Current controls | Regression coverage |
