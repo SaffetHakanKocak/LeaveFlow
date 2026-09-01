@@ -212,6 +212,8 @@ $env:ConnectionStrings__DefaultConnection="Server=localhost,1433;Database=LeaveF
 
 White-label branding is intentionally not database-backed in Stage 18. `LeaveFlow:Branding` is read by the Web layer from configuration, so no tables, indexes, stored procedures, seed scripts, or Dapper repositories were added for branding.
 
+Stage 19 final audit preserved the database rule: production C# source contains no Entity Framework, `DbContext`, raw SQL execution, `CommandType.Text`, or direct database query helper. SQL statements remain in versioned `/db` scripts, and application database calls remain Dapper stored procedure calls.
+
 The committed `appsettings.json` files contain only the safe connection string name:
 
 ```json

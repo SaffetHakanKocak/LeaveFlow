@@ -139,6 +139,26 @@ Use `LeaveFlow:Branding` typed options in LeaveFlow.Web for organization name, p
 - Branding does not affect authorization, routes, database schema, stored procedures, domain rules, or AI tool behavior.
 - Unsafe color, logo, and email values are ignored before rendering.
 - Database-backed branding, admin CRUD, and multi-tenant customization remain future work.
+
+## ADR-0007 - Keep CI Secret-Free For v1.0
+
+Date: 2026-09-01
+
+Status: accepted
+
+### Context
+
+LeaveFlow needs public GitHub CI that contributors can run without production secrets or a live SQL Server.
+
+### Decision
+
+Use GitHub Actions on `windows-latest` with .NET 10 setup, `dotnet restore`, `dotnet build --no-restore -warnaserror`, and `dotnet test --no-build`.
+
+### Consequences
+
+- Pull requests get a repeatable automated quality gate.
+- The existing unit, integration contract, and security tests run without external secrets.
+- Real SQL Server smoke testing remains a manual release checklist item.
 - No build or test commands are meaningful until solution files exist.
 
 ## ADR-0006 - Use Repository-Level Build Defaults

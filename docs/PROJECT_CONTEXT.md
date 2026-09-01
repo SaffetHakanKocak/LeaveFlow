@@ -2,11 +2,11 @@
 
 ## Current Status
 
-LeaveFlow has completed Stage 18: White-Label Organization Customization.
+LeaveFlow has completed Stage 19: Final Production & Portfolio Audit. Project status: v1.0 release candidate.
 
-The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, manager/admin workforce leave timeline views based on approved leave day rows, role-aware organization calendar views for approved leave and holidays, role-aware dashboard/reporting screens for administrators, managers, and consultants, a modern responsive MVC application shell with light/dark theme support, configuration-driven white-label branding, security hardening controls, an optional Azure AI assistant foundation, secure AI tool calling through existing application services, intelligent workforce query planning for supported LeaveFlow natural-language questions, a completed pre-v1.0 quality gate pass, and Docker SQL/public-repo setup documentation for fresh-clone local development.
+The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, manager/admin workforce leave timeline views based on approved leave day rows, role-aware organization calendar views for approved leave and holidays, role-aware dashboard/reporting screens for administrators, managers, and consultants, a modern responsive MVC application shell with light/dark theme support, configuration-driven white-label branding, security hardening controls, an optional Azure AI assistant foundation, secure AI tool calling through existing application services, intelligent workforce query planning for supported LeaveFlow natural-language questions, Docker SQL/public-repo setup documentation for fresh-clone local development, GitHub repository polish files, CI, and a v1.0.0 release checklist.
 
-API JWT/token authentication, exports, report-run auditing, full app containerization, and CI automation have not been implemented yet.
+API JWT/token authentication, exports, report-run auditing, and full app containerization have not been implemented yet.
 
 This repository is intended to become a production-grade, open-source portfolio project for workforce leave and calendar management.
 
@@ -64,6 +64,7 @@ The project is generic and white-label friendly. It must not contain real compan
 - Stage 16: Comprehensive Test & Quality Gate.
 - Stage 17: Docker & Public Repository Preparation.
 - Stage 18: White-Label Organization Customization.
+- Stage 19: Final Production & Portfolio Audit.
 - Cookie authentication for LeaveFlow.Web.
 - Password hashing with ASP.NET Core Identity `PasswordHasher`.
 - Configurable lockout and login-attempt auditing.
@@ -114,10 +115,12 @@ The project is generic and white-label friendly. It must not contain real compan
 - Stage 18 added Web-layer branding options for organization name, product name, short name, optional logo URL, optional primary brand color, optional support email, and optional footer text.
 - Branding is configuration-driven and generic by default. It does not add database tables, routes, admin CRUD, authorization changes, business rule changes, or AI tool changes.
 - Brand color and logo values are sanitized before rendering; invalid values fall back to text/default theme behavior.
+- Stage 19 added MIT licensing, contribution guidance, a repository-level security policy, a pull request template, GitHub Actions CI, README portfolio polish, and a v1.0.0 release checklist.
+- Final audit found no production Entity Framework, DbContext, raw SQL, CommandType.Text, hard-coded secrets, proprietary content, private endpoints, private assets, or local absolute user paths.
 
 ## Current Stage Scope
 
-Stage 18 intentionally does not include:
+The v1.0 release candidate intentionally does not include:
 
 - Direct SQL, ad hoc query, or database execution tools.
 - API JWT or other token authentication
@@ -127,11 +130,10 @@ Stage 18 intentionally does not include:
 - new reporting business features
 - new product features beyond targeted quality fixes
 - full LeaveFlow.Web or LeaveFlow.Api application containerization
-- CI automation
 - database-backed branding
 - admin branding CRUD
 - multi-tenant branding
 
-## Next Stage
+## Release Status
 
-Stage 19 - Final Production & Portfolio Audit.
+Project status: v1.0 release candidate. Before publishing v1.0.0, complete the manual real-database smoke checklist in `docs/RELEASE_CHECKLIST.md`.

@@ -1,16 +1,31 @@
 # LeaveFlow
 
-LeaveFlow is a production-minded workforce leave and calendar management platform built as an open-source portfolio project. It covers leave requests, manager approvals, team availability, organization calendars, reporting, and an optional guarded AI assistant.
+LeaveFlow is a v1.0 release candidate workforce leave, approval, calendar, reporting, and guarded AI assistant platform built as a public portfolio-ready .NET project.
+
+It demonstrates ASP.NET Core MVC/Web API, .NET 10, SQL Server, Dapper, stored-procedure-only data access, RBAC, object-level authorization, workforce calendar/timeline/reporting, secure Azure AI tool calling, Docker-based local SQL Server, and 240+ automated tests.
+
+## Features
+
+- Consultant leave request creation, list, and detail workflow.
+- Manager and administrator approve/reject workflow.
+- Conflict detection from approved leave day rows.
+- Inclusive `ConsultantLeaveDays` generation on approval.
+- Administrator consultant/manager management and manager assignment.
+- Organization holidays and official holidays.
+- Role-aware workforce timeline, organization calendar, dashboard, and reports.
+- Optional AI assistant with deterministic LeaveFlow workforce query planning.
+- White-label UI branding through configuration.
+- Light/dark MVC application shell.
 
 ## Architecture
 
 - `LeaveFlow.Domain`: framework-independent domain constants and rules.
 - `LeaveFlow.Application`: use cases, validation, authorization-aware orchestration, reporting, timeline, calendar, and AI tool boundaries.
-- `LeaveFlow.Infrastructure`: SQL Server, Dapper stored-procedure repositories, password hashing, audit persistence, and Azure AI provider integration.
+- `LeaveFlow.Infrastructure`: SQL Server, Dapper stored-procedure repositories, password hashing, audit persistence, development bootstrap, and Azure AI provider integration.
 - `LeaveFlow.Web`: ASP.NET Core MVC browser UI.
 - `LeaveFlow.Api`: API host foundation with protected sample endpoint and health checks.
 
-Database access is Dapper + stored procedures only. Application code must not use Entity Framework, `DbContext`, raw SQL, or generic query execution tools.
+Database access is Dapper + stored procedures only. Application code must not use Entity Framework, `DbContext`, raw SQL, `CommandType.Text`, or generic query execution helpers.
 
 ## Tech Stack
 
@@ -18,8 +33,41 @@ Database access is Dapper + stored procedures only. Application code must not us
 - ASP.NET Core MVC and Web API
 - SQL Server 2022
 - Dapper
-- xUnit test projects for unit, integration, and security coverage
-- Docker Compose for local SQL Server
+- xUnit
+- Docker Compose
+- Optional Azure AI provider integration
+
+## Project Structure
+
+```text
+src/
+  LeaveFlow.Domain/
+  LeaveFlow.Application/
+  LeaveFlow.Infrastructure/
+  LeaveFlow.Web/
+  LeaveFlow.Api/
+tests/
+  LeaveFlow.UnitTests/
+  LeaveFlow.IntegrationTests/
+  LeaveFlow.SecurityTests/
+db/
+  001_Tables/
+  002_Indexes/
+  003_StoredProcedures/
+  004_Seed/
+docs/
+```
+
+## Screenshots
+
+Screenshots are intentionally not committed yet. Recommended release screenshots:
+
+- Login and dashboard
+- Consultant leave request
+- Manager review with conflict preview
+- Workforce timeline
+- Organization calendar
+- AI assistant disabled/available state
 
 ## Prerequisites
 
@@ -36,7 +84,7 @@ cd LeaveFlow
 Copy-Item .env.example .env
 ```
 
-Edit `.env` and set strong local values for:
+Edit `.env` and set strong local values:
 
 ```text
 LEAVEFLOW_SQL_PASSWORD
@@ -49,13 +97,13 @@ Start SQL Server:
 docker compose up -d sqlserver
 ```
 
-If your Docker installation uses the older standalone Compose binary, use:
+If your Docker installation uses the older standalone Compose binary:
 
 ```powershell
 docker-compose up -d sqlserver
 ```
 
-Load the `.env` values into the current PowerShell session:
+Load local environment values:
 
 ```powershell
 Get-Content .env | ForEach-Object {
@@ -67,27 +115,29 @@ Get-Content .env | ForEach-Object {
 $env:ConnectionStrings__DefaultConnection = "Server=localhost,1433;Database=LeaveFlow;User Id=sa;Password=$env:LEAVEFLOW_SQL_PASSWORD;Encrypt=True;TrustServerCertificate=True"
 ```
 
-Initialize the database with the existing setup script:
+Initialize the local database:
 
 ```powershell
 .\scripts\setup-local-db.ps1 -DockerContainer leaveflow-sql
 ```
 
-Run the web app:
+Run the MVC web app:
 
 ```powershell
 dotnet run --project src\LeaveFlow.Web\LeaveFlow.Web.csproj
 ```
 
-Open the local URL shown by `dotnet run`, commonly:
+Open the URL shown by `dotnet run`, commonly:
 
 ```text
 http://localhost:5226
 ```
 
-## Database Initialization
+## Docker SQL Setup
 
-`scripts/setup-local-db.ps1` is the single local database initialization path. It creates the `LeaveFlow` database when missing and applies scripts in this order:
+`docker-compose.yml` starts SQL Server only. `LeaveFlow.Web` and `LeaveFlow.Api` currently run through `dotnet run`.
+
+`scripts/setup-local-db.ps1` is the single local database initialization path. It applies scripts in this order:
 
 ```text
 db/001_Tables
@@ -96,11 +146,9 @@ db/003_StoredProcedures
 db/004_Seed
 ```
 
-Do not add a second database initialization system unless the architecture is explicitly changed later.
-
 ## Development Demo Users
 
-When `ASPNETCORE_ENVIRONMENT=Development`, `LeaveFlow:Development:BootstrapIdentity=true`, and a demo password is configured, the web app creates/updates these local demo accounts:
+When `ASPNETCORE_ENVIRONMENT=Development`, `LeaveFlow:Development:BootstrapIdentity=true`, and a demo password is configured, the web app creates or updates:
 
 ```text
 admin@leaveflow.local
@@ -109,13 +157,11 @@ consultant1@leaveflow.local
 consultant2@leaveflow.local
 ```
 
-The demo password is hashed at startup and is never stored in source, SQL scripts, or committed config. The bootstrap also assigns both demo consultants to the demo manager.
+The demo password is supplied through environment variables or user secrets and is never committed.
 
 ## White-Label Configuration
 
-LeaveFlow branding is configured through `LeaveFlow:Branding` options in environment variables, user secrets, or local appsettings overrides. It does not change routes, authorization, database schema, business rules, or AI tool behavior.
-
-Example local override:
+Branding is controlled by `LeaveFlow:Branding` options and does not change routes, authorization, database schema, business rules, or AI tools.
 
 ```powershell
 $env:LeaveFlow__Branding__OrganizationName="Example Organization"
@@ -127,13 +173,11 @@ $env:LeaveFlow__Branding__SupportEmail="support@example.test"
 $env:LeaveFlow__Branding__FooterText="Example Organization workforce operations"
 ```
 
-Defaults are generic: `ProductName=LeaveFlow`, `OrganizationName=Organization`, and text fallback is used when no safe logo URL is configured. `PrimaryBrandColor` accepts only hex colors such as `#2563eb`; invalid values are ignored.
+Defaults are generic: `ProductName=LeaveFlow`, `OrganizationName=Organization`. Invalid colors, unsafe logo URLs, and invalid support emails are ignored.
 
-## Azure AI Configuration
+## AI Architecture
 
 AI is disabled by default and LeaveFlow runs normally without Azure AI credentials.
-
-To enable it locally, provide values through environment variables or user secrets:
 
 ```powershell
 $env:AI__Enabled="true"
@@ -144,18 +188,19 @@ $env:AI__Azure__ApiVersion="2024-02-15-preview"
 $env:AI__Azure__ApiKey="<your-api-key>"
 ```
 
-Do not commit AI keys. The AI assistant can only use allowlisted read-only LeaveFlow tools and cannot execute SQL or bypass backend authorization.
+The assistant can answer supported LeaveFlow workforce questions only through allowlisted read-only application tools. It has no direct SQL, repository, stored procedure, or database access. Counts, names, dates, statuses, conflicts, and availability facts must come from tool results.
 
-## Security Architecture
+## Security Highlights
 
 - Cookie authentication for the MVC web app.
 - Role policies for Consultant, Manager, and Administrator.
-- Object-level authorization for consultant resources and manager assignments.
+- Object-level authorization for consultant resources and manager assignment scope.
 - CSRF protection for MVC form posts.
-- Password hashing with ASP.NET Core Identity password hasher.
-- Login attempt and audit logging through stored procedures.
-- Dapper stored-procedure-only data access.
-- AI feature flag, safe provider failures, bounded tool calling, tool audit metadata, and domain/hallucination guards.
+- XSS protection through Razor encoding and no `Html.Raw` in views.
+- Login lockout and audit logging through stored procedures.
+- Secure cookie defaults and security headers.
+- Secret-free public configuration samples.
+- Prompt-injection, domain guard, AI tool allowlist, and hallucination guard coverage.
 
 ## Testing
 
@@ -165,13 +210,18 @@ dotnet build --no-restore
 dotnet test --no-build
 ```
 
-Stage 16 quality gate currently verifies unit, integration, and security coverage. A real database smoke test should be run manually against the Docker SQL Server and local Web instance before release.
+Current automated suite: 240 tests across unit, integration, and security projects. The CI workflow runs restore, warning-as-error build, and tests without requiring secrets or a live SQL Server.
+
+## Roadmap Status
+
+Stages 0 through 19 are complete for the v1.0 release candidate. The remaining release activity is the manual real-database smoke checklist in `docs/RELEASE_CHECKLIST.md`.
 
 ## Known Limitations
 
 - API JWT/token authentication is not implemented yet.
 - Export workflows are not implemented.
-- CI and public repository automation are deferred until repository publication work.
+- Report-run auditing is not implemented.
+- Full `LeaveFlow.Web` and `LeaveFlow.Api` containerization is deferred.
 - The local database setup is script-based, not migration-framework based.
-- Azure AI is optional and disabled by default.
 - White-label settings are configuration-driven; admin CRUD and per-tenant branding are not implemented.
+- Stage 16 real DB smoke remains a manual release checklist item before publishing v1.0.0.

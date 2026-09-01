@@ -32,7 +32,7 @@ db/
 docs/
 ```
 
-The solution file is `LeaveFlow.sln`. Local development SQL Server can be started with `docker-compose.yml`; application hosts still run through `dotnet run` in Stage 17.
+The solution file is `LeaveFlow.sln`. Local development SQL Server can be started with `docker-compose.yml`; application hosts run through `dotnet run`.
 
 ## Project Responsibilities
 
@@ -175,6 +175,7 @@ Stage 2 kept the same production project dependency direction. Test projects may
 - Database access through stored procedures only
 - Token-based MVC design system and responsive application shell
 - Web-layer white-label branding options separate from domain rules and theme mode
+- GitHub Actions CI for restore, warning-as-error build, and tests without secrets or live SQL Server
 
 ## Data Access
 
