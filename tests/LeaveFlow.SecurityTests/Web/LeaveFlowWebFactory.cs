@@ -105,7 +105,7 @@ public sealed class LeaveFlowWebFactory : WebApplicationFactory<WebEntryPoint>
         CalendarStore.AddConsultant(ConsultantTwoId, "Consultant Two");
         ReportingStore.AddConsultant(ConsultantOneId, "Consultant One");
         ReportingStore.AddConsultant(ConsultantTwoId, "Consultant Two");
-        _ = ((IConsultantManagementRepository)Store).SetActiveAsync(InactiveProfileConsultantId, false).GetAwaiter().GetResult();
+        Store.SetConsultantActive(InactiveProfileConsultantId, false);
         Store.SetConsultant(locked.Id, Guid.NewGuid());
 
         Store.SetManager(managerOne.Id, ManagerOneId);

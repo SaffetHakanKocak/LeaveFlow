@@ -224,6 +224,25 @@ public sealed class AiAssistantServiceTests
     }
 
     [Fact]
+    public async Task SendAsync_Should_HandleNextMonthLeapYearBoundary()
+    {
+        var tool = new StubAiTool("GetUpcomingLeaves", AiToolExecutionResult.Success(new { Leaves = Array.Empty<object>() }));
+        var service = CreateService(
+            new RecordingAiChatClient(new AiChatResponse("unused")),
+            new StaticAiToolRegistry(tool),
+            new RecordingAuditLogRepository(),
+            EnabledOptions(),
+            new FixedAiTimeProvider(new DateTimeOffset(2028, 1, 31, 10, 0, 0, TimeSpan.Zero)));
+
+        var result = await service.SendAsync(new AiAssistantInput(Guid.NewGuid(), "Manager", "Gelecek ay kimler izinli?"));
+
+        Assert.True(result.Succeeded);
+        Assert.Contains("2028-02-01", tool.LastArgumentsJson);
+        Assert.Contains("2028-02-29", tool.LastArgumentsJson);
+        Assert.Equal("2028-02-01 - 2028-02-29 araliginda kayit bulunamadi.", result.Message);
+    }
+
+    [Fact]
     public async Task SendAsync_Should_ReturnNoData_WhenToolResultIsEmpty()
     {
         var tool = new StubAiTool("GetUpcomingLeaves", AiToolExecutionResult.Success(new { Leaves = Array.Empty<object>() }));
@@ -298,7 +317,8 @@ public sealed class AiAssistantServiceTests
         IAiChatClient client,
         IAiToolRegistry registry,
         IAuditLogRepository auditLogRepository,
-        AiOptions options)
+        AiOptions options,
+        TimeProvider? timeProvider = null)
     {
         return new AiAssistantService(
             client,
@@ -306,7 +326,7 @@ public sealed class AiAssistantServiceTests
             auditLogRepository,
             Options.Create(options),
             NullLogger<AiAssistantService>.Instance,
-            new FixedAiTimeProvider(new DateTimeOffset(2026, 9, 1, 10, 0, 0, TimeSpan.Zero)));
+            timeProvider ?? new FixedAiTimeProvider(new DateTimeOffset(2026, 9, 1, 10, 0, 0, TimeSpan.Zero)));
     }
 
     private static AiOptions EnabledOptions() => new() { Enabled = true, MaxPromptLength = 2000, TimeoutSeconds = 5 };

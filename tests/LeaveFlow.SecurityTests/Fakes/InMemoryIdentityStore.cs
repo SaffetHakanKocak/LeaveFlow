@@ -69,6 +69,14 @@ public sealed class InMemoryIdentityStore :
 
     public void Assign(Guid managerId, Guid consultantId) => _assignments.Add((managerId, consultantId));
 
+    public void SetConsultantActive(Guid consultantId, bool isActive)
+    {
+        if (_consultants.TryGetValue(consultantId, out var consultant))
+        {
+            _consultants[consultantId] = consultant with { IsActive = isActive };
+        }
+    }
+
     public UserAuthRecord GetUser(string email) => _users[EmailNormalizer.Normalize(email)];
 
     public Task<UserAuthRecord?> GetByNormalizedEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default)

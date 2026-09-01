@@ -277,6 +277,14 @@ Security tests should cover:
 - Prompt injection cannot change the allowlist, role scope, authenticated user id, or tool arguments trusted by backend authorization.
 - Tests cover intent routing, relative date handling, no-data, multi-tool flow, role scope, hallucination/domain guards, prompt injection, and provider/tool failure.
 
+## Stage 16 Quality Gate Security Review
+
+- Authentication, authorization, consultant/manager management, manager assignment, holidays, leave requests, approve/reject, conflict detection, generated leave days, timeline, calendar, dashboard/reports, and AI security tests were reviewed and re-run.
+- Source guard searches found no production Entity Framework, `DbContext`, `CommandType.Text`, raw SQL execution, hard-coded secrets, sensitive logging, swallowed exceptions, or sync-over-async issues.
+- A sync-over-async call in security test setup was removed to keep the regression harness clean.
+- Regression coverage was added for AI leap-year relative date handling and invalid approve transition failure behavior.
+- Real local SQL smoke could not be completed because no usable SQL Server/Docker SQL instance or credentials were available in the current environment.
+
 ## Threat Matrix
 
 | Threat | Primary risk | Current controls | Regression coverage |

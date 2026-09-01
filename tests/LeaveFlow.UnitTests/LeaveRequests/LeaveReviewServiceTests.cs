@@ -75,6 +75,19 @@ public sealed class LeaveReviewServiceTests
         Assert.Equal(managerId, repository.LastManagerId);
     }
 
+    [Fact]
+    public async Task ApproveAsync_Should_ReturnFailure_WhenRequestIsNotPendingOrOutOfScope()
+    {
+        var repository = new ReviewStubLeaveRequestRepository { DecisionResult = false };
+        var service = CreateService([RoleNames.Administrator], null, repository);
+
+        var result = await service.ApproveAsync(Guid.NewGuid(), Guid.NewGuid(), new ReviewDecisionInput(null));
+
+        Assert.False(result.Succeeded);
+        Assert.Equal("NotPendingOrUnauthorized", result.ErrorCode);
+        Assert.True(repository.DecisionCalled);
+    }
+
     private static LeaveReviewService CreateService(
         IReadOnlyList<string> roles,
         Guid? managerId,

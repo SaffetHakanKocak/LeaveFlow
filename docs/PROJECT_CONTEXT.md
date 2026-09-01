@@ -2,9 +2,9 @@
 
 ## Current Status
 
-LeaveFlow has completed Stage 15: Intelligent Workforce Queries.
+LeaveFlow has completed Stage 16: Comprehensive Test & Quality Gate.
 
-The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, manager/admin workforce leave timeline views based on approved leave day rows, role-aware organization calendar views for approved leave and holidays, role-aware dashboard/reporting screens for administrators, managers, and consultants, a modern responsive MVC application shell with light/dark theme support, security hardening controls, an optional Azure AI assistant foundation, secure AI tool calling through existing application services, and intelligent workforce query planning for supported LeaveFlow natural-language questions.
+The repository now contains a .NET 10 solution with API, MVC Web, layered class library projects, working test projects, SQL Server schema scripts, stored procedure scripts, role seed script, database security guidance, a Dapper stored-procedure data layer, cookie authentication for LeaveFlow.Web, lockout and login-attempt auditing, role and object-level authorization, a deferred API authentication placeholder, administrator-facing consultant/manager management, administrator-facing organization/official holiday management, consultant self-service leave request submission/list/detail screens, manager/admin leave review with conflict detection, manager/admin workforce leave timeline views based on approved leave day rows, role-aware organization calendar views for approved leave and holidays, role-aware dashboard/reporting screens for administrators, managers, and consultants, a modern responsive MVC application shell with light/dark theme support, security hardening controls, an optional Azure AI assistant foundation, secure AI tool calling through existing application services, intelligent workforce query planning for supported LeaveFlow natural-language questions, and a completed pre-v1.0 quality gate pass.
 
 Docker, API JWT/token authentication, exports, and report-run auditing have not been implemented yet.
 
@@ -61,6 +61,7 @@ The project is generic and white-label friendly. It must not contain real compan
 - Stage 13: Azure AI Assistant Foundation.
 - Stage 14: Secure AI Tool Calling.
 - Stage 15: Intelligent Workforce Queries.
+- Stage 16: Comprehensive Test & Quality Gate.
 - Cookie authentication for LeaveFlow.Web.
 - Password hashing with ASP.NET Core Identity `PasswordHasher`.
 - Configurable lockout and login-attempt auditing.
@@ -104,10 +105,12 @@ The project is generic and white-label friendly. It must not contain real compan
 - Centralized CSS design tokens define typography, spacing, radius, shadows, surfaces, states, forms, buttons, badges, tables, dashboard cards, timeline, and calendar presentation.
 - Authenticated MVC pages use a responsive sidebar/topbar application shell with role-aware navigation and client-side light/dark theme preference.
 - UI regression tests cover shell rendering, theme toggle presence, role-aware navigation, login rendering, antiforgery token presence, and denied protected routes.
+- Stage 16 quality gate completed with `dotnet clean`, `dotnet restore`, `dotnet build --no-restore`, and `dotnet test --no-build`; direct test verification reported 234 passing tests.
+- Stage 16 added regression coverage for AI leap-year relative date handling and approve invalid-transition failure behavior.
 
 ## Current Stage Scope
 
-Stage 15 intentionally does not include:
+Stage 16 intentionally does not include:
 
 - Direct SQL, ad hoc query, or database execution tools.
 - Docker
@@ -116,7 +119,8 @@ Stage 15 intentionally does not include:
 - report run auditing
 - new leave business rules
 - new reporting business features
+- new product features beyond targeted quality fixes
 
 ## Next Stage
 
-Stage 16 - Comprehensive Test & Quality Gate.
+Stage 17 - Docker & Public Repository Preparation.

@@ -213,15 +213,26 @@ Completed notes:
 
 ## Phase 16 - Hardening and Release Preparation
 
-Status: planned.
+Status: completed for the Stage 16 quality gate scope.
 
 Deliverables:
 
 - Security review.
 - Integration test coverage.
 - Security test coverage.
-- CI workflow.
 - Documentation cleanup.
+
+Completed notes:
+
+- Re-ran clean, restore, build, and test quality gates with 0 build warnings, 0 build errors, and 0 failed tests.
+- Reviewed guards for forbidden data access patterns, hard-coded secrets, sensitive logging, swallowed exceptions, and sync-over-async.
+- Added targeted regression coverage for AI leap-year date handling and invalid approve transition failure behavior.
+- Local SQL smoke was attempted but blocked by unavailable local SQL/Docker SQL configuration.
+
+Deferred to Stage 17:
+
+- Docker setup.
+- CI workflow.
 - Open-source repository polish.
 - License and contribution guidance.
 

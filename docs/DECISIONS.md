@@ -661,3 +661,24 @@ Add deterministic natural-language query planning in Application before provider
 - Prompt injection cannot expand role scope, change the allowlist, or make model-provided facts authoritative.
 - Multi-tool answers remain bounded and auditable.
 - Broader language understanding, write workflows, and richer conversation memory remain future work.
+
+## ADR-0033 - Keep The Stage 16 Quality Gate Focused
+
+Date: 2026-09-01
+
+Status: accepted
+
+### Context
+
+LeaveFlow needs a pre-v1.0 regression and quality pass without introducing new product features or destabilizing the existing architecture.
+
+### Decision
+
+Use Stage 16 for targeted test review, source guard checks, clean/restore/build/test verification, and small fixes only when a real quality or regression risk is found. Do not refactor broad architecture, change stored procedure contracts, or start Docker/public repository preparation in this stage.
+
+### Consequences
+
+- The quality gate improves confidence without expanding product scope.
+- Test harness cleanup and focused regression tests are acceptable Stage 16 changes.
+- Real database smoke remains dependent on local SQL Server/Docker SQL availability and configured credentials.
+- Docker, CI, public repository polish, license, and contribution work remain Stage 17 concerns.

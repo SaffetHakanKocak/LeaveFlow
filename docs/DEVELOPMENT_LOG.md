@@ -1,5 +1,41 @@
 # Development Log
 
+## 2026-09-01 - Stage 16 Comprehensive Test & Quality Gate
+
+### Changes Made
+
+- Reviewed the existing unit, integration, and security coverage across authentication, authorization, people management, manager assignment, holidays, leave requests, approvals, conflicts, timeline, calendar, reporting, and AI.
+- Re-ran source guards for Entity Framework, `DbContext`, `CommandType.Text`, raw SQL patterns, hard-coded secrets, sensitive logging, swallowed exceptions, and sync-over-async.
+- Removed a sync-over-async call from the security test factory by adding a direct in-memory test-store helper.
+- Added targeted regression tests for AI leap-year relative date handling and approve invalid-transition failure behavior.
+- Attempted a real local SQL Server smoke check; the current machine does not have a usable local SQL Server/Docker SQL instance or configured SQL credentials.
+
+### Security Review
+
+- Production C# source remains free of Entity Framework, `DbContext`, `CommandType.Text`, raw SQL execution, generic database query tools, and sensitive prompt/tool result logging.
+- Guard matches for SQL keywords are limited to test assertions and SQL contract checks.
+- Existing security tests continue to cover authentication, CSRF, authorization, IDOR, cross-team leakage, report/calendar/timeline scoping, AI tool calling, AI role scoping, and AI hallucination/domain guards.
+- Real database least-privilege enforcement remains environment-dependent and is documented for deployment setup.
+
+### Test Results
+
+- `dotnet clean`: succeeded with 0 warnings and 0 errors.
+- `dotnet restore`: initial sandboxed run failed with NuGet `NU1301`; approved external restore succeeded.
+- `dotnet build --no-restore`: succeeded with 0 warnings and 0 errors.
+- `dotnet test --no-build`: exited successfully. Direct `dotnet vstest` verification reported 234 passing tests: Unit 73, Integration 69, Security 92.
+
+### Local SQL Smoke Test
+
+- `sqlcmd` is installed.
+- `ConnectionStrings__DefaultConnection`, `LEAVEFLOW_SQL_PASSWORD`, `LeaveFlow__Development__DemoPassword`, and AI provider environment values were not configured in the shell.
+- Docker SQL was unavailable because the Docker daemon/pipe was not accessible.
+- `MSSQLLocalDB` exists, but `sqllocaldb start MSSQLLocalDB` failed with automatic instance creation failure.
+- `sqlcmd` connection attempts to `localhost,1433` and `localhost` failed, so admin login, consultant leave create, manager approve, conflict detection, timeline, calendar, dashboard, and AI query smoke could not be completed against a real database in this environment.
+
+### Next Step
+
+Stage 17 - Docker & Public Repository Preparation. Not started.
+
 ## 2026-09-01 - Stage 15 Intelligent Workforce Queries
 
 ### Changes Made
@@ -28,7 +64,7 @@
 
 ### Next Step
 
-Stage 16 - Comprehensive Test & Quality Gate. Not started.
+Stage 16 - Comprehensive Test & Quality Gate. Completed on 2026-09-01.
 
 ## 2026-08-31 - Stage 14 Secure AI Tool Calling
 
