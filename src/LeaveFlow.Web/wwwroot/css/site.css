@@ -82,6 +82,7 @@ body {
   background: var(--lf-bg);
   font-family: var(--lf-font-sans);
   letter-spacing: 0;
+  overflow-wrap: break-word;
 }
 
 a {
@@ -138,6 +139,10 @@ a:hover {
   backdrop-filter: blur(16px);
 }
 
+.lf-topbar > .d-flex {
+  min-width: 0;
+}
+
 .lf-topbar-actions {
   display: flex;
   align-items: center;
@@ -148,6 +153,7 @@ a:hover {
   color: var(--lf-text);
   font-size: 1.35rem;
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .lf-kicker,
@@ -550,6 +556,7 @@ a:hover {
 
 .table-responsive {
   border-radius: var(--lf-radius-lg);
+  -webkit-overflow-scrolling: touch;
 }
 
 .table {
@@ -576,6 +583,7 @@ a:hover {
 .table th {
   padding: .85rem .75rem;
   vertical-align: middle;
+  overflow-wrap: anywhere;
 }
 
 .badge {
@@ -687,6 +695,8 @@ a:hover {
 .lf-timeline-wrap,
 .lf-calendar {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
 }
 
 .lf-timeline {
@@ -898,6 +908,10 @@ dl.row dd {
     padding: var(--lf-space-4);
   }
 
+  .lf-action-row {
+    justify-content: flex-start;
+  }
+
   .lf-home-grid {
     grid-template-columns: 1fr;
     max-width: 520px;
@@ -911,11 +925,13 @@ dl.row dd {
 @media (max-width: 575.98px) {
   .lf-topbar {
     flex-direction: column;
+    align-items: stretch;
   }
 
   .lf-topbar-actions {
     width: 100%;
     justify-content: space-between;
+    gap: var(--lf-space-2);
   }
 
   .lf-page-title {
@@ -923,7 +939,15 @@ dl.row dd {
   }
 
   .lf-panel {
-    padding: var(--lf-space-4);
+    padding: var(--lf-space-3);
+  }
+
+  .lf-login-card {
+    padding: var(--lf-space-5);
+  }
+
+  .lf-login-page {
+    padding: var(--lf-space-5) var(--lf-space-3);
   }
 
   .lf-public-topbar {
@@ -936,6 +960,32 @@ dl.row dd {
 
   .table td,
   .table th {
-    min-width: 132px;
+    min-width: 112px;
+    padding: .72rem .6rem;
+  }
+
+  .lf-action-row {
+    justify-content: stretch;
+  }
+
+  .lf-action-row .btn,
+  .lf-action-row form,
+  .lf-action-row form .btn {
+    width: 100%;
+  }
+
+  form > .d-flex.gap-2,
+  .lf-panel > .d-flex.gap-2,
+  .d-flex.justify-content-between.gap-2 {
+    flex-wrap: wrap;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .btn-group > .btn {
+    flex: 1 1 auto;
   }
 }
