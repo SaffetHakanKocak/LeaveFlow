@@ -240,7 +240,7 @@ a:hover {
 
 .lf-nav-link {
   min-height: 42px;
-  padding: .45rem .55rem;
+  padding: .65rem .75rem;
   border-radius: var(--lf-radius-md);
   color: var(--lf-sidebar-text);
   font-weight: 650;
@@ -267,13 +267,9 @@ a:hover {
   font-size: .72rem;
 }
 
-.lf-nav-link.active .lf-nav-icon {
-  background: var(--lf-primary-soft);
-  color: var(--lf-primary-strong);
-}
-
 .lf-nav-section {
-  margin: var(--lf-space-4) 0 var(--lf-space-1);
+  margin: var(--lf-space-4) 0 var(--lf-space-2);
+  padding-inline: .75rem;
   color: var(--lf-sidebar-muted);
 }
 
