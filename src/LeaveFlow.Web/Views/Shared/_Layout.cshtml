@@ -57,7 +57,7 @@
                     </div>
                     <div class="lf-topbar-actions">
                         <button class="btn btn-icon" type="button" data-lf-theme-toggle aria-label="Temayı değiştir" title="Temayı değiştir">
-                            <span data-lf-theme-icon aria-hidden="true">T</span>
+                            <span data-lf-theme-icon aria-hidden="true"></span>
                         </button>
                         <div class="lf-user-chip">
                             <span class="lf-user-avatar" aria-hidden="true">@userInitial</span>
@@ -93,7 +93,19 @@
 
         <div class="offcanvas offcanvas-start lf-mobile-nav" tabindex="-1" id="lfMobileNav" aria-labelledby="lfMobileNavLabel">
             <div class="offcanvas-header">
-                <h2 class="offcanvas-title h5" id="lfMobileNavLabel">@branding.ProductName</h2>
+                <h2 class="offcanvas-title h5" id="lfMobileNavLabel">
+                    <span class="lf-mobile-brand">
+                        @if (branding.HasLogo)
+                        {
+                            <img class="lf-brand-logo" src="@branding.LogoUrl" alt="" />
+                        }
+                        else
+                        {
+                            <span class="lf-brand-mark" aria-hidden="true">@branding.BrandMarkText</span>
+                        }
+                        <span>@branding.ProductName</span>
+                    </span>
+                </h2>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Menüyü kapat"></button>
             </div>
             <div class="offcanvas-body">
@@ -117,7 +129,12 @@
                     <span class="lf-brand-name">@branding.ProductName</span>
                 </span>
             </a>
-            <a class="btn btn-primary btn-sm px-3" asp-controller="Account" asp-action="Login">Giriş yap</a>
+            <div class="lf-public-actions">
+                <button class="btn btn-icon" type="button" data-lf-theme-toggle aria-label="Temayı değiştir" title="Temayı değiştir">
+                    <span data-lf-theme-icon aria-hidden="true"></span>
+                </button>
+                <a class="btn btn-primary btn-sm px-3" asp-controller="Account" asp-action="Login">Giriş yap</a>
+            </div>
         </header>
         <main role="main" class="lf-public-main">
             @RenderBody()

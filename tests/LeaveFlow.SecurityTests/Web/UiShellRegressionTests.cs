@@ -31,7 +31,7 @@ public sealed class UiShellRegressionTests : IClassFixture<LeaveFlowWebFactory>
     }
 
     [Fact]
-    public async Task LoginPage_Should_RenderDefaultBranding_WithTextFallback()
+    public async Task LoginPage_Should_RenderDefaultLogoBranding()
     {
         using var client = CreateClient();
 
@@ -40,8 +40,9 @@ public sealed class UiShellRegressionTests : IClassFixture<LeaveFlowWebFactory>
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Contains("LeaveFlow'a giriş yap", html);
-        Assert.Contains("LF</span>", html);
-        Assert.DoesNotContain("lf-login-logo", html);
+        Assert.Contains("lf-login-logo", html);
+        Assert.Contains("/images/leaveflow.png", html);
+        Assert.Contains("data-lf-theme-toggle", html);
     }
 
     [Fact]
