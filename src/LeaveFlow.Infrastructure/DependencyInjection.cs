@@ -7,12 +7,14 @@ using LeaveFlow.Application.Abstractions.LeaveRequests;
 using LeaveFlow.Application.Abstractions.People;
 using LeaveFlow.Application.Abstractions.Reporting;
 using LeaveFlow.Application.Abstractions.Timeline;
+using LeaveFlow.Application.Ai;
 using LeaveFlow.Infrastructure.Ai;
 using LeaveFlow.Infrastructure.Identity;
 using LeaveFlow.Infrastructure.Persistence.Repositories;
 using LeaveFlow.Infrastructure.Persistence.SqlServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace LeaveFlow.Infrastructure;
 
@@ -42,7 +44,21 @@ public static class DependencyInjection
         services.AddSingleton<IDbConnectionFactory>(_ => new SqlServerConnectionFactory(connectionString));
         services.AddSingleton<IDataTransactionFactory>(_ => new SqlDataTransactionFactory(connectionString));
         services.AddSingleton<IPasswordHashingService, AspNetPasswordHashingService>();
-        services.AddScoped<IAiChatClient, AzureAiChatClient>();
+        services.AddScoped<AzureAiChatClient>();
+        services.AddScoped<GroqAiChatClient>();
+        services.AddScoped<IAiChatClient>(serviceProvider =>
+        {
+            var provider = serviceProvider.GetRequiredService<IOptions<AiOptions>>().Value.Provider;
+            return provider switch
+            {
+                var value when string.Equals(value, "Groq", StringComparison.OrdinalIgnoreCase) =>
+                    serviceProvider.GetRequiredService<GroqAiChatClient>(),
+                var value when string.Equals(value, "Azure", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(value, "AzureOpenAI", StringComparison.OrdinalIgnoreCase) =>
+                    serviceProvider.GetRequiredService<AzureAiChatClient>(),
+                _ => throw new InvalidOperationException("Configured AI provider is not supported.")
+            };
+        });
         services.AddScoped<IRoleReadRepository, RoleReadRepository>();
         services.AddScoped<IUserReadRepository, UserReadRepository>();
         services.AddScoped<IUserAuthRepository, UserAuthRepository>();

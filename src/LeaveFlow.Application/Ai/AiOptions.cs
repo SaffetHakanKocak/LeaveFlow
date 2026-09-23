@@ -13,6 +13,8 @@ public sealed class AiOptions
     public int TimeoutSeconds { get; set; } = 15;
 
     public AzureAiOptions Azure { get; set; } = new();
+
+    public GroqAiOptions Groq { get; set; } = new();
 }
 
 public sealed class AzureAiOptions
@@ -24,4 +26,15 @@ public sealed class AzureAiOptions
     public string? ApiKey { get; set; }
 
     public string ApiVersion { get; set; } = "2024-02-15-preview";
+}
+
+public sealed class GroqAiOptions
+{
+    public string BaseUrl { get; set; } = "https://api.groq.com/openai/v1";
+
+    public string Model { get; set; } = "openai/gpt-oss-20b";
+
+    public string? ApiKey { get; set; }
+
+    public int MaxCompletionTokens { get; set; } = 900;
 }
