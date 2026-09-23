@@ -9,7 +9,7 @@ BEGIN
     SELECT
         N'Leave' AS EventType,
         cld.LeaveRequestId AS EventId,
-        N'My leave' AS Title,
+        N'İznim' AS Title,
         cld.LeaveDate AS EventDate,
         cld.ConsultantId,
         CAST(NULL AS nvarchar(161)) AS ConsultantName,

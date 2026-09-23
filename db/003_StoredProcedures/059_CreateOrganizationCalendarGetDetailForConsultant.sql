@@ -11,7 +11,7 @@ BEGIN
         SELECT
             N'Leave' AS EventType,
             lr.Id AS EventId,
-            N'My leave' AS Title,
+            N'İznim' AS Title,
             lr.StartDate,
             lr.EndDate,
             lr.ConsultantId,

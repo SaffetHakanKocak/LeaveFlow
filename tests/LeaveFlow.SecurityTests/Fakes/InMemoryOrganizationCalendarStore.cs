@@ -119,7 +119,7 @@ public sealed class InMemoryOrganizationCalendarStore : IOrganizationCalendarRep
                 rows.Add(new OrganizationCalendarDataRow(
                     CalendarEventTypes.Leave,
                     leave.Id,
-                    includeConsultantNames ? $"{consultant.Name} leave" : "My leave",
+                    includeConsultantNames ? $"{consultant.Name} leave" : "İznim",
                     day,
                     consultant.Id,
                     includeConsultantNames ? consultant.Name : null,
@@ -150,7 +150,7 @@ public sealed class InMemoryOrganizationCalendarStore : IOrganizationCalendarRep
             return new CalendarEventDetail(
                 CalendarEventTypes.Leave,
                 leave.Id,
-                includeConsultantName ? $"{consultant.Name} leave" : "My leave",
+                includeConsultantName ? $"{consultant.Name} leave" : "İznim",
                 leave.StartDate,
                 leave.EndDate,
                 leave.ConsultantId,

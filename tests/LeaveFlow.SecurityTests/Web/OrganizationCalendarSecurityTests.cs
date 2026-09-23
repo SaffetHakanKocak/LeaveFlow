@@ -31,10 +31,10 @@ public sealed class OrganizationCalendarSecurityTests : IClassFixture<LeaveFlowW
         _ = await LoginAsync(client, _factory.ConsultantOneEmail, LeaveFlowWebFactory.Password);
 
         using var response = await client.GetAsync("/OrganizationCalendar?startDate=2026-09-01&endDate=2026-09-30");
-        var html = await response.Content.ReadAsStringAsync();
+        var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("My leave", html);
+        Assert.Contains("İznim", html);
         Assert.Contains("Company Calendar Day", html);
         Assert.Contains("Public Calendar Day", html);
         Assert.DoesNotContain("Consultant Two", html);
@@ -48,10 +48,10 @@ public sealed class OrganizationCalendarSecurityTests : IClassFixture<LeaveFlowW
         _ = await LoginAsync(client, _factory.ConsultantOneEmail, LeaveFlowWebFactory.Password);
 
         using var response = await client.GetAsync($"/OrganizationCalendar/Details?eventType=Leave&eventId={_factory.CalendarConsultantOneLeaveId}");
-        var html = await response.Content.ReadAsStringAsync();
+        var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("My leave", html);
+        Assert.Contains("İznim", html);
         Assert.Contains("Calendar manager one visible leave", html);
         Assert.DoesNotContain("Consultant Two", html);
     }
@@ -63,7 +63,7 @@ public sealed class OrganizationCalendarSecurityTests : IClassFixture<LeaveFlowW
         _ = await LoginAsync(client, _factory.ManagerOneEmail, LeaveFlowWebFactory.Password);
 
         using var response = await client.GetAsync("/OrganizationCalendar?startDate=2026-09-01&endDate=2026-09-30");
-        var html = await response.Content.ReadAsStringAsync();
+        var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Contains("Consultant One leave", html);
@@ -80,10 +80,10 @@ public sealed class OrganizationCalendarSecurityTests : IClassFixture<LeaveFlowW
         _ = await LoginAsync(client, _factory.ConsultantOneEmail, LeaveFlowWebFactory.Password);
 
         using var response = await client.GetAsync($"/OrganizationCalendar?startDate=2026-09-01&endDate=2026-09-30&consultantId={_factory.ConsultantTwoId}&managerId={_factory.ManagerTwoId}");
-        var html = await response.Content.ReadAsStringAsync();
+        var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("My leave", html);
+        Assert.Contains("İznim", html);
         Assert.DoesNotContain("Consultant Two", html);
         Assert.DoesNotContain("Calendar manager two hidden leave", html);
     }

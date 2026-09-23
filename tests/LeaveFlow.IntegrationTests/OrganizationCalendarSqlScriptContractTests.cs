@@ -33,7 +33,7 @@ public sealed class OrganizationCalendarSqlScriptContractTests
         var sql = ReadStoredProcedure("056_CreateOrganizationCalendarGetForConsultant.sql");
 
         Assert.Contains("cld.ConsultantId = @ConsultantId", sql, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("N'My leave' AS Title", sql, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("N'İznim' AS Title", sql, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("CAST(NULL AS nvarchar(161)) AS ConsultantName", sql, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -65,6 +65,7 @@ public sealed class OrganizationCalendarSqlScriptContractTests
         var sql = ReadStoredProcedure("059_CreateOrganizationCalendarGetDetailForConsultant.sql");
 
         Assert.Contains("lr.ConsultantId = @ConsultantId", sql, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("N'İznim' AS Title", sql, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("CAST(NULL AS nvarchar(161)) AS ConsultantName", sql, StringComparison.OrdinalIgnoreCase);
     }
 
