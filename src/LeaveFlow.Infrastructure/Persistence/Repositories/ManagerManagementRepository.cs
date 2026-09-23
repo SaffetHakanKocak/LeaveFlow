@@ -68,14 +68,14 @@ public sealed class ManagerManagementRepository(IDbConnectionFactory connectionF
         var parameters = CreateParameters(input);
         parameters.Add("ManagerId", managerId, DbType.Guid);
 
-        var affected = await connection.ExecuteAsync(
+        await connection.ExecuteAsync(
             new CommandDefinition(
                 StoredProcedureNames.ManagersUpdate,
                 parameters,
                 commandType: CommandType.StoredProcedure,
                 cancellationToken: cancellationToken));
 
-        return affected > 0;
+        return await ExistsAsync(connection, managerId, cancellationToken);
     }
 
     public async Task<bool> SetActiveAsync(Guid managerId, bool isActive, CancellationToken cancellationToken = default)
@@ -86,14 +86,14 @@ public sealed class ManagerManagementRepository(IDbConnectionFactory connectionF
         parameters.Add("ManagerId", managerId, DbType.Guid);
         parameters.Add("IsActive", isActive, DbType.Boolean);
 
-        var affected = await connection.ExecuteAsync(
+        await connection.ExecuteAsync(
             new CommandDefinition(
                 StoredProcedureNames.ManagersSetActive,
                 parameters,
                 commandType: CommandType.StoredProcedure,
                 cancellationToken: cancellationToken));
 
-        return affected > 0;
+        return await ExistsAsync(connection, managerId, cancellationToken);
     }
 
     private static DynamicParameters CreateParameters(ManagerInput input)
@@ -105,5 +105,20 @@ public sealed class ManagerManagementRepository(IDbConnectionFactory connectionF
         parameters.Add("Department", string.IsNullOrWhiteSpace(input.Department) ? null : input.Department.Trim(), DbType.String, size: 120);
         parameters.Add("IsActive", input.IsActive, DbType.Boolean);
         return parameters;
+    }
+
+    private static async Task<bool> ExistsAsync(IDbConnection connection, Guid managerId, CancellationToken cancellationToken)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("ManagerId", managerId, DbType.Guid);
+
+        var id = await connection.QuerySingleOrDefaultAsync<Guid?>(
+            new CommandDefinition(
+                StoredProcedureNames.ManagersGetById,
+                parameters,
+                commandType: CommandType.StoredProcedure,
+                cancellationToken: cancellationToken));
+
+        return id.HasValue;
     }
 }

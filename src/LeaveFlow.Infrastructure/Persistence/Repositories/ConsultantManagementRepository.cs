@@ -68,14 +68,14 @@ public sealed class ConsultantManagementRepository(IDbConnectionFactory connecti
         var parameters = CreateParameters(input);
         parameters.Add("ConsultantId", consultantId, DbType.Guid);
 
-        var affected = await connection.ExecuteAsync(
+        await connection.ExecuteAsync(
             new CommandDefinition(
                 StoredProcedureNames.ConsultantsUpdate,
                 parameters,
                 commandType: CommandType.StoredProcedure,
                 cancellationToken: cancellationToken));
 
-        return affected > 0;
+        return await ExistsAsync(connection, consultantId, cancellationToken);
     }
 
     public async Task<bool> SetActiveAsync(Guid consultantId, bool isActive, CancellationToken cancellationToken = default)
@@ -86,14 +86,14 @@ public sealed class ConsultantManagementRepository(IDbConnectionFactory connecti
         parameters.Add("ConsultantId", consultantId, DbType.Guid);
         parameters.Add("IsActive", isActive, DbType.Boolean);
 
-        var affected = await connection.ExecuteAsync(
+        await connection.ExecuteAsync(
             new CommandDefinition(
                 StoredProcedureNames.ConsultantsSetActive,
                 parameters,
                 commandType: CommandType.StoredProcedure,
                 cancellationToken: cancellationToken));
 
-        return affected > 0;
+        return await ExistsAsync(connection, consultantId, cancellationToken);
     }
 
     private static DynamicParameters CreateParameters(ConsultantInput input)
@@ -107,5 +107,20 @@ public sealed class ConsultantManagementRepository(IDbConnectionFactory connecti
         parameters.Add("StartDate", input.StartDate, DbType.Date);
         parameters.Add("IsActive", input.IsActive, DbType.Boolean);
         return parameters;
+    }
+
+    private static async Task<bool> ExistsAsync(IDbConnection connection, Guid consultantId, CancellationToken cancellationToken)
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("ConsultantId", consultantId, DbType.Guid);
+
+        var id = await connection.QuerySingleOrDefaultAsync<Guid?>(
+            new CommandDefinition(
+                StoredProcedureNames.ConsultantsGetById,
+                parameters,
+                commandType: CommandType.StoredProcedure,
+                cancellationToken: cancellationToken));
+
+        return id.HasValue;
     }
 }
