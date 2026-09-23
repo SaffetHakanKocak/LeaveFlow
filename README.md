@@ -1,8 +1,8 @@
 # LeaveFlow
 
-LeaveFlow is a v1.0 release candidate workforce leave, approval, calendar, reporting, and guarded AI assistant platform built as a public portfolio-ready .NET project.
+LeaveFlow is a v1.0.0 release candidate workforce leave, approval, calendar, reporting, and guarded AI assistant platform built as a public portfolio-ready .NET project.
 
-It demonstrates ASP.NET Core MVC/Web API, .NET 10, SQL Server, Dapper, stored-procedure-only data access, RBAC, object-level authorization, workforce calendar/timeline/reporting, secure Azure AI tool calling, Docker-based local SQL Server, and 240+ automated tests.
+It demonstrates ASP.NET Core MVC/Web API, .NET 10, SQL Server, Dapper, stored-procedure-only data access, RBAC, object-level authorization, workforce calendar/timeline/reporting, secure Azure AI tool calling, Docker-based local SQL Server, GitHub Actions CI, and 240 automated tests.
 
 ## Features
 
@@ -16,6 +16,7 @@ It demonstrates ASP.NET Core MVC/Web API, .NET 10, SQL Server, Dapper, stored-pr
 - Optional AI assistant with deterministic LeaveFlow workforce query planning.
 - White-label UI branding through configuration.
 - Light/dark MVC application shell.
+- API host foundation with health checks, development OpenAPI, centralized error handling, and a protected sample endpoint.
 
 ## Architecture
 
@@ -55,6 +56,8 @@ db/
   002_Indexes/
   003_StoredProcedures/
   004_Seed/
+  005_Security/
+  006_TestData/
 docs/
 ```
 
@@ -146,6 +149,19 @@ db/003_StoredProcedures
 db/004_Seed
 ```
 
+`db/005_Security` contains the least-privilege application user script for deployment hardening. `db/006_TestData` is reserved for optional local/demo data and is not part of the default setup script.
+
+## API Host
+
+`LeaveFlow.Api` is available as a foundation for programmatic access:
+
+- `GET /health` exposes the health check endpoint.
+- Development OpenAPI is mapped by the host.
+- Protected routes use a deferred authentication scheme so anonymous callers receive `401`.
+- `GET /api/secure/ping` exists as a protected sample endpoint for authorization tests.
+
+JWT/token authentication and full product API workflows are intentionally deferred.
+
 ## Development Demo Users
 
 When `ASPNETCORE_ENVIRONMENT=Development`, `LeaveFlow:Development:BootstrapIdentity=true`, and a demo password is configured, the web app creates or updates:
@@ -214,7 +230,7 @@ Current automated suite: 240 tests across unit, integration, and security projec
 
 ## Roadmap Status
 
-Stages 0 through 19 are complete for the v1.0 release candidate. The remaining release activity is the manual real-database smoke checklist in `docs/RELEASE_CHECKLIST.md`.
+Stages 0 through 19 are complete for the v1.0.0 release candidate. The remaining release activity is the manual real-database smoke checklist in `docs/RELEASE_CHECKLIST.md`.
 
 ## Known Limitations
 
