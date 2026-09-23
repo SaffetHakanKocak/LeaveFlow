@@ -48,7 +48,6 @@ else
         @foreach (var metric in Model.Reports.SummaryMetrics)
         {
             <article class="lf-metric-card">
-                <span class="lf-nav-icon mb-3" aria-hidden="true">@metric.Label[0]</span>
                 <span>@metric.Label</span>
                 <strong>@metric.Value</strong>
             </article>

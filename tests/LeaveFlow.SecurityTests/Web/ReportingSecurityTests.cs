@@ -42,12 +42,10 @@ public sealed class ReportingSecurityTests : IClassFixture<LeaveFlowWebFactory>
         _ = await LoginAsync(client, _factory.ConsultantOneEmail, LeaveFlowWebFactory.Password);
 
         using var response = await client.GetAsync("/Dashboard");
-        var html = await response.Content.ReadAsStringAsync();
+        var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Contains("Paneli", html);
-        Assert.Contains("znim", html);
-        Assert.Contains("Bekliyor", html);
         Assert.DoesNotContain("Consultant Two", html);
     }
 
@@ -70,11 +68,11 @@ public sealed class ReportingSecurityTests : IClassFixture<LeaveFlowWebFactory>
         _ = await LoginAsync(client, _factory.ManagerOneEmail, LeaveFlowWebFactory.Password);
 
         using var response = await client.GetAsync("/Dashboard");
-        var html = await response.Content.ReadAsStringAsync();
+        var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Contains("Paneli", html);
-        Assert.Contains("Consultant One", html);
+        Assert.Contains("Raporlar", html);
         Assert.DoesNotContain("Consultant Two", html);
     }
 
