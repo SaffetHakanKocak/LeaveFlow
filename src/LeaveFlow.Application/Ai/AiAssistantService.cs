@@ -32,7 +32,7 @@ public sealed class AiAssistantService(
 
         if (input.UserId == Guid.Empty)
         {
-            return AiAssistantResult.Failure("Kullanici oturumu dogrulanamadi.");
+            return AiAssistantResult.Failure("Kullanıcı oturumu doğrulanamadı.");
         }
 
         if (string.IsNullOrWhiteSpace(input.Prompt))
@@ -55,12 +55,12 @@ public sealed class AiAssistantService(
                 DateOnly.FromDateTime(timeProvider.GetLocalNow().DateTime));
             if (localPlan.Status == AiWorkforceQueryPlanStatus.OutOfDomain)
             {
-                return AiAssistantResult.Success("Bu asistan yalnizca LeaveFlow izin, ekip uygunlugu, tatil ve raporlama sorularini yanitlar.");
+                return AiAssistantResult.Success("Bu asistan yalnızca LeaveFlow izin, ekip uygunluğu, tatil ve raporlama sorularını yanıtlar.");
             }
 
             if (localPlan.Status == AiWorkforceQueryPlanStatus.NeedsClarification)
             {
-                return AiAssistantResult.Success(localPlan.ClarificationMessage ?? "Lutfen tarih araligini veya kapsami netlestirin.");
+                return AiAssistantResult.Success(localPlan.ClarificationMessage ?? "Lütfen tarih aralığını veya kapsamı netleştirin.");
             }
 
             if (localPlan.Status == AiWorkforceQueryPlanStatus.Ready)
@@ -106,18 +106,18 @@ public sealed class AiAssistantService(
             }
 
             return string.IsNullOrWhiteSpace(response.Message)
-                ? AiAssistantResult.Failure("AI Asistan bos yanit dondurdu.")
+                ? AiAssistantResult.Failure("AI Asistan boş yanıt döndürdü.")
                 : AiAssistantResult.Success(response.Message.Trim(), usedTools.Distinct(StringComparer.Ordinal).ToArray());
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
             logger.LogWarning("AI assistant request timed out for user {UserId}.", input.UserId);
-            return AiAssistantResult.Failure("AI Asistan zaman asimina ugradi. Lutfen tekrar deneyin.");
+            return AiAssistantResult.Failure("AI Asistan zaman aşımına uğradı. Lütfen tekrar deneyin.");
         }
         catch (Exception exception)
         {
             logger.LogWarning(exception, "AI assistant request failed for user {UserId}.", input.UserId);
-            return AiAssistantResult.Failure("AI Asistan su anda yanit veremiyor. Lutfen daha sonra tekrar deneyin.");
+            return AiAssistantResult.Failure("AI Asistan şu anda yanıt veremiyor. Lütfen daha sonra tekrar deneyin.");
         }
     }
 
@@ -188,10 +188,10 @@ public sealed class AiAssistantService(
     {
         return errorCode switch
         {
-            "Unauthorized" => "Bu soru mevcut yetki kapsaminizda yanitlanamiyor.",
-            "InvalidDateRange" => "Tarih araligi desteklenen sinirin disinda.",
-            "InvalidArguments" => "Bu soruyu yanitlamak icin tarih veya filtre bilgisi net degil.",
-            _ => "Gerekli LeaveFlow verisi su anda alinamadi. Lutfen daha sonra tekrar deneyin."
+            "Unauthorized" => "Bu soru mevcut yetki kapsamınızda yanıtlanamıyor.",
+            "InvalidDateRange" => "Tarih aralığı desteklenen sınırın dışında.",
+            "InvalidArguments" => "Bu soruyu yanıtlamak için tarih veya filtre bilgisi net değil.",
+            _ => "Gerekli LeaveFlow verisi şu anda alınamadı. Lütfen daha sonra tekrar deneyin."
         };
     }
 
@@ -270,7 +270,7 @@ internal static partial class AiWorkforceQueryPlanner
     private static readonly string[] DomainTerms =
     [
         "izin", "müsait", "musait", "uygun", "takim", "takım", "ekip", "tatil",
-        "resmi", "onay", "redd", "red", "çakış", "cakis", "yogun", "yoğun"
+        "resmi", "onay", "redd", "red", "çakış", "cakis", "yogun", "yoğun", "rapor"
     ];
 
     public static AiWorkforceQueryPlan CreatePlan(string prompt, DateOnly today)
@@ -305,7 +305,7 @@ internal static partial class AiWorkforceQueryPlanner
         {
             if (range is null)
             {
-                return AiWorkforceQueryPlan.Clarify("Cakisma kontrolu icin tarih araligini belirtin.");
+                return AiWorkforceQueryPlan.Clarify("Çakışma kontrolü için tarih aralığını belirtin.");
             }
 
             return Ready(AiWorkforceQueryIntent.LeaveConflicts, range.Value, "GetTeamAvailability");
@@ -315,7 +315,7 @@ internal static partial class AiWorkforceQueryPlanner
         {
             if (range is null)
             {
-                return AiWorkforceQueryPlan.Clarify("Uygunluk sorusu icin tarih araligini belirtin.");
+                return AiWorkforceQueryPlan.Clarify("Uygunluk sorusu için tarih aralığını belirtin.");
             }
 
             return Ready(AiWorkforceQueryIntent.TeamAvailability, range.Value, "GetTeamAvailability");
@@ -343,7 +343,7 @@ internal static partial class AiWorkforceQueryPlanner
         {
             if (range is null && !mentionsDate)
             {
-                return AiWorkforceQueryPlan.Clarify("Kimlerin izinli oldugunu yanitlamak icin tarih araligini belirtin.");
+                return AiWorkforceQueryPlan.Clarify("Kimlerin izinli olduğunu yanıtlamak için tarih aralığını belirtin.");
             }
 
             return Ready(AiWorkforceQueryIntent.UpcomingLeaves, range!.Value, "GetUpcomingLeaves");
@@ -408,12 +408,22 @@ internal static partial class AiWorkforceQueryPlanner
         {
             var startDay = int.Parse(match.Groups["start"].Value);
             var endDay = int.Parse(match.Groups["end"].Value);
-            if (DateOnly.TryParse($"{today.Year}-{month:00}-{startDay:00}", out var start)
-                && DateOnly.TryParse($"{today.Year}-{month:00}-{endDay:00}", out var end)
+            var year = int.TryParse(match.Groups["year"].Value, out var parsedYear) ? parsedYear : today.Year;
+            if (DateOnly.TryParse($"{year}-{month:00}-{startDay:00}", out var start)
+                && DateOnly.TryParse($"{year}-{month:00}-{endDay:00}", out var end)
                 && start <= end)
             {
                 return (start, end);
             }
+        }
+
+        var monthYearMatch = MonthYearRegex().Match(normalized);
+        if (monthYearMatch.Success
+            && TryParseTurkishMonth(monthYearMatch.Groups["month"].Value, out var specifiedMonth)
+            && int.TryParse(monthYearMatch.Groups["year"].Value, out var specifiedYear)
+            && specifiedYear is >= 1 and <= 9999)
+        {
+            return MonthRange(new DateOnly(specifiedYear, specifiedMonth, 1));
         }
 
         return null;
@@ -458,7 +468,10 @@ internal static partial class AiWorkforceQueryPlanner
 
     private static string Normalize(string value)
     {
-        return value.Trim().ToLowerInvariant()
+        return value.Trim()
+            .Replace('İ', 'i')
+            .Replace('I', 'i')
+            .ToLowerInvariant()
             .Replace('ı', 'i')
             .Replace('ğ', 'g')
             .Replace('ü', 'u')
@@ -467,8 +480,11 @@ internal static partial class AiWorkforceQueryPlanner
             .Replace('ç', 'c');
     }
 
-    [GeneratedRegex(@"(?<start>\d{1,2})\s*[-/]\s*(?<end>\d{1,2})\s+(?<month>ocak|subat|şubat|mart|nisan|mayis|mayıs|haziran|temmuz|agustos|ağustos|eylul|eylül|ekim|kasim|kasım|aralik|aralık)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"(?<start>\d{1,2})\s*[-/]\s*(?<end>\d{1,2})\s+(?<month>ocak|subat|şubat|mart|nisan|mayis|mayıs|haziran|temmuz|agustos|ağustos|eylul|eylül|ekim|kasim|kasım|aralik|aralık)(?:\s+(?<year>\d{4}))?", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex DayRangeRegex();
+
+    [GeneratedRegex(@"(?<month>ocak|subat|şubat|mart|nisan|mayis|mayıs|haziran|temmuz|agustos|ağustos|eylul|eylül|ekim|kasim|kasım|aralik|aralık)\s+(?<year>\d{4})", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex MonthYearRegex();
 }
 
 internal static class AiWorkforceQueryAnswerFormatter
@@ -486,7 +502,7 @@ internal static class AiWorkforceQueryAnswerFormatter
             AiWorkforceQueryIntent.UpcomingHoliday => FormatUpcomingHoliday(first),
             AiWorkforceQueryIntent.MyLeaveSummary => FormatMyLeaveSummary(plan, first),
             AiWorkforceQueryIntent.TeamLeaveSummary => FormatTeamLeaveSummary(plan, results),
-            _ => "Bu LeaveFlow sorusu icin uygun bir yanit hazirlanamadi."
+            _ => "Bu LeaveFlow sorusu için uygun bir yanıt hazırlanamadı."
         };
     }
 
@@ -506,7 +522,7 @@ internal static class AiWorkforceQueryAnswerFormatter
 
         return names.Length == 0
             ? RangeNoData(plan)
-            : $"{FormatRange(plan)} izinli kisiler: {string.Join(", ", names)}.";
+            : $"{FormatRange(plan)} izinli kişiler: {string.Join(", ", names)}.";
     }
 
     private static string FormatTeamAvailability(AiWorkforceQueryPlan plan, JsonElement data)
@@ -519,7 +535,7 @@ internal static class AiWorkforceQueryAnswerFormatter
 
         var onLeave = consultants.Count(item => GetArray(item, "leaveDays").Count > 0);
         var available = Math.Max(0, GetInt(data, "totalCount") - onLeave);
-        return $"{FormatRange(plan)} ekipte {available} kisi musait, {onLeave} kisi izinli gorunuyor.";
+        return $"{FormatRange(plan)} ekipte {available} kişi müsait, {onLeave} kişi izinli görünüyor.";
     }
 
     private static string FormatConflicts(AiWorkforceQueryPlan plan, JsonElement data)
@@ -534,11 +550,11 @@ internal static class AiWorkforceQueryAnswerFormatter
 
         if (dayCounts.Length == 0)
         {
-            return $"{FormatRange(plan)} izin cakismasi bulunmadi.";
+            return $"{FormatRange(plan)} izin çakışması bulunmadı.";
         }
 
         var top = dayCounts[0];
-        return $"{FormatRange(plan)} izin cakismasi var. En yogun cakisma {top.Key:yyyy-MM-dd} tarihinde {top.Count()} kisi ile gorunuyor.";
+        return $"{FormatRange(plan)} izin çakışması var. En yoğun çakışma {top.Key:yyyy-MM-dd} tarihinde {top.Count()} kişi ile görünüyor.";
     }
 
     private static string FormatPeakDay(AiWorkforceQueryPlan plan, JsonElement data)
@@ -554,7 +570,7 @@ internal static class AiWorkforceQueryAnswerFormatter
             .ThenBy(item => GetDate(item, "leaveDate"))
             .First();
 
-        return $"{FormatRange(plan)} en yogun izin gunu {GetDate(top, "leaveDate"):yyyy-MM-dd}; {GetInt(top, "consultantCount")} kisi izinli.";
+        return $"{FormatRange(plan)} en yoğun izin günü {GetDate(top, "leaveDate"):yyyy-MM-dd}; {GetInt(top, "consultantCount")} kişi izinli.";
     }
 
     private static string FormatStatusCounts(AiWorkforceQueryPlan plan, JsonElement data)
@@ -567,7 +583,7 @@ internal static class AiWorkforceQueryAnswerFormatter
 
         var approved = SumStatus(statuses, "Approved");
         var rejected = SumStatus(statuses, "Rejected");
-        return $"{FormatRange(plan)} {approved} izin talebi onaylandi, {rejected} izin talebi reddedildi.";
+        return $"{FormatRange(plan)} {approved} izin talebi onaylandı, {rejected} izin talebi reddedildi.";
     }
 
     private static string FormatUpcomingHoliday(JsonElement data)
@@ -575,14 +591,14 @@ internal static class AiWorkforceQueryAnswerFormatter
         var holidays = GetArray(data, "holidays");
         if (holidays.Count == 0)
         {
-            return "Yaklasan resmi tatil kaydi bulunamadi.";
+            return "Yaklaşan resmi tatil kaydı bulunamadı.";
         }
 
         var next = holidays
             .OrderBy(item => GetDate(item, "startDate"))
             .First();
 
-        return $"Yaklasan tatil {GetString(next, "name")} tarihinde basliyor: {GetDate(next, "startDate"):yyyy-MM-dd}.";
+        return $"Yaklaşan tatil {GetString(next, "name")} tarihinde başlıyor: {GetDate(next, "startDate"):yyyy-MM-dd}.";
     }
 
     private static string FormatMyLeaveSummary(AiWorkforceQueryPlan plan, JsonElement data)
@@ -596,7 +612,7 @@ internal static class AiWorkforceQueryAnswerFormatter
         var approved = requests.Count(item => IsStatus(item, "Approved"));
         var pending = requests.Count(item => IsStatus(item, "Pending"));
         var rejected = requests.Count(item => IsStatus(item, "Rejected"));
-        return $"{FormatRange(plan)} kendi izin talepleriniz: {approved} onayli, {pending} bekleyen, {rejected} reddedilmis.";
+        return $"{FormatRange(plan)} kendi izin talepleriniz: {approved} onaylı, {pending} bekleyen, {rejected} reddedilmiş.";
     }
 
     private static string FormatTeamLeaveSummary(AiWorkforceQueryPlan plan, IReadOnlyList<AiPlannedToolResult> results)
@@ -614,7 +630,7 @@ internal static class AiWorkforceQueryAnswerFormatter
             return RangeNoData(plan);
         }
 
-        return $"{FormatRange(plan)} ekip izin ozeti: {onLeave} kisi en az bir gun izinli, toplam {approvedDays} onayli izin gunu gorunuyor.";
+        return $"{FormatRange(plan)} ekip izin özeti: {onLeave} kişi en az bir gün izinli, toplam {approvedDays} onaylı izin günü görünüyor.";
     }
 
     private static IReadOnlyList<JsonElement> GetArray(JsonElement element, string propertyName)
@@ -648,8 +664,8 @@ internal static class AiWorkforceQueryAnswerFormatter
         string.Equals(GetString(item, "status"), status, StringComparison.OrdinalIgnoreCase);
 
     private static string FormatRange(AiWorkforceQueryPlan plan) => plan.StartDate == plan.EndDate
-        ? $"{plan.StartDate:yyyy-MM-dd} icin"
-        : $"{plan.StartDate:yyyy-MM-dd} - {plan.EndDate:yyyy-MM-dd} araliginda";
+        ? $"{plan.StartDate:yyyy-MM-dd} için"
+        : $"{plan.StartDate:yyyy-MM-dd} - {plan.EndDate:yyyy-MM-dd} aralığında";
 
-    private static string RangeNoData(AiWorkforceQueryPlan plan) => $"{FormatRange(plan)} kayit bulunamadi.";
+    private static string RangeNoData(AiWorkforceQueryPlan plan) => $"{FormatRange(plan)} kayıt bulunamadı.";
 }

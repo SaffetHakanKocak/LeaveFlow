@@ -6,14 +6,14 @@
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
     <div>
         <h1 class="h3 mb-1">AI Asistan</h1>
-        <p class="text-secondary mb-0">Genel izin yonetimi sorulari icin guvenli sohbet alani.</p>
+        <p class="text-secondary mb-0">Genel izin yönetimi soruları için güvenli sohbet alanı.</p>
     </div>
 </div>
 
 @if (!Model.IsEnabled)
 {
     <section class="lf-panel">
-        <div class="lf-empty-state text-secondary">AI Asistan su anda kapali.</div>
+        <div class="lf-empty-state text-secondary">AI Asistan şu anda kapalı.</div>
     </section>
 }
 else
@@ -27,11 +27,11 @@ else
                 <div class="form-text">En fazla @Model.MaxPromptLength karakter.</div>
                 <span asp-validation-for="Prompt" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary" data-ai-submit>Gonder</button>
+            <button type="submit" class="btn btn-primary" data-ai-submit>Gönder</button>
         </form>
 
         <div class="alert alert-info mt-3 d-none" role="status" aria-live="polite" data-ai-loading>
-            Yanit hazirlaniyor...
+            Yanıt hazırlanıyor...
         </div>
 
         @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
@@ -42,7 +42,7 @@ else
         @if (!string.IsNullOrWhiteSpace(Model.Response))
         {
             <div class="lf-ai-response mt-3">
-                <h2 class="h5 mb-2">Yanit</h2>
+                <h2 class="h5 mb-2">Yanıt</h2>
                 <p class="mb-0">@Model.Response</p>
             </div>
         }
@@ -50,7 +50,7 @@ else
         @if (Model.UsedTools.Count > 0)
         {
             <div class="text-secondary small mt-2">
-                Kullanilan guvenli arac sayisi: @Model.UsedTools.Count
+                Kullanılan güvenli araç sayısı: @Model.UsedTools.Count
             </div>
         }
     </section>

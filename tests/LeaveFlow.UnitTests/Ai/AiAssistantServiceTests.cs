@@ -59,7 +59,7 @@ public sealed class AiAssistantServiceTests
 
         Assert.False(result.Succeeded);
         Assert.True(result.IsEnabled);
-        Assert.Equal("AI Asistan su anda yanit veremiyor. Lutfen daha sonra tekrar deneyin.", result.ErrorMessage);
+        Assert.Equal("AI Asistan şu anda yanıt veremiyor. Lütfen daha sonra tekrar deneyin.", result.ErrorMessage);
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public sealed class AiAssistantServiceTests
         Assert.Equal(userId, tool.LastContext?.UserId);
         Assert.Equal("Unauthorized", tool.LastResult?.ErrorCode);
         Assert.False(client.WasCalled);
-        Assert.Equal("Bu soru mevcut yetki kapsaminizda yanitlanamiyor.", result.Message);
+        Assert.Equal("Bu soru mevcut yetki kapsamınızda yanıtlanamıyor.", result.Message);
     }
 
     [Fact]
@@ -219,7 +219,7 @@ public sealed class AiAssistantServiceTests
         var result = await service.SendAsync(new AiAssistantInput(Guid.NewGuid(), "Manager", "Yarin takimimda kac kisi musait?"));
 
         Assert.True(result.Succeeded);
-        Assert.Contains("2 kisi musait", result.Message);
+        Assert.Contains("2 kişi müsait", result.Message);
         Assert.Contains("2026-09-02", tool.LastArgumentsJson);
     }
 
@@ -239,7 +239,56 @@ public sealed class AiAssistantServiceTests
         Assert.True(result.Succeeded);
         Assert.Contains("2028-02-01", tool.LastArgumentsJson);
         Assert.Contains("2028-02-29", tool.LastArgumentsJson);
-        Assert.Equal("2028-02-01 - 2028-02-29 araliginda kayit bulunamadi.", result.Message);
+        Assert.Equal("2028-02-01 - 2028-02-29 aralığında kayıt bulunamadı.", result.Message);
+    }
+
+    [Fact]
+    public async Task SendAsync_Should_MapTurkishMonthAndYear_ToWholeMonth()
+    {
+        var tool = new StubAiTool("GetUpcomingLeaves", AiToolExecutionResult.Success(new { Leaves = Array.Empty<object>() }));
+        var client = new RecordingAiChatClient(new AiChatResponse("provider should not answer facts"));
+        var service = CreateService(client, new StaticAiToolRegistry(tool), new RecordingAuditLogRepository(), EnabledOptions());
+
+        var result = await service.SendAsync(new AiAssistantInput(Guid.NewGuid(), "Manager", "Kasım 2026'da kimler izinli?"));
+
+        Assert.True(result.Succeeded);
+        Assert.False(client.WasCalled);
+        Assert.Contains("GetUpcomingLeaves", result.UsedTools!);
+        Assert.Contains("2026-11-01", tool.LastArgumentsJson);
+        Assert.Contains("2026-11-30", tool.LastArgumentsJson);
+    }
+
+    [Fact]
+    public async Task SendAsync_Should_PreferExplicitDayRangeOverWholeMonth()
+    {
+        var tool = new StubAiTool("GetUpcomingLeaves", AiToolExecutionResult.Success(new { Leaves = Array.Empty<object>() }));
+        var service = CreateService(
+            new RecordingAiChatClient(new AiChatResponse("provider should not answer facts")),
+            new StaticAiToolRegistry(tool),
+            new RecordingAuditLogRepository(),
+            EnabledOptions());
+
+        var result = await service.SendAsync(new AiAssistantInput(Guid.NewGuid(), "Manager", "2-4 Kasım 2027'de kimler izinli?"));
+
+        Assert.True(result.Succeeded);
+        Assert.Contains("2027-11-02", tool.LastArgumentsJson);
+        Assert.Contains("2027-11-04", tool.LastArgumentsJson);
+    }
+
+    [Fact]
+    public async Task SendAsync_Should_SendTurkishCapitalizedReportQuestion_ToProvider()
+    {
+        var client = new RecordingAiChatClient(new AiChatResponse("Rapor yorumu hazır."));
+        var service = CreateService(client, new EmptyAiToolRegistry(), new RecordingAuditLogRepository(), EnabledOptions());
+
+        var result = await service.SendAsync(new AiAssistantInput(
+            Guid.NewGuid(),
+            "Manager",
+            "İzin yönetimi açısından bu raporları nasıl yorumlamalıyım?"));
+
+        Assert.True(result.Succeeded);
+        Assert.True(client.WasCalled);
+        Assert.Equal("Rapor yorumu hazır.", result.Message);
     }
 
     [Fact]
@@ -251,7 +300,7 @@ public sealed class AiAssistantServiceTests
         var result = await service.SendAsync(new AiAssistantInput(Guid.NewGuid(), "Manager", "Onumuzdeki hafta kimler izinli?"));
 
         Assert.True(result.Succeeded);
-        Assert.Equal("2026-09-07 - 2026-09-13 araliginda kayit bulunamadi.", result.Message);
+        Assert.Equal("2026-09-07 - 2026-09-13 aralığında kayıt bulunamadı.", result.Message);
     }
 
     [Fact]
@@ -282,8 +331,8 @@ public sealed class AiAssistantServiceTests
 
         Assert.True(result.Succeeded);
         Assert.Equal(["GetTeamAvailability", "GetOrganizationLeaveStatistics"], result.UsedTools);
-        Assert.Contains("1 kisi", result.Message);
-        Assert.Contains("4 onayli izin gunu", result.Message);
+        Assert.Contains("1 kişi", result.Message);
+        Assert.Contains("4 onaylı izin günü", result.Message);
     }
 
     [Fact]
@@ -297,7 +346,7 @@ public sealed class AiAssistantServiceTests
         Assert.True(result.Succeeded);
         Assert.False(client.WasCalled);
         Assert.Empty(result.UsedTools!);
-        Assert.Contains("yalnizca LeaveFlow", result.Message);
+        Assert.Contains("yalnızca LeaveFlow", result.Message);
     }
 
     [Fact]
@@ -310,7 +359,7 @@ public sealed class AiAssistantServiceTests
 
         Assert.True(result.Succeeded);
         Assert.False(client.WasCalled);
-        Assert.Contains("tarih araligini", result.Message);
+        Assert.Contains("tarih aralığını", result.Message);
     }
 
     private static AiAssistantService CreateService(

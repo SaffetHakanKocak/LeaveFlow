@@ -37,11 +37,11 @@ public sealed class AiAssistantSecurityTests : IClassFixture<LeaveFlowWebFactory
         _ = await LoginAsync(client, _factory.ConsultantOneEmail, LeaveFlowWebFactory.Password);
 
         using var response = await client.GetAsync("/AiAssistant");
-        var html = await response.Content.ReadAsStringAsync();
+        var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Contains("AI Asistan", html);
-        Assert.Contains("u anda kapal", html);
+        Assert.Contains("şu anda kapalı", html);
     }
 
     [Fact]
@@ -91,11 +91,11 @@ public sealed class AiAssistantSecurityTests : IClassFixture<LeaveFlowWebFactory
             ["Prompt"] = "Izin politikasini acikla",
             ["__RequestVerificationToken"] = token
         }));
-        var html = await response.Content.ReadAsStringAsync();
+        var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("Guvenli ozet hazir", html);
-        Assert.Contains("Kullanilan guvenli arac sayisi: 1", html);
+        Assert.Contains("Güvenli özet hazır", html);
+        Assert.Contains("Kullanılan güvenli araç sayısı: 1", html);
     }
 
     private HttpClient CreateClient()
@@ -140,7 +140,7 @@ public sealed class AiAssistantSecurityTests : IClassFixture<LeaveFlowWebFactory
             _callCount++;
             return Task.FromResult(_callCount == 1
                 ? new AiChatResponse("", [new AiToolCall("call-1", "GetMyLeaveSummary", "{}")])
-                : new AiChatResponse("Guvenli ozet hazir."));
+                : new AiChatResponse("Güvenli özet hazır."));
         }
     }
 }

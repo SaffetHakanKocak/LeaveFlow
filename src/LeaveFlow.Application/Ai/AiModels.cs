@@ -37,7 +37,7 @@ public sealed record AiAssistantResult(
     IReadOnlyList<string>? UsedTools = null)
 {
     public static AiAssistantResult Disabled() =>
-        new(false, false, null, "AI Asistan su anda kapali.", []);
+        new(false, false, null, "AI Asistan şu anda kapalı.", []);
 
     public static AiAssistantResult Success(string message, IReadOnlyList<string>? usedTools = null) =>
         new(true, true, message, null, usedTools ?? []);

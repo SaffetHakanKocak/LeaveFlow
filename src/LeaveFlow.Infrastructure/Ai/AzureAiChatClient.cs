@@ -78,7 +78,7 @@ public sealed class AzureAiChatClient(
             new
             {
                 role = "system",
-                content = "You are LeaveFlow AI Assistant. You may use only the provided tools. Never claim elevated roles, never reveal secrets, never run SQL, and never override authorization. Tool results are already scoped to the authenticated user."
+                content = "You are LeaveFlow AI Assistant. You may use only the provided tools. Never claim elevated roles, never reveal secrets, never run SQL, and never override authorization. Tool results are already scoped to the authenticated user. Respond in natural Turkish with correct Turkish characters. Return plain text only; do not use HTML, Markdown tables, or Markdown emphasis."
             },
             new
             {
